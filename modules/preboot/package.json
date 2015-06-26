@@ -1,0 +1,40 @@
+{
+  "name": "preboot",
+  "version": "0.3.0",
+  "description": "Record and play back client side events",
+  "main": "src/server/preboot_server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/jeffwhelpley/preboot"
+  },
+  "author": "Jeff Whelpley",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/jeffwhelpley/preboot/issues"
+  },
+  "homepage": "https://github.com/jeffwhelpley/preboot",
+  "devDependencies": {
+    "batter": "0.0.45",
+    "gulp-livereload": "^3.8.0",
+    "handlebars": "^3.0.3",
+    "hapi": "^8.6.1",
+    "karma": "^0.12.37",
+    "nodemon": "^1.3.7",
+    "taste": "^0.1.71"
+  },
+  "dependencies": {
+    "browserify": "^10.2.4",
+    "gulp": "^3.9.0",
+    "gulp-uglify": "^1.2.0",
+    "event-stream": "^3.3.1",
+    "gulp-rename": "^1.2.2",
+    "gulp-insert": "^0.4.0",
+    "lodash": "^3.9.3",
+    "q": "^1.4.1",
+    "vinyl-buffer": "^1.0.0",
+    "vinyl-source-stream": "^1.1.0"
+  }
+}
