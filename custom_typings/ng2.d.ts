@@ -9,6 +9,13 @@ declare module "angular2/angular2" {
   }
 }
 
+declare module "angular2/src/render/dom/view/fragment" {
+  function resolveInternalDomFragment(previousFragmentRef: any): any;
+  class DomFragmentRef {
+    constructor(nodes: any)
+  }
+}
+
 declare module "angular2/annotations" {
   var Component: any;
   var View: any;
@@ -207,9 +214,12 @@ declare module "angular2/src/render/dom/view/proto_view" {
   class DomProtoView {
     rootBindingOffset: any;
     element: any;
+    fragmentsRootNodeCount: any;
     isTemplateElement(): any
     elementBinders(): any
   }
+  class DomProtoViewRef {}
+  function resolveInternalDomProtoView(view: any): any;
 
 }
 
@@ -220,6 +230,8 @@ declare module "angular2/src/render/dom/view/view_container" {
 declare module "angular2/src/render/dom/util" {
   var NG_BINDING_CLASS_SELECTOR: any;
   var NG_BINDING_CLASS: any ;
+  var cloneAndQueryProtoView: any;
+  var camelCaseToDashCase: any;
 }
 
 
@@ -246,6 +258,17 @@ declare module "angular2/src/render/api" {
   class RenderProtoViewRef {
 
   }
+  class RenderElementRef {
+    renderBoundElementIndex: any;
+    renderView: any;
+  }
+  class RenderFragmentRef {
+
+  }
+  class RenderViewWithFragments {
+    new (domViewRef: any, domFragmentRef: any): any;
+    constructor(domViewRef: any, domFragmentRef: any)
+  }
 
 }
 declare module "angular2/src/render/dom/shadow_dom/content_tag" {
@@ -253,9 +276,10 @@ declare module "angular2/src/render/dom/shadow_dom/content_tag" {
 }
 declare module "angular2/src/render/dom/view/view" {
   class DomViewRef {
-
+    constructor(view: any)
   }
   class DomView {
+    constructor(protoView: any, boundTextNodes: any, boundElements: any)
     viewContainers(): any
   }
   function resolveInternalDomView(viewRef: any): any;
@@ -631,7 +655,8 @@ declare module "angular2/src/facade/lang" {
   function isBlank(bool: any): boolean;
   function isString(bool: any): boolean;
   class BaseException {
-
+    new (value?: any): any;
+    contructor(value: any)
   }
   class RegExpWrapper {
 
@@ -639,6 +664,7 @@ declare module "angular2/src/facade/lang" {
   class NumberWrapper {
 
   }
+  function CONST_EXPR(exp: any): any;
   class StringWrapper {
     static toLowerCase(str: string): string;
     static toUpperCase(str: string): string;
