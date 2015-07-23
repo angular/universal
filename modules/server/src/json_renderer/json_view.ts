@@ -74,10 +74,10 @@ export class JsonView {
     var index = this.classList.indexOf(className);
     var indexDash = this.classListDash.indexOf(className);
     if (isAdd) {
-      if (index == -1) {
+      if (index === -1) {
         this.classList[index] = className;
       }
-      if (indexDash == -1) {
+      if (indexDash === -1) {
         this.classListDash[indexDash] = dashCasedClassName;
       }
       DOM.addClass(element, dashCasedClassName);
