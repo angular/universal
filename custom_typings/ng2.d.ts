@@ -9,6 +9,12 @@ declare module "angular2/angular2" {
   }
 }
 
+declare module "angular2/src/render/api" {
+  class RenderEventDispatcher {
+    dispatchRenderEvent(elementIndex: any, eventName: any, evalLocals: any): any;
+  }
+}
+
 declare module "angular2/src/render/dom/view/fragment" {
   function resolveInternalDomFragment(previousFragmentRef: any): any;
   class DomFragmentRef {
@@ -739,6 +745,7 @@ declare module "angular2/src/dom/browser_adapter" {
         insertBefore(el: any, node: any): void;
         insertAllBefore(el: any, nodes: any): void;
         insertAfter(el: any, node: any): void;
+        setProperty(el: any, propertyName: any, value: any);
         setInnerHTML(el: any, value: any): void;
         getText(el: any): any;
         setText(el: any, value: string): void;
@@ -803,6 +810,7 @@ declare module "angular2/src/dom/dom_adapter" {
         static makeCurrent(): void;
         logError(error: any): void;
         attrToPropMap: any;
+        invoke(el: any, methodName: any, args: any): any;
         query(selector: string): any;
         querySelector(el: any, selector: string): Node;
         querySelectorAll(el: any, selector: string): List<any>;
@@ -830,6 +838,7 @@ declare module "angular2/src/dom/dom_adapter" {
         insertBefore(el: any, node: any): void;
         insertAllBefore(el: any, nodes: any): void;
         insertAfter(el: any, node: any): void;
+        setProperty(el: any, propertyName: any, value: any);
         setInnerHTML(el: any, value: any): void;
         getText(el: any): any;
         setText(el: any, value: string): void;

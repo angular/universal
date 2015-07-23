@@ -7,6 +7,8 @@ export {bootstrap};
 
 import {selectorRegExpFactory} from './helper';
 
+import {jsonRendererInjectables} from './json_renderer/index';
+
 
 import {stringifyElement} from './stringifyElement';
 
@@ -26,7 +28,9 @@ export function render(clientHtml, AppComponent, serverBindings: any = []) {
   let el = DOM.createElement(selector, serverDocument);
   DOM.appendChild(serverDocument.body, el);
 
-  let renderBindings: Array<any> = [].concat(serverBindings);
+  let renderBindings: Array<any> = [
+    jsonRendererInjectables
+  ].concat(serverBindings);
 
   return bootstrap(
     AppComponent,
