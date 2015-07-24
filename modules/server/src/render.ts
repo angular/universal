@@ -1,5 +1,5 @@
 /// <reference path="../typings/tsd.d.ts" />
-
+import * as util from 'util';
 // server version
 import {bootstrap} from './bootstrap-server';
 //
@@ -52,6 +52,7 @@ export function render(clientHtml, AppComponent, serverBindings: any = []) {
     // grab parse5 html element or default to the one we provided
     let element = appRef.hostElementRef.nativeElement || el;
     // serialize html
+    // let serializedCmp = '<pre>'+util.inspect(element, { depth: 10 })+'</pre>';
     let serializedCmp = stringifyElement(element);
 
     // selector replacer explained here

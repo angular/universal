@@ -219,6 +219,10 @@ declare module "angular2/src/reflection/reflection_capabilities" {
 declare module "angular2/src/render/dom/view/proto_view" {
   class DomProtoView {
     rootBindingOffset: any;
+    rootElement: any;
+    isSingleElementFragment: any;
+    rootTextNodeIndices: any;
+    boundTextNodeCount: any;
     element: any;
     fragmentsRootNodeCount: any;
     isTemplateElement(): any
@@ -238,6 +242,14 @@ declare module "angular2/src/render/dom/util" {
   var NG_BINDING_CLASS: any ;
   var cloneAndQueryProtoView: any;
   var camelCaseToDashCase: any;
+  function queryFragments(templateContent: any, fragmentsRootNodeCount: number[]): any;
+  function queryBoundElements(templateContent: any, isSingleElementChild: boolean): any;
+  class ClonedProtoView {
+    boundElements: any;
+    fragments: any;
+    boundTextNodes: any;
+    constructor(original: any, fragments: any, boundElements: any, boundTextNodes: any);
+  }
 }
 
 

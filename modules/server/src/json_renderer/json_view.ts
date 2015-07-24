@@ -23,18 +23,6 @@ export class JsonViewRef extends RenderViewRef {
 }
 
 export class JsonView {
-  tagName;
-  parent: JsonView;
-  children: Array<JsonView> = [];
-
-  attrs     = {};
-  classList = [];
-  props     = {};
-  styles    = {};
-
-  attrsDash     = {};
-  classListDash = [];
-
   hydrated: boolean = false;
   eventDispatcher: RenderEventDispatcher = null;
   eventHandlerRemovers: List<Function> = [];
@@ -66,28 +54,12 @@ export class JsonView {
 
 
   setElementClass(elementIndex: number, className: string, isAdd: boolean) {
-
-
     var element = this.boundElements[elementIndex];
     var dashCasedClassName = camelCaseToDashCase(className);
 
-    var index = this.classList.indexOf(className);
-    var indexDash = this.classListDash.indexOf(className);
     if (isAdd) {
-      if (index === -1) {
-        this.classList[index] = className;
-      }
-      if (indexDash === -1) {
-        this.classListDash[indexDash] = dashCasedClassName;
-      }
       DOM.addClass(element, dashCasedClassName);
     } else {
-      if (index > -1) {
-        this.classList.splice(indexDash, 1);
-      }
-      if (indexDash > -1) {
-        this.classListDash.splice(indexDash, 1);
-      }
       DOM.removeClass(element, dashCasedClassName);
     }
   }
@@ -129,5 +101,6 @@ export class JsonView {
     }
     return allowDefaultBehavior;
   }
+
 }
 

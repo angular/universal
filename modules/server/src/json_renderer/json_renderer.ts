@@ -20,7 +20,10 @@ import {
   NG_BINDING_CLASS_SELECTOR,
   NG_BINDING_CLASS,
   cloneAndQueryProtoView,
-  camelCaseToDashCase
+  camelCaseToDashCase,
+  queryBoundElements,
+  queryFragments,
+  ClonedProtoView
 } from 'angular2/src/render/dom/util';
 
 import {
@@ -39,8 +42,19 @@ import {
 
 import {JsonView, JsonViewRef, resolveInternalJsonView} from './json_view';
 import {JsonFragmentRef, resolveInternalJsonFragment} from './json_fragment';
+import {JsonElement} from './json_element';
 
 const REFLECT_PREFIX = 'ng-reflect-';
+
+
+var parse5 = require('parse5');
+var parser = new parse5.Parser(parse5.TreeAdapters.htmlparser2);
+var serializer = new parse5.Serializer(parse5.TreeAdapters.htmlparser2);
+var treeAdapter = parser.treeAdapter;
+
+var cssParse = require('css').parse;
+
+var mapProps = ['attribs', 'x-attribsNamespace', 'x-attribsPrefix'];
 
 @Injectable()
 export class JsonRenderer extends Renderer {
@@ -60,10 +74,12 @@ export class JsonRenderer extends Renderer {
   createRootHostView(hostProtoViewRef: RenderProtoViewRef, fragmentCount: number,
                      hostElementSelector: string): RenderViewWithFragments {
     var hostProtoView = resolveInternalDomProtoView(hostProtoViewRef);
+
     var element = DOM.querySelector(this._document, hostElementSelector);
     if (isBlank(element)) {
       throw new BaseException(`The selector "${hostElementSelector}" did not match any elements`);
     }
+
     return this._createView(hostProtoView, element);
   }
 
@@ -204,9 +220,10 @@ export class JsonRenderer extends Renderer {
     var view = resolveInternalJsonView(viewRef);
     view.eventDispatcher = dispatcher;
   }
+
                                                   /*HTMLElement*/
   _createView(protoView: DomProtoView, inplaceElement: any): RenderViewWithFragments {
-    var clonedProtoView = cloneAndQueryProtoView(protoView, true);
+    var clonedProtoView = this.__cloneAndQueryProtoView(protoView);
 
     var boundElements = clonedProtoView.boundElements;
 
@@ -216,7 +233,10 @@ export class JsonRenderer extends Renderer {
         let error = new BaseException('Root proto views can only contain one element!');
         throw error;
       }
+
+      // remove children from hostElement
       DOM.clearNodes(inplaceElement);
+
       var tempRoot = clonedProtoView.fragments[0][0];
       moveChildNodes(tempRoot, inplaceElement);
       if (boundElements.length > 0 && boundElements[0] === tempRoot) {
@@ -234,7 +254,7 @@ export class JsonRenderer extends Renderer {
 
       // native shadow DOM
       if (binder.hasNativeShadowRoot) {
-        var shadowRootWrapper = DOM.firstChild(element);
+        var shadowRootWrapper = element.firstChild;
         moveChildNodes(shadowRootWrapper, DOM.createShadowRoot(element));
         DOM.remove(shadowRootWrapper);
       }
@@ -251,6 +271,123 @@ export class JsonRenderer extends Renderer {
     let fragments = clonedProtoView.fragments.map(nodes => new JsonFragmentRef(nodes));
     let viewRef = new JsonViewRef(view);
     return new RenderViewWithFragments(viewRef, fragments);
+  }
+
+  __clone(node: any): JsonElement {
+    var _recursive = (node) => {
+      var nodeClone = Object.create(Object.getPrototypeOf(node));
+      for (var prop in node) {
+        var desc = Object.getOwnPropertyDescriptor(node, prop);
+        if (desc && 'value' in desc && typeof desc.value !== 'object') {
+          nodeClone[prop] = node[prop];
+        }
+      }
+      nodeClone.parent = null;
+      nodeClone.prev = null;
+      nodeClone.next = null;
+      nodeClone.children = null;
+
+      mapProps.forEach(mapName => {
+        if (isPresent(node[mapName])) {
+          nodeClone[mapName] = {};
+          for (var prop in node[mapName]) {
+            nodeClone[mapName][prop] = node[mapName][prop];
+          }
+        }
+      });
+      var cNodes = node.children;
+      if (cNodes) {
+        var cNodesClone = new Array(cNodes.length);
+        for (var i = 0; i < cNodes.length; i++) {
+          var childNode = cNodes[i];
+          var childNodeClone = _recursive(childNode);
+          cNodesClone[i] = childNodeClone;
+          if (i > 0) {
+            childNodeClone.prev = cNodesClone[i - 1];
+            cNodesClone[i - 1].next = childNodeClone;
+          }
+          childNodeClone.parent = nodeClone;
+        }
+        nodeClone.children = cNodesClone;
+      }
+      return nodeClone;
+    };
+    return _recursive(node);
+
+  }
+
+  __cloneAndQueryProtoView(pv: DomProtoView): ClonedProtoView {
+    var templateContent = this.__clone(pv.rootElement.childNodes[0]);
+    pv.rootElement.childNodes[0]
+
+    var boundElements = this.__queryBoundElements(templateContent, pv.isSingleElementFragment);
+    var boundTextNodes = this.__queryBoundTextNodes(templateContent, pv.rootTextNodeIndices, boundElements,
+                                             pv.elementBinders, pv.boundTextNodeCount);
+
+    var fragments = this.__queryFragments(templateContent, pv.fragmentsRootNodeCount);
+    return new ClonedProtoView(pv, fragments, boundElements, boundTextNodes);
+  }
+  __queryBoundElements(templateContent: JsonElement, isSingleElementChild: boolean):
+      JsonElement[] {
+    var result;
+    var dynamicElementList;
+    var elementIdx = 0;
+    if (isSingleElementChild) {
+      var rootElement = templateContent.firstChild;
+      var rootHasBinding = DOM.hasClass(rootElement, NG_BINDING_CLASS);
+      dynamicElementList = DOM.getElementsByClassName(rootElement, NG_BINDING_CLASS);
+      result = ListWrapper.createFixedSize(dynamicElementList.length + (rootHasBinding ? 1 : 0));
+      if (rootHasBinding) {
+        result[elementIdx++] = rootElement;
+      }
+    } else {
+      dynamicElementList = templateContent.querySelectorAll(NG_BINDING_CLASS_SELECTOR);
+      result = ListWrapper.createFixedSize(dynamicElementList.length);
+    }
+    for (var i = 0; i < dynamicElementList.length; i++) {
+      result[elementIdx++] = dynamicElementList[i];
+    }
+    return result;
+  }
+  __queryBoundTextNodes(templateContent: JsonElement, rootTextNodeIndices: number[],
+                                 boundElements: JsonElement[], elementBinders: any,
+                                 boundTextNodeCount: number): JsonElement[] {
+      var boundTextNodes = ListWrapper.createFixedSize(boundTextNodeCount);
+      var textNodeIndex = 0;
+      if (rootTextNodeIndices.length > 0) {
+        var rootChildNodes = DOM.childNodes(templateContent);
+        for (var i = 0; i < rootTextNodeIndices.length; i++) {
+          boundTextNodes[textNodeIndex++] = rootChildNodes[rootTextNodeIndices[i]];
+        }
+      }
+      for (var i = 0; i < elementBinders.length; i++) {
+        var binder = elementBinders[i];
+        var element: JsonElement = boundElements[i];
+        if (binder.textNodeIndices.length > 0) {
+          var childNodes = DOM.childNodes(element);
+          for (var j = 0; j < binder.textNodeIndices.length; j++) {
+            boundTextNodes[textNodeIndex++] = childNodes[binder.textNodeIndices[j]];
+          }
+        }
+      }
+      return boundTextNodes;
+  }
+  __queryFragments(templateContent: JsonElement, fragmentsRootNodeCount: number[]): JsonElement[][] {
+    // console.log('fragmentsRootNodeCount', templateContent.firstChild, fragmentsRootNodeCount);
+    var fragments = ListWrapper.createGrowableSize(fragmentsRootNodeCount.length);
+
+    // Note: An explicit loop is the fastest way to convert a DOM array into a JS array!
+    var childNode = templateContent.firstChild;
+
+    for (var fragmentIndex = 0; fragmentIndex < fragments.length; fragmentIndex++) {
+      var fragment = ListWrapper.createFixedSize(fragmentsRootNodeCount[fragmentIndex]);
+      fragments[fragmentIndex] = fragment;
+      for (var i = 0; i < fragment.length; i++) {
+        fragment[i] = childNode;
+        childNode = childNode.nextSibling;
+      }
+    }
+    return fragments;
   }
 
   _createEventListener(view, element, elementIndex, eventName, eventLocals) {
@@ -274,9 +411,9 @@ function moveNodesAfterSibling(sibling, nodes) {
 }
                              /* Node         Node */
 function moveChildNodes(source: any, target: any) {
-  var currChild = DOM.firstChild(source);
+  var currChild = source.firstChild;
   while (isPresent(currChild)) {
-    var nextChild = DOM.nextSibling(currChild);
+    var nextChild = currChild.next
     DOM.appendChild(target, currChild);
     currChild = nextChild;
   }
