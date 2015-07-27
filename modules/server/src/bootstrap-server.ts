@@ -130,9 +130,9 @@ function _injectorBindings(appComponentType): List<Type | Binding | List<any>> {
     bind(ShadowDomStrategy).toFactory(doc => {
       return new EmulatedUnscopedShadowDomStrategy(doc.head);
     }, [DOCUMENT_TOKEN]),
-    DomRenderer,
+    // DomRenderer,
     DefaultDomCompiler,
-    bind(Renderer).toAlias(DomRenderer),
+    // bind(Renderer).toAlias(DomRenderer),
     bind(RenderCompiler).toAlias(DefaultDomCompiler),
     ProtoViewFactory,
     AppViewPool,
@@ -225,17 +225,22 @@ export function bootstrap(appComponentType: Type,
     // ]));
 
   }
+
   // Server
   let compRefToken = PromiseWrapper.all([
     PromiseWrapper.wrap(() => appInjector.get(DynamicComponentLoader)),
     PromiseWrapper.wrap(() => appInjector.get(Testability)),
-    PromiseWrapper.wrap(() => appInjector.get(TestabilityRegistry))
+    PromiseWrapper.wrap(() => appInjector.get(TestabilityRegistry)),
+    PromiseWrapper.wrap(() => appInjector.get(Renderer))
   ])
-  .then(results => {
-    return componentLoader(results[0], appInjector, results[1], results[2]);
+  .then(({ 0:dynamicComponentLoader, 1:testability, 2:registry, 3:renderer }) => {
+    return PromiseWrapper.all([
+      componentLoader(dynamicComponentLoader, appInjector, testability, registry),
+      renderer
+    ]);
   });
 
-  let tick = componentRef => {
+  let tick = ({ 0:componentRef, 1:renderer }) => {
     var appChangeDetector = internalView(componentRef.hostView).changeDetector;
     // retrieve life cycle: may have already been created if injected in root component
     // var lc = appInjector.get(LifeCycle);
@@ -243,7 +248,7 @@ export function bootstrap(appComponentType: Type,
     // lc.tick();
 
     bootstrapProcess.resolve(
-      new ApplicationRef(componentRef, appComponentType, appInjector, appChangeDetector)
+      new ApplicationRef(componentRef, appComponentType, appInjector, appChangeDetector, renderer)
     );
   };
 
@@ -260,13 +265,15 @@ export class ApplicationRef {
   _hostElementRef:ElementRef;
   _injector:Injector;
   _changeDetection:ChangeDetection;
+  _renderer:Renderer
   constructor(
-    hostComponent:ComponentRef, hostComponentType:Type, injector:Injector, changeDetection: ChangeDetection) {
+    hostComponent:ComponentRef, hostComponentType:Type, injector:Injector, changeDetection: ChangeDetection, renderer: Renderer) {
     this._hostComponent = hostComponent;
     this._injector = injector;
     this._hostComponentType = hostComponentType;
     // Server
     this._changeDetection = changeDetection;
+    this._renderer = renderer;
     // Server
   }
 
@@ -281,6 +288,10 @@ export class ApplicationRef {
 
   get changeDetection() {
     return this._changeDetection;
+  }
+
+  get renderer() {
+    return this._renderer;
   }
 // Server
 

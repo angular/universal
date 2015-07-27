@@ -9,6 +9,31 @@ declare module "angular2/angular2" {
   }
 }
 
+declare module "angular2/src/render/api" {
+  class RenderEventDispatcher {
+    dispatchRenderEvent(elementIndex: any, eventName: any, evalLocals: any): any;
+  }
+}
+
+declare module "angular2/src/render/dom/compiler/selector" {
+  class SelectorMatcher {
+    addSelectables(selectables: any): any;
+  }
+  class CssSelector {
+    static parse(val: any): any;
+    setElement(element?: string): any;
+    addAttribute(name: string, value?: string): any;
+    addClassName(name: string): any;
+  }
+}
+
+declare module "angular2/src/render/dom/view/fragment" {
+  function resolveInternalDomFragment(previousFragmentRef: any): any;
+  class DomFragmentRef {
+    constructor(nodes: any)
+  }
+}
+
 declare module "angular2/annotations" {
   var Component: any;
   var View: any;
@@ -206,10 +231,17 @@ declare module "angular2/src/reflection/reflection_capabilities" {
 declare module "angular2/src/render/dom/view/proto_view" {
   class DomProtoView {
     rootBindingOffset: any;
+    rootElement: any;
+    isSingleElementFragment: any;
+    rootTextNodeIndices: any;
+    boundTextNodeCount: any;
     element: any;
+    fragmentsRootNodeCount: any;
     isTemplateElement(): any
     elementBinders(): any
   }
+  class DomProtoViewRef {}
+  function resolveInternalDomProtoView(view: any): any;
 
 }
 
@@ -220,6 +252,16 @@ declare module "angular2/src/render/dom/view/view_container" {
 declare module "angular2/src/render/dom/util" {
   var NG_BINDING_CLASS_SELECTOR: any;
   var NG_BINDING_CLASS: any ;
+  var cloneAndQueryProtoView: any;
+  var camelCaseToDashCase: any;
+  function queryFragments(templateContent: any, fragmentsRootNodeCount: number[]): any;
+  function queryBoundElements(templateContent: any, isSingleElementChild: boolean): any;
+  class ClonedProtoView {
+    boundElements: any;
+    fragments: any;
+    boundTextNodes: any;
+    constructor(original: any, fragments: any, boundElements: any, boundTextNodes: any);
+  }
 }
 
 
@@ -246,6 +288,17 @@ declare module "angular2/src/render/api" {
   class RenderProtoViewRef {
 
   }
+  class RenderElementRef {
+    renderBoundElementIndex: any;
+    renderView: any;
+  }
+  class RenderFragmentRef {
+
+  }
+  class RenderViewWithFragments {
+    new (domViewRef: any, domFragmentRef: any): any;
+    constructor(domViewRef: any, domFragmentRef: any)
+  }
 
 }
 declare module "angular2/src/render/dom/shadow_dom/content_tag" {
@@ -253,9 +306,10 @@ declare module "angular2/src/render/dom/shadow_dom/content_tag" {
 }
 declare module "angular2/src/render/dom/view/view" {
   class DomViewRef {
-
+    constructor(view: any)
   }
   class DomView {
+    constructor(protoView: any, boundTextNodes: any, boundElements: any)
     viewContainers(): any
   }
   function resolveInternalDomView(viewRef: any): any;
@@ -631,7 +685,8 @@ declare module "angular2/src/facade/lang" {
   function isBlank(bool: any): boolean;
   function isString(bool: any): boolean;
   class BaseException {
-
+    new (value?: any): any;
+    contructor(value: any)
   }
   class RegExpWrapper {
 
@@ -639,6 +694,7 @@ declare module "angular2/src/facade/lang" {
   class NumberWrapper {
 
   }
+  function CONST_EXPR(exp: any): any;
   class StringWrapper {
     static toLowerCase(str: string): string;
     static toUpperCase(str: string): string;
@@ -713,6 +769,7 @@ declare module "angular2/src/dom/browser_adapter" {
         insertBefore(el: any, node: any): void;
         insertAllBefore(el: any, nodes: any): void;
         insertAfter(el: any, node: any): void;
+        setProperty(el: any, propertyName: any, value: any);
         setInnerHTML(el: any, value: any): void;
         getText(el: any): any;
         setText(el: any, value: string): void;
@@ -777,6 +834,7 @@ declare module "angular2/src/dom/dom_adapter" {
         static makeCurrent(): void;
         logError(error: any): void;
         attrToPropMap: any;
+        invoke(el: any, methodName: any, args: any): any;
         query(selector: string): any;
         querySelector(el: any, selector: string): Node;
         querySelectorAll(el: any, selector: string): List<any>;
@@ -804,6 +862,7 @@ declare module "angular2/src/dom/dom_adapter" {
         insertBefore(el: any, node: any): void;
         insertAllBefore(el: any, nodes: any): void;
         insertAfter(el: any, node: any): void;
+        setProperty(el: any, propertyName: any, value: any);
         setInnerHTML(el: any, value: any): void;
         getText(el: any): any;
         setText(el: any, value: string): void;

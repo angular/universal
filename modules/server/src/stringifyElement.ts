@@ -12,8 +12,8 @@ var _singleTagWhitelist = ['br', 'hr', 'input'];
 
 export function stringifyElement(el): string {
   var result = '';
-  if (DOM.isElementNode(el)) {
-    var tagName = StringWrapper.toLowerCase(DOM.tagName(el));
+  if (el && el.tagName) {
+    var tagName = el.tagName;// || DOM.tagName(el)).toLowerCase();
 
     // opening tag
     result += `<${ tagName }`;
@@ -35,7 +35,7 @@ export function stringifyElement(el): string {
     result += '>';
 
     // children
-    var children = DOM.childNodes(DOM.templateAwareRoot(el));
+    var children = el.children || DOM.childNodes(DOM.templateAwareRoot(el));
     for (let j = 0; j < children.length; j++) {
       result += stringifyElement(children[j]);
     }

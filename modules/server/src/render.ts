@@ -1,11 +1,13 @@
 /// <reference path="../typings/tsd.d.ts" />
-
+import * as util from 'util';
 // server version
 import {bootstrap} from './bootstrap-server';
 //
 export {bootstrap};
 
 import {selectorRegExpFactory} from './helper';
+
+import {jsonRendererInjectables} from './json_renderer/index';
 
 
 import {stringifyElement} from './stringifyElement';
@@ -26,7 +28,9 @@ export function render(clientHtml, AppComponent, serverBindings: any = []) {
   let el = DOM.createElement(selector, serverDocument);
   DOM.appendChild(serverDocument.body, el);
 
-  let renderBindings: Array<any> = [].concat(serverBindings);
+  let renderBindings: Array<any> = [
+    jsonRendererInjectables
+  ].concat(serverBindings);
 
   return bootstrap(
     AppComponent,
@@ -48,6 +52,7 @@ export function render(clientHtml, AppComponent, serverBindings: any = []) {
     // grab parse5 html element or default to the one we provided
     let element = appRef.hostElementRef.nativeElement || el;
     // serialize html
+    // let serializedCmp = '<pre>'+util.inspect(element, { depth: 10 })+'</pre>';
     let serializedCmp = stringifyElement(element);
 
     // selector replacer explained here

@@ -67,7 +67,7 @@ export function bootstrapFunction(appUrl) {
           return module.main();
         }).
         then(function() {
-          preboot.complete();
+          if (preboot) { preboot.complete(); }
           document.body.className += ' angularready';
           var $bootstrapButton = document.getElementById("bootstrapButton");
           if ($bootstrapButton) { $bootstrapButton.remove(); }
