@@ -15,6 +15,18 @@ declare module "angular2/src/render/api" {
   }
 }
 
+declare module "angular2/src/render/dom/compiler/selector" {
+  class SelectorMatcher {
+    addSelectables(selectables: any): any;
+  }
+  class CssSelector {
+    static parse(val: any): any;
+    setElement(element?: string): any;
+    addAttribute(name: string, value?: string): any;
+    addClassName(name: string): any;
+  }
+}
+
 declare module "angular2/src/render/dom/view/fragment" {
   function resolveInternalDomFragment(previousFragmentRef: any): any;
   class DomFragmentRef {

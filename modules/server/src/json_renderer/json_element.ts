@@ -1,4 +1,5 @@
 import {
+  isString,
   isPresent,
   isBlank,
   BaseException,
@@ -10,38 +11,79 @@ import {DOM} from 'angular2/src/dom/dom_adapter';
 
 import {SelectorMatcher, CssSelector} from 'angular2/src/render/dom/compiler/selector';
 
+var parse5 = require('parse5');
+var parser = new parse5.Parser(parse5.TreeAdapters.htmlparser2);
+var serializer = new parse5.Serializer(parse5.TreeAdapters.htmlparser2);
+var treeAdapter = parser.treeAdapter;
+
+var cssParse = require('css').parse;
+
+
 var _singleTagWhitelist = ['br', 'hr', 'input'];
+var _mapProps = ['attribs', 'x-attribsNamespace', 'x-attribsPrefix'];
+var nodeTypes = {
+    element: 1,
+    text: 3,
+    cdata: 4,
+    comment: 8
+};
 
 export class JsonElement {
-  children: Array<JsonElement> = [];
+  type: any;
+  tagName: any;
+  data: any;
+
+  children: Array<any> = null;
   parent: JsonElement = null;
   prev:   JsonElement = null;
   next:   JsonElement = null;
+
+  className: string;
 
   attribs   = {};
   classList = [];
   props     = {};
   styles    = {};
 
-  constructor(public tagName: string, properties = {}) {
+  shadowRoot = null;
+
+  _eventListenersMap = null;
+  _window = null;
+
+  constructor(properties:any = {}) {
 
     Object.assign(this.props, properties);
-    this.children = properties.children || this.children;
+    Object.assign(this, properties);
 
+  }
+  get firstChild() {
+    return isPresent(this.children) && this.children[0] || null;
+  }
+  get lastChild() {
+    return isPresent(this.children) && this.children[this.children.length - 1] || null;
+  }
+  get nodeType() {
+    return nodeTypes[this.type] || nodeTypes.element;
   }
 
   toString() {
     var result = '';
     result += `<${ this.tagName }`;
 
+    let attributeMap = new Map();
+    let elAttrs = treeAdapter.getAttrList(element);
+
+    for (let i = 0; i < elAttrs.length; i++) {
+      let attrib = elAttrs[i];
+      attributeMap.set(attrib.name, attrib.value);
+    }
     // attributes in an ordered way
-    var attributeMap = DOM.attributeMap(el);
     var keys = [];
     MapWrapper.forEach(attributeMap, (v, k) => { keys.push(k); });
     ListWrapper.sort(keys);
     for (let i = 0; i < keys.length; i++) {
-      var key = keys[i];
-      var attValue = attributeMap.get(key);
+      let key = keys[i];
+      let attValue = attributeMap.get(key);
       if (!isString(attValue)) {
         result += ` ${ key }`;
       } else {
@@ -49,25 +91,46 @@ export class JsonElement {
       }
     }
     result += '>';
-    return result
+    return result;
   }
 
+  clearNodes() {
+    while (this.children.length > 0) {
+      this.children[0].remove();
+    }
+  }
   setProperty(prop, value) {
     this.props[prop] = value;
     return this;
   }
+  templateAwareRoot(): any {
+    return this.isTemplateElement() ? this.content() : this;
+  }
+  isTemplateElement(): boolean {
+    return this.isElementNode() && this.tagName === 'template';
+  }
+  isTextNode(): boolean { return treeAdapter.isTextNode(this); }
+  isCommentNode(): boolean { return treeAdapter.isCommentNode(this); }
+  isElementNode(): boolean { return treeAdapter.isElementNode(this); }
+  hasShadowRoot(): boolean { return isPresent(this.shadowRoot); }
+  isShadowRoot(): boolean { return this.getShadowRoot() == this; }
+  getShadowRoot(): any { return this.shadowRoot; }
 
+  content(): string {
+    return this.children[0];
+  }
   remove(): JsonElement {
-    var parent = this.parent;
-    console.log('parent', parent.constructor.name)
-    if (parent) {
-      var index = parent.children.indexOf(el);
+    let parent = this.parent;
+    if (isPresent(parent)) {
+      let index = parent.children.indexOf(this);
       parent.children.splice(index, 1);
     }
-    if (this.prev) {
+    let prev = this.prev;
+    let next = this.next;
+    if (isPresent(this.prev)) {
       this.prev.next = next;
     }
-    if (this.next) {
+    if (isPresent(this.next)) {
       this.next.prev = prev;
     }
     this.prev = null;
@@ -75,16 +138,89 @@ export class JsonElement {
     this.parent = null;
     return this;
   }
+  addClass(classname: string) {
+    var classList = this.classList;
+    var index = classList.indexOf(classname);
+    if (index == -1) {
+      classList.push(classname);
+      this.attribs['class'] = this.className = ListWrapper.join(classList, ' ');
+    }
+  }
+  removeClass(classname: string) {
+    var classList = this.classList;
+    var index = classList.indexOf(classname);
+    if (index > -1) {
+      classList.splice(index, 1);
+      this.attribs['class'] = this.className = ListWrapper.join(classList, ' ');
+    }
+  }
+
+  setStyle(stylename: string, stylevalue: string) {
+    let styleMap = this._readStyleAttribute;
+    this._writeStyleAttribute(styleMap[stylename]);
+  }
+  removeStyle(stylename: string) {
+    this.setStyle(stylename, null);
+  }
+
+  getText(): string {
+    if (this.isTextNode()) {
+      return this.data;
+    } else if (isBlank(this.children) || this.children.length == 0) {
+      return '';
+    } else {
+      var textContent = '';
+      for (var i = 0; i < this.children.length; i++) {
+        textContent += this.children[i].getText();
+      }
+      return textContent;
+    }
+  }
+  setText(value: string) {
+    if (this.isTextNode()) {
+      this.data = value;
+    } else {
+      this.clearNodes();
+      if (value !== '') { treeAdapter.insertText(this, value); }
+    }
+  }
+
+  createShadowRoot() {
+    this.shadowRoot = treeAdapter.createDocumentFragment();
+    this.shadowRoot.parent = this;
+    return this.shadowRoot;
+  }
 
   clone() {
-    var props = Object.assign({}, this.props);
-    var nodeClone = new JsonElement(this.tagName, props);
-    var cNodes = this.children;
-    if (cNodes) {
-      var cNodesClone = ListWrapper.createGrowableSize(cNodes.length);
-      for (var i = 0; i < cNodes.length; i++) {
-        var childNode = cNodes[i];
-        var childNodeClone = childNode.clone();
+    let node = this;
+    let nodeClone = Object.create(Object.getPrototypeOf(node));
+    for (let prop in node) {
+      let desc = Object.getOwnPropertyDescriptor(node, prop);
+      if (desc && 'value' in desc && typeof desc.value !== 'object') {
+        nodeClone[prop] = node[prop];
+      }
+    }
+    nodeClone.parent = null;
+    nodeClone.prev = null;
+    nodeClone.next = null;
+    nodeClone.children = null;
+
+    _mapProps.forEach(mapName => {
+      if (isPresent(node[mapName])) {
+        nodeClone[mapName] = {};
+        for (let prop in node[mapName]) {
+          if (StringMapWrapper.contains(node[mapName], prop)) {
+            nodeClone[mapName][prop] = node[mapName][prop];
+          }
+        }
+      }
+    });
+    let cNodes = this.children;
+    if (isPresent(cNodes)) {
+      let cNodesClone = ListWrapper.createGrowableSize(cNodes.length);
+      for (let i = 0; i < cNodes.length; i++) {
+        let childNode = cNodes[i];
+        let childNodeClone = childNode.clone();
         cNodesClone[i] = childNodeClone;
         if (i > 0) {
           childNodeClone.prev = cNodesClone[i - 1];
@@ -97,49 +233,51 @@ export class JsonElement {
     return nodeClone;
   }
 
-  querySelector(el, selector: string): any { return this.querySelectorAll(el, selector)[0]; }
+  querySelector(selector: string): any { return this.querySelectorAll(selector)[0]; }
 
-  querySelectorAll(el, selector: string): List<any> {
+  querySelectorAll(selector: string): List<any> {
     var res = [];
     var _recursive = (result, node, selector, matcher) => {
-      var cNodes = node.children;
+      let cNodes = node.children;
       if (cNodes && cNodes.length > 0) {
-        for (var i = 0; i < cNodes.length; i++) {
-          var childNode = cNodes[i];
-          if (this.elementMatches(childNode, selector, matcher)) {
+        for (let i = 0; i < cNodes.length; i++) {
+          let childNode = cNodes[i];
+          if (childNode.elementMatches(selector, matcher)) {
             result.push(childNode);
           }
           _recursive(result, childNode, selector, matcher);
         }
       }
     };
-    var matcher = new SelectorMatcher();
+    let matcher = new SelectorMatcher();
     matcher.addSelectables(CssSelector.parse(selector));
-    _recursive(res, el, selector, matcher);
+    _recursive(res, this, selector, matcher);
     return res;
   }
 
-  elementMatches(node, selector: string, matcher = null): boolean {
+  elementMatches(selector: string, matcher = null): boolean {
+    let node = this;
     var result = false;
-    if (selector && selector.charAt(0) == "#") {
-      result = this.getAttribute(node, 'id') == selector.substring(1);
-    } else if (selector) {
-      var result = false;
+    if (isPresent(selector) && selector.charAt(0) === '#') {
+      result = this.getAttribute('id') === selector.substring(1);
+    } else if (isPresent(selector)) {
+      result = false;
       if (matcher == null) {
         matcher = new SelectorMatcher();
         matcher.addSelectables(CssSelector.parse(selector));
       }
 
       var cssSelector = new CssSelector();
-      cssSelector.setElement(this.tagName(node));
-      if (node.attribs) {
-        for (var attrName in node.attribs) {
-          cssSelector.addAttribute(attrName, node.attribs[attrName]);
+      cssSelector.setElement(node.tagName);
+      if (isPresent(node.attribs)) {
+        for (let attrName in node.attribs) {
+          if (StringMapWrapper.contains(node.attribs, attrName)) {
+            cssSelector.addAttribute(attrName, node.attribs[attrName]);
+          }
         }
       }
-      var classList = this.classList(node);
-      for (var i = 0; i < classList.length; i++) {
-        cssSelector.addClassName(classList[i]);
+      for (let i = 0; i < this.classList.length; i++) {
+        cssSelector.addClassName(this.classList[i]);
       }
 
       matcher.match(cssSelector, function(selector, cb) { result = true; });
@@ -152,38 +290,123 @@ export class JsonElement {
   }
 
   getAttribute(attribute: string): string {
-    return this.attribs && this.attribs.hasOwnProperty(attribute) ?
+    return isPresent(this.attribs) && this.attribs.hasOwnProperty(attribute) ?
                this.attribs[attribute] :
                null;
   }
-  setAttribute(element, attribute: string, value: string) {
-    if (attribute) {
-      element.attribs[attribute] = value;
+  setAttribute(attribute: string, value: string = null) {
+    if (isPresent(attribute)) {
+      this.attribs[attribute] = value;
     }
   }
-
+  removeAttribute(attribute: string) {
+    if (isPresent(attribute)) {
+      this.attribs[attribute] = null;
+    }
+  }
   appendChild(node) {
     node.remove();
     DOM.templateAwareRoot(this).children.push(node);
     node.parent = DOM.templateAwareRoot(this);
   }
   getElementsByClassName(element, name: string): List<HTMLElement> {
-    return this.querySelectorAll(element, "." + name);
+    return this.querySelectorAll('.' + name);
   }
 
   hasClass(element, classname: string): boolean {
     return ListWrapper.contains(this.classList, classname);
   }
+  on(evt, listener) {
+    var listenersMap = this._eventListenersMap;
 
-  get firstChild() {
-    var children = this.children;
-    return children && children[0] || null;
+    if (isBlank(listenersMap)) {
+      listenersMap = StringMapWrapper.create();
+      this._eventListenersMap = listenersMap;
+    }
+
+    var listeners = StringMapWrapper.get(listenersMap, evt);
+    if (isBlank(listeners)) {
+      listeners = [];
+    }
+    listeners.push(listener);
+    StringMapWrapper.set(listenersMap, evt, listeners);
+  }
+  onAndCancel(evt, listener): Function {
+    this.on(evt, listener);
+    return () => {
+      ListWrapper.remove(StringMapWrapper.get(this._eventListenersMap, evt), listener);
+    };
+  }
+  dispatchEvent(evt) {
+    if (isBlank(evt.target)) {
+      evt.target = this;
+    }
+    if (isPresent(this._eventListenersMap)) {
+      var listeners: any = StringMapWrapper.get(this._eventListenersMap, evt.type);
+      if (isPresent(listeners)) {
+        for (let i = 0; i < listeners.length; i++) {
+          listeners[i](evt);
+        }
+      }
+    }
+    if (isPresent(this.parent)) {
+      this.parent.dispatchEvent(evt);
+    }
+
+    if (isPresent(this._window)) {
+      DOM.dispatchEvent((<any>DOM).defaultDoc()._window, evt);
+    }
   }
 
-  get lastChild() {
-    var children = this.children;
-    return children && children[children.length - 1] || null;
+  _readStyleAttribute() {
+    var styleMap = {};
+    var attributes = this.attribs;
+    if (isPresent(attributes) && attributes.hasOwnProperty("style")) {
+      var styleAttrValue = attributes['style'];
+      var styleList = styleAttrValue.split(/;+/g);
+      for (let i = 0; i < styleList.length; i++) {
+        if (styleList[i].length > 0) {
+          let elems = styleList[i].split(/:+/g);
+          styleMap[elems[0].trim()] = elems[1].trim();
+        }
+      }
+    }
+    return styleMap;
   }
-
+  _writeStyleAttribute(styleMap) {
+    var styleAttrValue = '';
+    for (let key in styleMap) {
+      var newValue = styleMap[key];
+      if (isPresent(newValue) && newValue.length > 0) {
+        styleAttrValue += key + ':' + styleMap[key] + ';';
+      }
+    }
+    this.attribs['style'] = styleAttrValue;
+  }
 }
+
+var nodePropertyShorthands = {
+    tagName: 'name',
+    childNodes: 'children',
+    parentNode: 'parent',
+    parentElement: 'parent',
+    previousSibling: 'prev',
+    nextSibling: 'next',
+    nodeValue: 'data'
+};
+
+Object.keys(nodePropertyShorthands).forEach(function (key) {
+  var shorthand = nodePropertyShorthands[key];
+
+  Object.defineProperty(JsonElement.prototype, key, {
+    get: function () {
+      return this[shorthand] || null;
+    },
+    set: function (val) {
+      this[shorthand] = val;
+      return val;
+    }
+  });
+});
+
 

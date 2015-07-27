@@ -31,35 +31,34 @@ export class JsonView {
               public boundElements: Element[]) {}
 
   setElementProperty(elementIndex: number, propertyName: string, value: any) {
-    DOM.setProperty(this.boundElements[elementIndex], propertyName, value);
+    let element = this.boundElements[elementIndex];
+    DOM.setProperty(element, propertyName, value);
+    // element.setProperty(propertyName, value);
   }
 
   setElementAttribute(elementIndex: number, attributeName: string, value: string) {
-
     var dashCasedAttributeName = camelCaseToDashCase(attributeName);
 
     var element = this.boundElements[elementIndex];
     if (isPresent(value)) {
-      this.attrs[attributeName] = value;
-      this.attrsDash[dashCasedAttributeName] = value;
-
+      // element.setAttribute(dashCasedAttributeName, stringify(value));
       DOM.setAttribute(element, dashCasedAttributeName, stringify(value));
     } else {
-      this.attrs[attributeName] = null;
-      this.attrsDash[dashCasedAttributeName] = null;
-
       DOM.removeAttribute(element, dashCasedAttributeName);
+      // element.removeAttribute(dashCasedAttributeName);
     }
   }
 
 
   setElementClass(elementIndex: number, className: string, isAdd: boolean) {
-    var element = this.boundElements[elementIndex];
     var dashCasedClassName = camelCaseToDashCase(className);
 
-    if (isAdd) {
+    var element = this.boundElements[elementIndex];
+    if (isAdd === true) {
+      // element.addClass(dashCasedClassName);
       DOM.addClass(element, dashCasedClassName);
     } else {
+      // element.removeClass(dashCasedClassName);
       DOM.removeClass(element, dashCasedClassName);
     }
   }
@@ -80,7 +79,8 @@ export class JsonView {
   }
 
   setText(textIndex: number, value: string) {
-    DOM.setText(this.boundTextNodes[textIndex], value);
+    let element = this.boundTextNodes[textIndex];
+    DOM.setText(element, value);
   }
 
   dispatchEvent(elementIndex: number, eventName: string, event: Event): boolean {
