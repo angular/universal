@@ -53,3 +53,6 @@ node_modules
 # Typings
 /typings
 /tsd_typings
+
+# Webpack build output
+__build__

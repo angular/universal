@@ -73,6 +73,8 @@
     "serve-static": "^1.10.0",
     "tsd": "^0.6.3",
     "typescript": "^1.5.3",
+    "typescript-simple-loader": "^0.3.3",
+    "webpack": "^1.10.5",
     "yargs": "^3.14.0",
     "zone.js": "^0.5.2"
   },
