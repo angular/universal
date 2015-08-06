@@ -1,3 +1,6 @@
+/// <reference path="../../typings/node/node.d.ts"/>
+'use strict';
+
 /**
  * Run webserver to try out examples
  */
