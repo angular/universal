@@ -6,7 +6,7 @@ module.exports = function (gulp) {
     
     // build a version of preboot to examples so we can do manual tests and karma unit tests
     preboot: function () {
-      var preboot = require('../dist/preboot/server');
+      var preboot = require('../dist/modules/preboot/server');
       return preboot.getClientCodeStream({
         appRoot:  'app',         // selector for root element
         freeze:   'spinner',     // show spinner w button click & freeze page
@@ -16,7 +16,7 @@ module.exports = function (gulp) {
         uglify:   false,
         presets:  ['keyPress', 'buttonPress', 'focus']
       })
-      .pipe(gulp.dest('./modules/examples/preboot/src')); 
+      .pipe(gulp.dest('./examples/preboot/src')); 
     },
     '': ['build.preboot']
   };

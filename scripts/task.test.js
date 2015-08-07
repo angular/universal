@@ -20,15 +20,15 @@ module.exports = function (gulp, opts) {
         singleRun: !opts.watch,
         autoWatch: !!opts.watch,
         files: [
-          'modules/examples/preboot/src/preboot.js',
-          'dist/examples/preboot/test/*.js'
+          'examples/preboot/src/preboot.js',
+          'examples/preboot/test/preboot_spec.js'
         ]
       };
 
       // add coverage reporter and preprocessor if param set at command line
       if (opts.cov) {
         karmaConfig.reporters.push('coverage');
-        karmaConfig.preprocessors['modules/examples/preboot/src/preboot.js'] = 'coverage';
+        karmaConfig.preprocessors['examples/preboot/src/preboot.js'] = 'coverage';
       }
 
       karma.start(karmaConfig, function () { done(); });
@@ -36,7 +36,7 @@ module.exports = function (gulp, opts) {
     
     // server side unit tests for preboot using jasmine
     unit: function () {
-      return gulp.src('dist/preboot/**/*_spec.js')
+      return gulp.src('examples/preboot/test/preboot_spec.js')
         .pipe(jasmine({
           reporter: new reporters.TerminalReporter({
             verbose: 3,
