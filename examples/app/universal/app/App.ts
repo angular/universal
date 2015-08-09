@@ -11,7 +11,7 @@ function transformData(data) {
 @Component({
   selector: 'app',
   lifecycle: [ (<any>LifecycleEvent).onInit ],
-  bindings: [ httpInjectables ]
+  bindings: [ ]
 })
 @View({
   directives: [ coreDirectives ],
@@ -89,25 +89,30 @@ export class App {
     this.addItem();
     this.addItem();
 
-    var todosObs = this.http.get('/api/todos').
-      toRx().
-      filter(res => res.status >= 200 && res.status < 300).
-      map(res => res.json()).
-      map(data => data.map(transformData));
+    try {
 
-    todosObs.subscribe(
-      todos => {
-        console.log('next', todos);
-        todos.map(this.addItem.bind(this));
-      },
-      err => {
-        console.error('err', err);
-        throw err;
-      },
-      complete => {
-        console.log('complete', complete);
-      }
-    );
+      var todosObs = this.http.get('/api/todos').
+        toRx().
+        filter(res => res.status >= 200 && res.status < 300).
+        map(res => res.json()).
+        map(data => data.map(transformData));
+
+      todosObs.subscribe(
+        todos => {
+          console.log('next', todos);
+          todos.map(this.addItem.bind(this));
+        },
+        err => {
+          console.error('err', err);
+          throw err;
+        },
+        complete => {
+          console.log('complete', complete);
+        }
+      );
+    } catch(e) {
+      console.log('this.http Error', e && e.stack || e)
+    }
 
   }
 
