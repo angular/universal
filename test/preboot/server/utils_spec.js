@@ -1,4 +1,4 @@
-var utils_1 = require('../../../dist/preboot/src/server/utils');
+var utils_1 = require('../../../dist/modules/preboot/src/server/utils');
 /* tslint:disable:eofline no-trailing-whitespace */
 /**
  * No downstream deps for utils, so easy to test

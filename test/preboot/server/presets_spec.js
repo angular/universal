@@ -1,4 +1,4 @@
-var presets_1 = require('../../../dist/preboot/src/server/presets');
+var presets_1 = require('../../../dist/modules/preboot/src/server/presets');
 /**
  * These tests are pretty basic, but just have something in
  * place that we can expand in the future

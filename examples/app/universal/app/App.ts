@@ -89,25 +89,25 @@ export class App {
     this.addItem();
     this.addItem();
 
-    // var todosObs = this.http.get('/api/todos').
-    //   toRx().
-    //   filter(res => res.status >= 200 && res.status < 300).
-    //   map(res => res.json()).
-    //   map(data => data.map(transformData));
+    var todosObs = this.http.get('/api/todos').
+      toRx().
+      filter(res => res.status >= 200 && res.status < 300).
+      map(res => res.json()).
+      map(data => data.map(transformData));
 
-    // todosObs.subscribe(
-    //   todos => {
-    //     console.log('next', todos);
-    //     todos.map(this.addItem.bind(this));
-    //   },
-    //   err => {
-    //     console.error('err', err);
-    //     throw err;
-    //   },
-    //   complete => {
-    //     console.log('complete', complete);
-    //   }
-    // );
+    todosObs.subscribe(
+      todos => {
+        console.log('next', todos);
+        todos.map(this.addItem.bind(this));
+      },
+      err => {
+        console.error('err', err);
+        throw err;
+      },
+      complete => {
+        console.log('complete', complete);
+      }
+    );
 
   }
 

@@ -18,7 +18,7 @@ var server = require('./dist/examples/app/server/server')(__dirname);
 http.createServer(server).listen(port, function() {
   console.log('Listening on port: ' + port);
 
-  /*
+  
   // for smoke testing
 
   var req = http.get({
@@ -36,7 +36,7 @@ http.createServer(server).listen(port, function() {
       bodyChunks.push(chunk);
     }).on('end', function() {
       var body = Buffer.concat(bodyChunks);
-      console.log('GOOD');
+      console.log('GOOD' /*, body.toString()*/ );
       // ...and/or process the entire body here.
     })
   });
@@ -45,7 +45,7 @@ http.createServer(server).listen(port, function() {
     console.log('ERROR: ' + e.message);
   });
 
-  */
+  
 
 });
 /*

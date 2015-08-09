@@ -1,5 +1,11 @@
 /// <reference path="../typings/tsd.d.ts" />
+
+// FIX: reflect-metadata shim is required when using class decorators
+import 'reflect-metadata';
+//
+
 import {BrowserXhr} from 'angular2/src/http/backends/browser_xhr';
+import {ServerXhr} from './backends/server_xhr';
 
 import {bind, Injectable} from 'angular2/di';
 
@@ -13,13 +19,6 @@ import {
   MockBackend
 } from 'angular2/http';
 
-
-function logging(type) {
-  return function(...args) {
-    console.log('logging ', type, ':', ...args);
-  };
-}
-
 @Injectable()
 export class NodeXhr extends BrowserXhr {
   abort: any;
@@ -29,13 +28,13 @@ export class NodeXhr extends BrowserXhr {
   removeEventListener: any;
   response: any;
   responseText: string;
-  constructor() {
+  constructor(private _serverXHR: ServerXhr) {
     super();
-    this.abort = logging('about');
-    this.send  = logging('send');
-    this.open  = logging('open');
-    this.addEventListener = logging('addEventListener');
-    this.removeEventListener = logging('removeEventListener');
+    this.abort = _serverXHR.abort.bind(this);
+    this.send = _serverXHR.send.bind(this);
+    this.open = _serverXHR.open.bind(this);
+    this.addEventListener = _serverXHR.addEventListener.bind(this);
+    this.removeEventListener = _serverXHR.removeEventListener.bind(this);
   }
   build() {
     return new NodeXhr();
