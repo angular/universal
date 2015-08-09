@@ -52,3 +52,9 @@ export function selectorRegExpFactory(selector: string): RegExp {
 }
 
 
+export function relativeToAbsoluteUrl(relativeUrl: string): string {
+  var _server = require('../../../../index.js').Server;
+  var _addr = _server.address();
+  var _baseUrl = `http://${ _addr.address }:${ _addr.port }`;
+  return _baseUrl + relativeUrl;
+}

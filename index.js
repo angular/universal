@@ -1,3 +1,5 @@
+var serverip = '127.0.0.1'
+
 var port = process.env.PORT    || 3000;
 // var ssl  = process.env.SSLPORT || 4000;
 
@@ -15,7 +17,7 @@ var options = {
 var server = require('./dist/examples/app/server/server')(__dirname);
 
 // Start server
-http.createServer(server).listen(port, function() {
+module.exports.Server = http.createServer(server).listen(port, serverip, function() {
   console.log('Listening on port: ' + port);
 
   
@@ -26,7 +28,7 @@ http.createServer(server).listen(port, function() {
     port: 3000,
     path: '/?server=true&client=false&preboot=false&bootstrap=false'
   }, function(res) {
-    console.log('STATUS: ' + res.statusCode);
+    // console.log('STATUS: ' + res.statusCode);
     // console.log('HEADERS: ' + JSON.stringify(res.headers));
 
     // Buffer the body entirely for processing as a whole.
@@ -36,13 +38,13 @@ http.createServer(server).listen(port, function() {
       bodyChunks.push(chunk);
     }).on('end', function() {
       var body = Buffer.concat(bodyChunks);
-      console.log('GOOD' /*, body.toString()*/ );
+      // console.log('GOOD' /*, body.toString()*/ );
       // ...and/or process the entire body here.
     })
   });
 
   req.on('error', function(e) {
-    console.log('ERROR: ' + e.message);
+    console.error('ERROR: ' + e.message);
   });
 
   

@@ -1,6 +1,6 @@
 /// <reference path="../../../../custom_typings/_custom.d.ts" />
 import {Component, View, LifecycleEvent} from 'angular2/angular2';
-import {Http, httpInjectables} from 'angular2/http';
+import {Http} from 'angular2/http';
 import {coreDirectives} from 'angular2/angular2';
 
 function transformData(data) {
@@ -80,6 +80,7 @@ export class App {
   itemCount: number    = 0;
   buttonTest: string   = '';
   testingInput: string = 'default state on component';
+  
   constructor(private http: Http) {
 
   }
@@ -99,7 +100,6 @@ export class App {
 
       todosObs.subscribe(
         todos => {
-          console.log('next', todos);
           todos.map(this.addItem.bind(this));
         },
         err => {
@@ -107,17 +107,18 @@ export class App {
           throw err;
         },
         complete => {
-          console.log('complete', complete);
+          //console.log('complete', complete);
         }
       );
+      
     } catch(e) {
-      console.log('this.http Error', e && e.stack || e)
+      console.error('this.http Error', e && e.stack || e)
     }
 
   }
 
   log(val) {
-    console.log(val);
+    console.log('App.ts loggin...', val);
   }
 
   toggleNgIf() {

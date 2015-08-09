@@ -5,12 +5,12 @@ import 'reflect-metadata';
 //
 
 import {BrowserXhr} from 'angular2/src/http/backends/browser_xhr';
-// import {ServerXhr} from './backends/server_xhr';
+import {RequestMethodsMap} from 'angular2/src/http/enums';
 
-let XMLHttpRequest = require('xmlhttprequest').XMLHttpRequest;
-// console.log('ServerXhr', ServerXhr)
-
-import {bind, Injectable} from 'angular2/di';
+import {
+  bind, 
+  Injectable
+} from 'angular2/di';
 
 import {
   Http,
@@ -27,16 +27,19 @@ import {
   MockBackend,
   ReadyStates
 } from 'angular2/http';
-import * as Rx from 'rx';
 
-import {EventEmitter, ObservableWrapper} from 'angular2/src/facade/async';
-var obs = new EventEmitter();
-console.log('EventEmitter', obs.toRx)
-import {isPresent, ENUM_INDEX} from 'angular2/src/facade/lang';
+import {
+  EventEmitter, 
+  ObservableWrapper
+} from 'angular2/src/facade/async';
 
-import {RequestMethodsMap} from 'angular2/src/http/enums';
+import {
+  isPresent, 
+  ENUM_INDEX
+} from 'angular2/src/facade/lang';
 
-// @Injectable()
+import { relativeToAbsoluteUrl } from './helper';
+
 class NodeConnection implements Connection {
   request: Request;
   /**
@@ -50,19 +53,16 @@ class NodeConnection implements Connection {
   constructor(req: Request, browserXHR: BrowserXhr, baseResponseOptions?: ResponseOptions) {
     // TODO: get rid of this when enum lookups are available in ts2dart
     // https://github.com/angular/ts2dart/issues/221
-    console.log('NodeConnection', browserXHR.constructor.name);
+    
     var requestMethodsMap = new RequestMethodsMap();
     this.request = req;
-      this.response = new EventEmitter();
-      this._xhr = browserXHR.build();
-
+    this.response = new EventEmitter();
+    this._xhr = browserXHR.build();
 
     // TODO(jeffbcross): implement error listening/propagation
     var _method = requestMethodsMap.getMethod(ENUM_INDEX(req.method));
-    var _baseUrl = 'http://127.0.0.1:3000';
-    console.log('_method', _method);
-    console.log('req.url', req.url)
-    this._xhr.open(_method, _baseUrl + req.url);
+
+    this._xhr.open(_method, relativeToAbsoluteUrl(req.url) );
     this._xhr.addEventListener('load', (_) => {
       // responseText is the old-school way of retrieving response (supported by IE8 & 9)
       // response/responseType properties were introduced in XHR Level2 spec (supported by IE10)
@@ -94,11 +94,10 @@ class NodeConnection implements Connection {
     }
     // var _url = 'http://127.0.0.1:3000/api/todos';
     var _text = this.request.text();
-    console.log('_text', JSON.stringify(_text));
     try {
       this._xhr.send(_text);
     } catch(e) {
-      console.log('this._xhr', e && e.stack || e);
+      console.error('this._xhr', e);
     }
   }
 
@@ -111,13 +110,11 @@ class NodeConnection implements Connection {
 
 @Injectable()
 export class NodeXhr {
-  constructor() {
-  }
+  constructor() {}
   build() {
-    var xhr;
+    let xhr, XMLHttpRequest = require('xhr2');
     try {
       xhr = new XMLHttpRequest();
-      console.log('xhr', xhr.constructor.name);
     } catch(e) {
       console.error('xhr Error', e.stack)
     }
@@ -125,26 +122,19 @@ export class NodeXhr {
   }
 }
 
-// export XHRConnection
-
 @Injectable()
 export class NodeBackend {
   constructor(private _browserXHR: BrowserXhr, private _baseResponseOptions: ResponseOptions) {
   }
   createConnection(request: any) {
-    console.log('request', request.constructor.name)
-    var connection;
+    let connection;
     try {
       connection = new NodeConnection(request, this._browserXHR, this._baseResponseOptions);
-      console.log('!!connection', connection.response)
     } catch(e) {
-      console.log('createConnection', e && e.stack || e);
+      console.error('createConnection', e && e.stack || e);
     }
     return connection;
   }
-  // createConnection(request: any) {
-  //   return new XHRConnection(request, this._browserXHR, this._baseResponseOptions);
-  // }
 }
 
 export var httpInjectables: Array<any> = [
