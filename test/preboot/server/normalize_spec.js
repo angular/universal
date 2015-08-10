@@ -1,4 +1,4 @@
-var normalize_1 = require('../../../dist/preboot/src/server/normalize');
+var normalize_1 = require('../../../dist/modules/preboot/src/server/normalize');
 describe('normalize', function () {
     describe('pauseEvent()', function () {
         it('should verify default', function () {
