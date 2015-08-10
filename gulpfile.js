@@ -1,13 +1,10 @@
-/* jshint node:true */
-
-/// <reference path="../../typings/node/node.d.ts"/>
-'use strict';
-
-// Load deps
+/// <reference path="./tsd_typings/node/node.d.ts"/>
 
 var gulp = require('gulp');
 var path = require('path');
 var http = require('http');
+var source = require('vinyl-source-stream');
+var browserify = require('browserify');
 var fs = require('fs');
 var child_process = require('child_process');
 
@@ -75,7 +72,11 @@ var paths = {
 
   preboot: {
     server: root('/dist/modules/preboot/server'),
-    dest:   root('./examples/preboot_basic')
+    exampleDest: root('/dist/preboot'),
+    karmaEntryPoint: root('/dist/modules/preboot/test/preboot_karma'),
+    karmaDest: root('/dist/karma'),
+    karmaCode: root('/dist/karma/preboot_karma.js'),
+    clientRoot: root('/dist/modules/preboot/src/client')
   },
 
   changelog: {
@@ -85,8 +86,7 @@ var paths = {
   serverIndex : root('/index.js'),
 
   specs: [
-    'dist/**/*_spec.js',
-    'test/preboot/**/*_spec.js'
+    'dist/**/*_spec.js'
   ]
 
 };
@@ -104,9 +104,26 @@ gulp.task('default', function(done){
 
 });
 
-gulp.task('build', ['build.preboot']);
+gulp.task('ci', function(done){
 
-gulp.task('build.preboot', function() {
+  var tasks = [
+    'lint',
+    'karma',
+    // 'protractor'
+  ];
+
+  return $.runSequence(tasks, done);
+
+});
+
+gulp.task('build', [
+  'preboot.example',
+  'preboot.karma',
+  'build.typescript'
+]);
+
+// build version of preboot to be used in a simple example
+gulp.task('preboot.example', function() {
 
   var preboot = require(paths.preboot.server);
 
@@ -118,9 +135,25 @@ gulp.task('build.preboot', function() {
     debug:    true,
     uglify:   false,
     presets:  ['keyPress', 'buttonPress', 'focus']
-  }).
-  pipe($.size()).
-  pipe(gulp.dest(paths.preboot.dest));
+  })
+    .pipe($.size())
+    .pipe(gulp.dest(paths.preboot.exampleDest));
+
+});
+
+// build verison of preboot to be used for karma testing
+gulp.task('preboot.karma', function() {
+
+      var b = browserify({
+        entries: [paths.preboot.karmaEntryPoint],
+        basedir: paths.preboot.clientRoot,
+        browserField: false
+      });
+
+      return b.bundle()
+        .pipe(source('preboot_karma.js'))
+        .pipe(gulp.dest(paths.preboot.karmaDest));
+
 });
 
 gulp.task('build.typescript', ['build.typescript.project']);
@@ -178,18 +211,39 @@ gulp.task('jasmine', function() {
     color: true
   });
 
+  var SpecReporter = require('jasmine-spec-reporter');
+  var specReporter = new SpecReporter();
+
   return gulp.src(paths.specs).
     pipe($.jasmine({
-      reporter: terminalReporter
+      verbose: true,
+      includeStackTrace: true,
+      reporter: specReporter
     }));
 
 });
 
-gulp.task('karma', function(done){
+gulp.task('karma', ['karma.preboot']);
+
+gulp.task('karma.preboot', function(done){
 
   var karma = new $.karma.Server({
-    configFile: paths.config.karma,
-    singleRun: true
+    port: 9201,
+    runnerPort: 9301,
+    captureTimeout: 20000,
+    growl: true,
+    colors: true,
+    browsers: ['PhantomJS'],
+    reporters: ['progress'],
+    plugins: [
+      'karma-jasmine',
+      'karma-phantomjs-launcher',
+      'karma-chrome-launcher'
+    ],
+    frameworks: ['jasmine'],
+    singleRun: true,
+    autoWatch: false,
+    files: [paths.preboot.karmaCode]
   }, done);
 
   return karma.start();
@@ -225,22 +279,15 @@ gulp.task('protractor.update', function(done){
 gulp.task('lint', function() {
 
   return gulp.src(paths.files.ts).
-    pipe($.tslint())
+    pipe($.tslint()).
     pipe($.tslint.report('verbose'));
 
 });
 
-// @todo figure out what "play" should do!
-gulp.task('play', ['!browser-sync'], function() {
+gulp.task('watch', function(){
 
-  //$.opn('http://'+serverip+':' + serverport + '/');
-
-});
-
-// @todo figure out what "play.preboot" should do!
-gulp.task('play.preboot', ['!browser-sync'], function() {
-
-  //$.opn('http://'+serverip+':' + serverport + '/preboot_basic/preboot.html');
+  gulp.watch(paths.files.ts, ['build.typescript.all']);
+  gulp.watch(paths.specs, ['jasmine']);
 
 });
 
@@ -262,7 +309,7 @@ gulp.task('!browser-sync', function() {
     watchOptions: {
       ignored: ['*.js.map', '*_spec.js']
     },
-    port: 3002,
+    port: 3000,
     host: serverip
   });
 
@@ -272,9 +319,11 @@ gulp.task('!browser-sync', function() {
 // "serve" defaults to nodemon for the moment.
 gulp.task('serve', ['!serve.nodemon']);
 
-gulp.task('!serve.nodemon', function() {
+gulp.task('!serve.nodemon', ['watch'], function() {
 
   $.livereload.listen();
+
+  $.opn('http://'+serverip+':' + serverport + '/');
 
   // TODO: refactor config to configuration section
   return $.nodemon({
@@ -283,17 +332,46 @@ gulp.task('!serve.nodemon', function() {
     ext: 'js ts html',
     ignore: ['\\.git', 'node_modules', '*.js.map', '*_spec.js', 'angular']
   }).
-  //on('change', ['serve:watch']).
   on('restart', function() {
     gulp.src('index.js').pipe($.livereload());
       // .pipe($.notify('Reloading page, please wait...'));
   });
 });
 
+// todo: refactor to better fit in with rest of gulp script
+gulp.task('serve.preboot', function() {
 
+  var express = require('express');
+  var livereload = require('connect-livereload');
+  var reloader = require('gulp-livereload');
+  var serveStatic = require('serve-index');
+  var serveIndex = require('serve-static');
+  var exec = require('child_process').exec;
+  var open = require('open');
+  var server = express();
+  var livereloadport = 35729;
+  var serverport = 3000;
 
+  server.use(livereload({
+    port: livereloadport
+  }));
 
+  server.use('/', serveStatic('dist/preboot'));
+  server.use('/', serveStatic('examples'));
+  server.use('/', serveIndex('examples'));
 
+  server.listen(serverport);
+  reloader.listen({
+    port: livereloadport,
+    reloadPage: '/preboot/preboot.html'
+  });
+  open('http://localhost:3000/preboot/preboot.html');
 
+  exec('tsc -w');
+  gulp.watch('dist/**/*', ['build']);
+  gulp.watch('examples/**/*', function () {
+    reloader.reload();
+  });
 
+});
 
