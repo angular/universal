@@ -203,6 +203,8 @@ gulp.task('debug', function() {
 
 });
 
+gulp.task('test', ['jasmine', 'karma']);
+
 gulp.task('jasmine', function() {
 
   var terminalReporter = new $.jasmineReporters.TerminalReporter({
@@ -344,8 +346,7 @@ gulp.task('serve.preboot', function() {
   var express = require('express');
   var livereload = require('connect-livereload');
   var reloader = require('gulp-livereload');
-  var serveStatic = require('serve-index');
-  var serveIndex = require('serve-static');
+  var serveStatic = require('serve-static');
   var exec = require('child_process').exec;
   var open = require('open');
   var server = express();
@@ -355,10 +356,9 @@ gulp.task('serve.preboot', function() {
   server.use(livereload({
     port: livereloadport
   }));
-
-  server.use('/', serveStatic('dist/preboot'));
-  server.use('/', serveStatic('examples'));
-  server.use('/', serveIndex('examples'));
+  
+  server.use(serveStatic('dist'));
+  server.use(serveStatic('examples'));
 
   server.listen(serverport);
   reloader.listen({

@@ -131,6 +131,50 @@ export function removeNode(node: Element) {
 }
 
 /**
+ * Get the caret position within a given node. Some hackery in
+ * here to make sure this works in all browsers
+ */
+export function getCaretPosition(node: Element) {
+ 
+  // if nothing passed in, put caret at front 
+  if (!node) {
+    return 0;
+    
+    // else if browser supports document.selection (IE)
+  } else if (state.document.selection) {
+    node.focus();
+    var oSel = state.document.selection.createRange();
+    oSel.moveStart('character', -node.value.length);
+    return oSel.text.length;
+
+  // else if browser support selectionStart on node (Chrome, FireFox)
+  } else if (node.selectionStart || node.selectionStart === 0) {
+    return parseInt(node.selectionStart + '', 10);
+
+  // else if nothing else, just put caret at the end of the text      
+  } else {
+    return (node.value && node.value.length) || 0;
+  }
+}
+
+/**
+ * Set caret position in a given node
+ */
+export function setCaretPosition(node: Element, caretPosition: number) {
+  if (!node) { return; }
+
+  caretPosition = caretPosition || 0;  
+  node.focus();
+  if (node.createTextRange) {
+    var range = node.createTextRange();
+    range.move('character', caretPosition);
+    range.select();
+  } else if (node.setSelectionRange) {
+    node.setSelectionRange(caretPosition, caretPosition);
+  }
+}
+
+/**
  * Get a unique key for a node in the DOM
  */
 export function getNodeKey(node: Element, rootNode: Element): string {
