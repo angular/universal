@@ -104,7 +104,23 @@ gulp.task('default', function(done){
 
 });
 
-gulp.task('build', ['preboot.example', 'preboot.karma']);
+gulp.task('ci', function(done){
+
+  var tasks = [
+    'lint',
+    'karma',
+    // 'protractor'
+  ];
+
+  return $.runSequence(tasks, done);
+
+});
+
+gulp.task('build', [
+  'preboot.example',
+  'preboot.karma',
+  'build.typescript'
+]);
 
 // build version of preboot to be used in a simple example
 gulp.task('preboot.example', function() {
@@ -122,7 +138,7 @@ gulp.task('preboot.example', function() {
   })
     .pipe($.size())
     .pipe(gulp.dest(paths.preboot.exampleDest));
-  
+
 });
 
 // build verison of preboot to be used for karma testing
@@ -133,11 +149,11 @@ gulp.task('preboot.karma', function() {
         basedir: paths.preboot.clientRoot,
         browserField: false
       });
-      
+
       return b.bundle()
         .pipe(source('preboot_karma.js'))
         .pipe(gulp.dest(paths.preboot.karmaDest));
-  
+
 });
 
 gulp.task('build.typescript', ['build.typescript.project']);
@@ -334,7 +350,7 @@ gulp.task('serve.preboot', function() {
   var server = express();
   var livereloadport = 35729;
   var serverport = 3000;
-  
+
   server.use(livereload({
     port: livereloadport
   }));
@@ -348,12 +364,12 @@ gulp.task('serve.preboot', function() {
     reloadPage: '/preboot/preboot.html'
   });
   open('http://localhost:3000/preboot/preboot.html');
-  
+
   exec('tsc -w');
   gulp.watch('dist/**/*', ['build']);
   gulp.watch('examples/**/*', function () {
     reloader.reload();
   });
-  
+
 });
 
