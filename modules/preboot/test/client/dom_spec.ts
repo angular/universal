@@ -155,6 +155,109 @@ describe('dom', function () {
     });
   });
   
+  describe('getCaretPosition', function() {
+    it('should return zero if nothing passed in', function() {
+      expect(dom.getCaretPosition(null)).toEqual(0);
+    });
+    
+    it('should return the length of the node text if nothing else', function() {
+      let node = { focus: function() { }, value: 'booyeah' };
+
+      dom.state.document = {};
+      
+      let expected = 7;
+      let actual = dom.getCaretPosition(node);
+      expect(actual).toEqual(expected);
+    });
+    
+    it('should return if document.selection exists', function() {
+      let node = { focus: function() {}, value: 'boo' };
+      let oSel = {
+        moveStart: function() { },
+        text: 'bo'
+      };
+      let document = {
+        selection: {
+          createRange: function() {
+            return oSel;
+          }
+        }
+      };
+      
+      dom.state.document = document;
+      
+      spyOn(node, 'focus');
+      spyOn(document.selection, 'createRange').and.callThrough();
+      
+      let expected = 2;
+      let actual = dom.getCaretPosition(node);
+      expect(actual).toEqual(expected);
+      expect(node.focus).toHaveBeenCalled();
+      expect(document.selection.createRange).toHaveBeenCalled();
+    });
+    
+    it('should return if node.selectionStart exists', function() {
+      let selectionStart = 1;
+      let node = { value: 'boo', selectionStart: selectionStart };
+      let oSel = {
+        moveStart: function() { },
+        text: 'bo'
+      };
+      
+      dom.state.document = {};
+      
+      let expected = selectionStart;
+      let actual = dom.getCaretPosition(node);
+      expect(actual).toEqual(expected);
+    });
+  });
+  
+  describe('setCaretPosition()', function() {
+    it('should do nothing if no node passed in', function() {
+      dom.setCaretPosition(null, 0);
+    });
+    
+    it('should use createTextRange on node if available', function() {
+      let range = {
+        move: function() { },
+        select: function() { }
+      }
+      let node = { 
+        focus: function() { }, 
+        createTextRange: function() {
+          return range;
+        }
+      };
+      let caretPosition = 4;
+      
+      spyOn(node, 'focus');
+      spyOn(node, 'createTextRange').and.callThrough();
+      spyOn(range, 'move');
+      spyOn(range, 'select');
+      
+      dom.setCaretPosition(node, caretPosition);
+      expect(node.focus).toHaveBeenCalled();
+      expect(node.createTextRange).toHaveBeenCalled();
+      expect(range.move).toHaveBeenCalledWith('character', caretPosition);
+      expect(range.select).toHaveBeenCalled();
+    });
+    
+    it('should use setSelectionRange on node if available', function() {
+      let node = { 
+        focus: function() { }, 
+        setSelectionRange: function() {}
+      };
+      let caretPosition = 4;
+      
+      spyOn(node, 'focus');
+      spyOn(node, 'setSelectionRange');
+      
+      dom.setCaretPosition(node, caretPosition);
+      expect(node.focus).toHaveBeenCalled();
+      expect(node.setSelectionRange).toHaveBeenCalledWith(caretPosition, caretPosition);
+    });
+  });
+  
   describe('node tree fns', function () {
     
     // this is used to help with the testing of this function

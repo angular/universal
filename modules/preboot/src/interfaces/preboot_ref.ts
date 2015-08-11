@@ -27,6 +27,8 @@ interface Dom {
   addNodeToBody?(type: string, className: string, styles: Object);
   removeNode?(node: Element);
   findClientNode?(serverNode: Element): Element;
+  getCaretPosition?(node: Element): number;
+  setCaretPosition?(node: Element, caretPosition: number);
 }
 
 // interface for preboot modules available to strategies
@@ -35,4 +37,5 @@ export interface PrebootRef {
   log?: Function;
   activeNode?: any;
   time?: number;
+  caretPosition?: number;
 }

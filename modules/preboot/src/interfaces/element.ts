@@ -10,6 +10,10 @@ export interface Element {
   tagName?: string;
   nodeName?: string;
   className?: string;
+  selectionStart?: number;
+  selection?: any;
+  createTextRange?(): any;
+  setSelectionRange?(fromPos: number, toPos: number);
   style?: Style;
   parentNode?: Element;
   childNodes?: Element[];
