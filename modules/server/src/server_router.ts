@@ -8,7 +8,7 @@ import {MockLocationStrategy} from 'angular2/src/mock/mock_location_strategy';
 class MockServerHistory implements History {
   length: number;
   state: any;
-  constructor(){/*TODO*/}
+  constructor () {/*TODO*/}
   back(distance?: any): void {/*TODO*/}
   forward(distance?: any): void {/*TODO*/}
   go(delta?: any): void {/*TODO*/}
@@ -26,7 +26,7 @@ class MockServerLocation implements Location {
   port: string;
   protocol: string;
   search: string;
-  constructor(){/*TODO*/}
+  constructor () {/*TODO*/}
   assign(url: string): void {/*TODO*/}
   reload(forcedReload?: boolean): void {/*TODO*/}
   replace(url: string): void {/*TODO*/}
