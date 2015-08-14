@@ -18,10 +18,10 @@ import {DOM} from 'angular2/src/dom/dom_adapter';
 import {DirectiveResolver} from 'angular2/core';
 import {bind} from 'angular2/di';
 import {
-  DOCUMENT_TOKEN,
+  DOCUMENT,
   DOM_REFLECT_PROPERTIES_AS_ATTRIBUTES
 } from 'angular2/src/render/render';
-import {appComponentTypeToken} from 'angular2/src/core/application_tokens';
+import {APP_COMPONENT} from 'angular2/src/core/application_tokens';
 
 // TODO: maintain stateless Injector/document and directiveResolver
 var serverInjector = undefined; // js defaults only work with undefined
@@ -31,6 +31,7 @@ export var serverDirectiveResolver = new DirectiveResolver();
 export function selectorResolver(Component): string {
   return serverDirectiveResolver.resolve(Component).selector;
 }
+
 
 export function applicationToString(appRef): string {
   // grab parse5 html element or default to the one we provided
@@ -52,9 +53,9 @@ export function bootstrapServer(AppComponent, serverBindings: any = [], serverIn
   }
 
   let renderBindings = [
-    bind(DOCUMENT_TOKEN).toValue(serverDocument),
+    bind(DOCUMENT).toValue(serverDocument),
     bind(DOM_REFLECT_PROPERTIES_AS_ATTRIBUTES).toValue(false),
-    bind(appComponentTypeToken).toValue(AppComponent),
+    bind(APP_COMPONENT).toValue(AppComponent),
     serverDomRendererInjectables
   ].
   concat(serverBindings);
@@ -80,7 +81,12 @@ export function renderToString(AppComponent, serverBindings: any = [], serverDoc
       // change detection
       appRef.changeDetection.detectChanges();
 
-      // serialize html
+      // TODO: we need a better way to manage the style host for server/client
+      // serialize all style hosts
+      let styles = appRef.sharedStylesHost.getAllStyles();
+      let serializedStyleHosts = styles.length >= 1 ? '<style>' + styles.join('\n') + '</style>' : '';
+
+      // serialize Top Level Component
       let serializedCmp = applicationToString(appRef);
 
       // destroy appComponent
@@ -88,7 +94,7 @@ export function renderToString(AppComponent, serverBindings: any = [], serverDoc
       appRef.dispose();
 
       // return rendered version of our serialized component
-      return serializedCmp;
+      return serializedStyleHosts + serializedCmp;
     });
 }
 
