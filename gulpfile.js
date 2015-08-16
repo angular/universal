@@ -335,7 +335,7 @@ gulp.task('nodemon', function() {
     verbose: true,
     script: paths.serverIndex,
     ext: 'js ts html',
-    ignore: ['\\.git', 'node_modules', '*.js.map', '*_spec.js', 'angular']
+    ignore: ['\\.git', 'node_modules', '*.js.map', '*_spec.js', 'angular', '.DS_Store']
   }).
   on('restart', function() {
     gulp.src('index.js').pipe($.livereload());

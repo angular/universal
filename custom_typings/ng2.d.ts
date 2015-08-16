@@ -858,6 +858,7 @@ declare module "angular2/src/facade/lang" {
   class StringWrapper {
     static toLowerCase(str: string): string;
     static toUpperCase(str: string): string;
+    static fromCharCode(code: any): string;
   }
   function print(str: any):any;
   function stringify(str: any):any;
@@ -1254,4 +1255,64 @@ declare module 'angular2/src/mock/mock_location_strategy' {
     back(): void;
   }
 
+}
+
+
+declare module "angular2/src/core/application" {
+  
+  import {Injector} from "angular2/di";
+  import {ComponentRef} from 'angular2/src/core/compiler/dynamic_component_loader';
+  
+  class ApplicationRef {
+    _hostComponent: ComponentRef;
+    _injector: Injector;
+    _hostComponentType: Type;
+    dispose(): void;
+  }
+
+}
+
+declare module "angular2/src/web-workers/worker/application" {
+  
+  import {Binding} from "angular2/di";
+  import {ApplicationRef} from "angular2/src/core/application";
+  
+  function bootstrapWebworker(
+      appComponentType: Type, 
+      componentInjectableBindings: List<Type | Binding | List<any>>): Promise<ApplicationRef>;
+        
+  // FIX: remove this definition when alpha-35 is out (see https://github.com/angular/angular/issues/3658)
+  function bootstrapWebWorker(
+      appComponentType: Type, 
+      componentInjectableBindings: List<Type | Binding | List<any>>): Promise<ApplicationRef>;
+  
+}
+
+declare module "angular2/src/web-workers/ui/application" {
+  
+  import {MessageBus} from "angular2/src/web-workers/shared/message_bus";
+  
+  function bootstrap(uri: string): MessageBus;
+  
+}
+
+// TODO: see ./angular2/src/web-workers/shared/message_bus.ts
+declare module "angular2/src/web-workers/shared/message_bus" {
+    
+  interface MessageBus {
+    sink: MessageBusSink;
+    source: MessageBusSource;
+  }
+  
+  interface SourceListener {
+    (data: any): void;
+  }
+  
+  interface MessageBusSource {
+    addListener(fn: SourceListener): number;
+    removeListener(index: number);
+  }
+  
+  interface MessageBusSink { send(message: Object): void; }
+  
 }
