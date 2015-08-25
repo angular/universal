@@ -87,6 +87,10 @@ var paths = {
 
   specs: [
     'dist/**/*_spec.js'
+  ],
+
+  e2e: [
+    'test/**/*.e2e.js'
   ]
 
 };
@@ -259,7 +263,7 @@ gulp.task('karma.preboot', ['preboot.karma'], function(done){
 
 gulp.task('protractor', function() {
 
-  return gulp.src(paths.specs).
+  return gulp.src(paths.e2e).
     pipe($.protractor.protractor({
       configFile: paths.config.protractor
     })).
@@ -335,7 +339,7 @@ gulp.task('nodemon', function() {
     verbose: true,
     script: paths.serverIndex,
     ext: 'js ts html',
-    ignore: ['\\.git', 'node_modules', '*.js.map', '*_spec.js', 'angular']
+    ignore: ['\\.git', 'node_modules', '*.js.map', '*_spec.js', 'angular', '.DS_Store']
   }).
   on('restart', function() {
     gulp.src('index.js').pipe($.livereload());
@@ -385,15 +389,14 @@ gulp.task('serve.preboot', function() {
   server.listen(serverport);
   reloader.listen({
     port: livereloadport,
-    reloadPage: '/preboot/preboot.html'
+    reloadPage: '/preboot/preboot_example.html'
   });
-  open('http://localhost:3000/preboot/preboot.html');
+  open('http://localhost:3000/preboot/preboot_example.html');
 
   exec('tsc -w');
   gulp.watch('modules/preboot/**/*', ['build']);
   gulp.watch('dist/preboot/preboot.js', function () {
     reloader.reload();
   });
-
+  
 });
-
