@@ -12,10 +12,12 @@ module.exports = function(ROOT) {
 
   var App     = require(universalPath + '/app/App').App;
   var TodoApp = require(universalPath + '/todo/index').TodoApp;
+  var WorkerApp = require(universalPath + '/web_workers/app').WorkerApp;
 
 
   var {
     httpInjectables,
+    webworkersInjectables,
     queryParamsToBoolean
   } = require(ROOT + '/dist/modules/server/server');
   // require('@angular/universal')
@@ -57,6 +59,25 @@ module.exports = function(ROOT) {
 
       res.render('app/universal/todo/index', options);
 
+    });
+    
+  router.
+    route('/examples/web_workers').
+    get(function ngWebWorker(req, res) {
+      let queryParams = queryParamsToBoolean(req.query);
+      let options = Object.assign(queryParams, {
+        // client url for systemjs
+        componentUrl: 'examples/app/universal/web_workers/app',
+
+        Component: WorkerApp,
+        serverBindings: [
+          httpInjectables,
+          webworkersInjectables
+        ],
+        data: {}
+      });
+      
+      res.render('app/universal/web_workers/app', options);
     });
 
 
