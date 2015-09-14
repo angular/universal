@@ -1,7 +1,7 @@
 /// <reference path="../../../../custom_typings/_custom.d.ts" />
 import {Component, View, LifecycleEvent, ViewEncapsulation} from 'angular2/angular2';
 // import {Http} from 'http/http';
-import {CORE_DIRECTIVES} from 'angular2/directives';
+import {CORE_DIRECTIVES} from 'angular2/angular2';
 
 function transformData(data) {
   data.created_at = new Date(data.created_at);
@@ -14,7 +14,7 @@ function transformData(data) {
   bindings: [ ]
 })
 @View({
-  encapsulation: ViewEncapsulation.EMULATED,
+  encapsulation: ViewEncapsulation.Emulated,
   directives: [ CORE_DIRECTIVES ],
   styles: [`
   #intro {
