@@ -1,6 +1,6 @@
 {
   "name": "preboot",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Record and play back client side events",
   "main": "dist/server.js",
   "scripts": {
@@ -37,6 +37,7 @@
     "gulp-rename": "^1.2.2",
     "gulp-uglify": "^1.4.2",
     "q": "^1.4.1",
+    "underscore": "^1.8.3",
     "vinyl-buffer": "^1.0.0",
     "vinyl-source-stream": "^1.1.0"
   }
