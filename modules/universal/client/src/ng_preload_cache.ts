@@ -16,7 +16,7 @@ import {
 } from 'angular2/src/core/facade/lang';
 
 import {
-  bind,
+  provide,
   OpaqueToken,
   Injectable,
   Optional,
@@ -48,7 +48,7 @@ export class NgPreloadCacheHttp extends Http {
         preloaded = newcache.shift();
         if (isPresent(preloaded)) {
           let body = preloaded._body;
-          res = new ResponseOptions(Object.assign({}, preloaded, { body }));
+          res = new ResponseOptions((<any>Object).assign({}, preloaded, { body }));
 
           if (preloaded.headers) {
             res.headers = new Headers(preloaded);
@@ -120,10 +120,11 @@ export class NgPreloadCacheHttp extends Http {
   }
 }
 
-export const NG_PRELOAD_CACHE_BINDINGS = [
-  bind(Http).toFactory(
-    (xhrBackend, requestOptions) => {
+export const NG_PRELOAD_CACHE_PROVIDERS = [
+  provide(Http, {
+    useFactory: (xhrBackend, requestOptions) => {
       return new NgPreloadCacheHttp(xhrBackend, requestOptions);
     },
-    [XHRBackend, RequestOptions])
+    deps: [XHRBackend, RequestOptions]
+  })
 ];
