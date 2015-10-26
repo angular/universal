@@ -60,6 +60,11 @@ export class ServerDomRenderer_ extends DomRenderer_ {
         DOM.setAttribute(element, propertyName, propertyValue);
         return;
       }
+    } else if (propertyName === 'src') {
+      var view = resolveInternalDomView(location.renderView);
+      var element = view.boundElements[location.boundElementIndex];
+      DOM.setAttribute(element, propertyName, propertyValue);
+      return;
     }
     return super.setElementProperty(location, propertyName, propertyValue);
   }
