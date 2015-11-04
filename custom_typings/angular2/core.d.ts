@@ -375,7 +375,7 @@ declare module "angular2/src/core/dom/dom_adapter" {
 
     attrToPropMap:any;
 
-    invoke(element: any, method: any, args: any):any
+    invoke(element: any, method: any, args: any):any;
 
     query(selector:string):any;
 
@@ -651,7 +651,7 @@ declare module "angular2/src/core/facade/async" {
   class Promise<T> {
     static reject(pro:any):any;
     static resolve(pro:any):any;
-    constructor(fn: Function)
+    constructor(fn: Function);
     then(pro:any):any;
 
     all(all:any):any;
@@ -716,7 +716,7 @@ declare module "angular2/src/core/facade/lang" {
 }
 declare module "angular2/src/core/facade/collection" {
   class StringMap {
-    constructor(obj: any)
+    constructor(obj: any);
   }
   interface Predicate<T> { (value: T, index?: number, array?: T[]): boolean; }
   var List:Array<any>;

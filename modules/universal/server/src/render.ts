@@ -1,4 +1,4 @@
-/// <reference path="../typings/tsd.d.ts" />
+/// <reference path="../../../../tsd_typings/tsd.d.ts" />
 
 import {bootstrap} from './core/application';
 // import {Promise} from 'angular2/src/core/facade/async';

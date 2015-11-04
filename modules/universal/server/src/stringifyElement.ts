@@ -1,4 +1,4 @@
-/// <reference path="../typings/tsd.d.ts" />
+/// <reference path="../../../../tsd_typings/tsd.d.ts" />
 
 // dom closure
 import {Parse5DomAdapter} from 'angular2/src/core/dom/parse5_adapter';

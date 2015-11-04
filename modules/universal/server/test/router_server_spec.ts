@@ -1,4 +1,4 @@
-/// <reference path="../typings/tsd.d.ts"/>
+/// <reference path="../../../../tsd_typings/tsd.d.ts"/>
 
 import 'reflect-metadata';
 import {LocationStrategy} from 'angular2/src/core/router/location_strategy';
