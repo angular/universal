@@ -8,7 +8,8 @@ import {
   Injectable,
   Optional,
   Inject,
-  EventEmitter
+  EventEmitter,
+  NgZone
 } from 'angular2/angular2';
 
 import {
@@ -155,7 +156,9 @@ export class NgPreloadCacheHttp extends Http {
   constructor(
     protected _backend: ConnectionBackend,
     protected _defaultOptions: RequestOptions,
-    @Optional() @Inject(PRIME_CACHE) protected prime?: boolean) {
+    @Inject(NgZone) protected _ngZone: NgZone,
+    @Optional() @Inject(PRIME_CACHE) protected prime?: boolean
+    ) {
     super(_backend, _defaultOptions);
 
     var _rootNode = { children: [], res: null };
@@ -178,37 +181,25 @@ export class NgPreloadCacheHttp extends Http {
 
     // We need this to ensure all ajax calls are done before rendering the app
     this._async += 1;
-    let request = factory();
-    ObservableWrapper
-      .subscribe(
-        request,
-        value => {
-          let res = (<any>Object).assign({}, value, {
-            headers: value.headers.values()
-          });
-          if (isPresent(currentNode)) {
-            currentNode.res = res;
-          }
-          ObservableWrapper.callNext(obs, value);
-        },
-        e => {
-          // TODO: update Angular 2 Http
-          setTimeout(() => {
-            this._async -= 1;
-            ObservableWrapper.callThrow(obs, e);
-          });
-        },
-        () => {
-          // TODO: update Angular 2 Http
-          setTimeout(() => {
-            this._activeNode = currentNode;
-            this._async -= 1;
-            ObservableWrapper.callReturn(obs);
-            this._activeNode = null;
-          });
-        });
+    var request = factory();
 
-    return obs;
+    request.subscribe({
+        next: () => {
+
+        },
+        error: () => {
+            this._ngZone.run(() => {
+                setTimeout(() => { this._async -= 1; });
+            });
+        },
+        complete: () => {
+            this._ngZone.run(() => {
+                setTimeout(() => { this._async -= 1; });
+            });
+        }
+    });
+
+    return request;
   }
 
   request(url: string | Request, options?: RequestOptionsArgs): EventEmitter {
