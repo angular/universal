@@ -1,5 +1,3 @@
-/// <reference path="../../../../tsd_typings/tsd.d.ts" />
-
 export function escapeRegExp(str): string {
   return str.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, '\\$&');
 }

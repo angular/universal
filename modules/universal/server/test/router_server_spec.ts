@@ -1,5 +1,3 @@
-/// <reference path="../../../../tsd_typings/tsd.d.ts"/>
-
 import 'reflect-metadata';
 import {LocationStrategy} from 'angular2/src/core/router/location_strategy';
 import {ServerLocationStrategy, SERVER_LOCATION_PROVIDERS} from '../src/router/server_router';
@@ -15,7 +13,7 @@ describe('server_router', () => {
     var serverLocationStrategy: ServerLocationStrategy = null;
 
     beforeAll( () => {
-        serverLocationStrategy = new ServerLocationStrategy();
+        serverLocationStrategy = new ServerLocationStrategy('/');
     });
     afterAll( () => {
         serverLocationStrategy = null;

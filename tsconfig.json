@@ -15,6 +15,7 @@
   },
   "files": [
     "tsd_typings/tsd.d.ts",
+    "custom_typings/_custom.d.ts",
     "modules/index.ts",
     "modules/preboot/client.ts",
     "modules/preboot/server.ts",

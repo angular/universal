@@ -1,5 +1,3 @@
-/// <reference path="../../../../../tsd_typings/tsd.d.ts" />
-
 import * as nodeUrl from 'url';
 import {Injectable, Inject, provide} from 'angular2/angular2';
 import {LocationStrategy} from 'angular2/router';

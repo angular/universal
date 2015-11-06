@@ -1,5 +1,3 @@
-/// <reference path="../../../../tsd_typings/tsd.d.ts" />
-
 import {bootstrap} from './core/application';
 // import {Promise} from 'angular2/src/core/facade/async';
 import {SERVER_DOM_RENDERER_PROVIDERS} from './render/server_dom_renderer';

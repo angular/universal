@@ -1,5 +1,3 @@
-/// <reference path="../../../../../tsd_typings/tsd.d.ts" />
-
 import '../server_patch';
 
 import {

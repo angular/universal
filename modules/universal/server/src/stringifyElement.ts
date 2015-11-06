@@ -1,5 +1,3 @@
-/// <reference path="../../../../tsd_typings/tsd.d.ts" />
-
 // dom closure
 import {Parse5DomAdapter} from 'angular2/src/core/dom/parse5_adapter';
 Parse5DomAdapter.makeCurrent();
