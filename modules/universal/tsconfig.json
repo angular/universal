@@ -19,6 +19,7 @@
   ],
   "files": [
     "../../tsd_typings/tsd.d.ts",
+    "../../custom_typings/_custom.d.ts",
     "universal.d.ts",
     "server/index.ts",
     "server/server.ts",
@@ -37,7 +38,6 @@
     "server/src/server_patch.ts",
     "server/src/stringifyElement.ts",
     "server/test/router_server_spec.ts",
-    "server/typings/tsd.d.ts",
     "client/index.ts",
     "client/client.ts",
     "client/src/ng_preload_cache.ts",
