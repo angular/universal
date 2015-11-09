@@ -195,7 +195,7 @@ export class PlatformRef_ extends PlatformRef {
         exceptionHandler = injector.get(ExceptionHandler);
         zone.overrideOnErrorHandler((e, s) => exceptionHandler.call(e, s));
       } catch (e) {
-        console.log('WAT')
+        console.log('WAT');
         if (isPresent(exceptionHandler)) {
           exceptionHandler.call(e, e.stack);
         } else {
