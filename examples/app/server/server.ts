@@ -7,26 +7,27 @@ var path = require('path');
 
 module.exports = function(ROOT) {
   var app = express();
-  var ng2Engine = require(ROOT + '/dist/modules/server/server').ng2engine;
+  var universal = require(ROOT + '/dist/modules/universal/server');
   // rendering engine
 
-  app.engine('ng2.html', ng2Engine);
+  app.engine('ng2.html', universal.ng2engineWithPreboot);
   app.set('views', path.join(ROOT, 'examples'));
   app.set('view engine', 'ng2.html');
   app.set('view options', { doctype: 'html' });
 
-  var routes = require('./routes')(ROOT);
-  var api = require('./api')(ROOT);
+  var routes = require('./routes');
+  var api = require('./api');
 
 
   app.use(serveStatic(ROOT + '/dist'));
   app.use(serveStatic(ROOT + '/examples/app/public'));
 
-  app.use('/api', api);
-  app.use(routes);
+  app.use('/api', api(ROOT));
+  app.use(routes(ROOT));
 
 
   app.use(morgan('dev'));
+
   app.get('*', function(req, res) {
     res.json({
       'route': 'Sorry this page does not exist!'

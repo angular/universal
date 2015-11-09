@@ -1,6 +1,6 @@
 
 exports.config = {
-  baseUrl: 'http://localhost:3000/examples',
+  baseUrl: 'http://localhost:3000',
 
   specs: [
     'test/*.e2e.js'
@@ -31,7 +31,7 @@ exports.config = {
   },
 
   // https://github.com/mllrsohn/gulp-protractor#protractor-webdriver
-  seleniumServerJar: './node_modules/protractor/selenium/selenium-server-standalone-2.45.0.jar',
+  seleniumServerJar: './node_modules/protractor/selenium/selenium-server-standalone-2.47.1.jar',
   //seleniumAddress: 'http://localhost:4444/wd/hub',
 
   onPrepare: function() {

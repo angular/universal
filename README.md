@@ -3,6 +3,12 @@
 [![Issue Stats](http://issuestats.com/github/angular/universal/badge/pr?style=flat)](http://issuestats.com/github/angular/universal)
 [![Issue Stats](http://issuestats.com/github/angular/universal/badge/issue?style=flat)](http://issuestats.com/github/angular/universal)
 
+<p align="center">
+  
+    <img src="https://cloud.githubusercontent.com/assets/1016365/10639063/138338bc-7806-11e5-8057-d34c75f3cafc.png" alt="Universal Angular 2" height="320"/>
+  
+</p>
+
 # Universal Angular 2
 > Universal (isomorphic) JavaScript support for Angular 2
 
@@ -20,8 +26,13 @@
 
 ### Documentation
 [Design Doc](https://docs.google.com/document/d/1q6g9UlmEZDXgrkY88AJZ6MUrUxcnwhBGS0EXbVlYicY)
-### Video
-[![Server Rending Angular 2](http://img.youtube.com/vi/0wvZ7gakqV4/0.jpg)](http://www.youtube.com/watch?v=0wvZ7gakqV4)
+
+### Videos
+Full Stack Angular 2 - AngularConnect, Oct 2015
+[![Full Stack Angular 2](https://img.youtube.com/vi/MtoHFDfi8FM/0.jpg)](https://www.youtube.com/watch?v=MtoHFDfi8FM)
+
+Angular 2 Server Rendering - Angular U, July 2105
+[![Angular 2 Server Rendering](http://img.youtube.com/vi/0wvZ7gakqV4/0.jpg)](http://www.youtube.com/watch?v=0wvZ7gakqV4)
 
 ## [preboot.js](/modules/preboot)
 > Control server-rendered page and transfer state before client-side web app loads to the client-side-app.
