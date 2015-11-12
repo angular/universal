@@ -38,7 +38,6 @@ import {
 import {Reflector, reflector} from 'angular2/src/core/reflection/reflection';
 import {TestabilityRegistry, Testability} from 'angular2/src/core/testability/testability';
 
-// TODO: submit PR for 43
 import {platformProviders, createNgZone} from 'angular2/src/core/application_ref';
 
 export {
@@ -147,6 +146,8 @@ export function platformCommon(providers?: Array<Type | Provider | any[]>, initi
 export class PlatformRef_ extends PlatformRef {
   _applications: Array<ApplicationRef | ApplicationRef_ | any> = [];
   _disposeListeners: Function[] = [];
+  public componentTypes: Array<Type> = [];
+
   public componentTypes: Array<Type> = [];
 
   constructor(
