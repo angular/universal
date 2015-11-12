@@ -7,7 +7,8 @@ import {
   Optional,
   Inject,
   EventEmitter,
-  NgZone
+  NgZone,
+  Observable
 } from 'angular2/angular2';
 
 import {
@@ -31,16 +32,15 @@ import {
   RequestMethods
 } from 'angular2/http';
 
-import {ObservableWrapper} from 'angular2/src/core/facade/async';
+import {ObservableWrapper} from 'angular2/src/facade/async';
 
 import {
   isPresent,
   isBlank,
   CONST_EXPR
-} from 'angular2/src/core/facade/lang';
+} from 'angular2/src/facade/lang';
 
 var Rx = require('@reactivex/rxjs/dist/cjs/Rx');
-var {Observable} = Rx;
 
 // CJS
 import XMLHttpRequest = require('xhr2');
@@ -200,33 +200,33 @@ export class NgPreloadCacheHttp extends Http {
     return request;
   }
 
-  request(url: string | Request, options?: RequestOptionsArgs): EventEmitter {
+  request(url: string | Request, options?: RequestOptionsArgs): Observable<Response> {
     return isBlank(this.prime) ? super.request(url, options) : this.preload(() => super.request(url, options));
   }
 
-  get(url: string, options?: RequestOptionsArgs): EventEmitter {
+  get(url: string, options?: RequestOptionsArgs): Observable<Response> {
     return isBlank(this.prime) ? super.get(url, options) : this.preload(() => super.get(url, options));
 
   }
 
-  post(url: string, body: string, options?: RequestOptionsArgs): EventEmitter {
+  post(url: string, body: string, options?: RequestOptionsArgs): Observable<Response> {
     return isBlank(this.prime) ? super.post(url, body, options) : this.preload(() => super.post(url, body, options));
   }
 
-  put(url: string, body: string, options?: RequestOptionsArgs): EventEmitter {
+  put(url: string, body: string, options?: RequestOptionsArgs): Observable<Response> {
     return isBlank(this.prime) ? super.put(url, body, options) : this.preload(() => super.put(url, body, options));
   }
 
-  delete(url: string, options?: RequestOptionsArgs): EventEmitter {
+  delete(url: string, options?: RequestOptionsArgs): Observable<Response> {
     return isBlank(this.prime) ? super.delete(url, options) : this.preload(() => super.delete(url, options));
 
   }
 
-  patch(url: string, body: string, options?: RequestOptionsArgs): EventEmitter {
+  patch(url: string, body: string, options?: RequestOptionsArgs): Observable<Response> {
     return isBlank(this.prime) ? super.patch(url, body, options) : this.preload(() => super.patch(url, body, options));
   }
 
-  head(url: string, options?: RequestOptionsArgs): EventEmitter {
+  head(url: string, options?: RequestOptionsArgs): Observable<Response> {
     return isBlank(this.prime) ? super.head(url, options) : this.preload(() => super.head(url, options));
   }
 

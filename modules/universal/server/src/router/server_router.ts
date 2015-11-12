@@ -73,6 +73,8 @@ export class ServerLocationStrategy extends LocationStrategy {
   back(): void {
     this._history.back();
   }
+
+  prepareExternalUrl(internal: string): string { return internal; }
 }
 
 export const SERVER_LOCATION_PROVIDERS: Array<any> = [
