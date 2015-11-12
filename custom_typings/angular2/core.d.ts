@@ -4,19 +4,6 @@ declare module "angular2/src/core/application_tokens" {
   var APP_ID_RANDOM_PROVIDER: any;
 }
 
-declare module "angular2/src/core/render/dom/events/event_manager" {
-  var EVENT_MANAGER_PLUGINS: any;
-  class EventManager {
-    constructor(...args);
-
-    addEventListener(element:any, eventName:string, handler:Function):any;
-
-    addGlobalEventListener(target:string, eventName:string, handler:Function):any;
-  }
-  class DomEventsPlugin {
-
-  }
-}
 declare module "angular2/src/core/render/render" {
   var DOCUMENT:any;
   var DOM_REFLECT_PROPERTIES_AS_ATTRIBUTES:any;

@@ -148,8 +148,6 @@ export class PlatformRef_ extends PlatformRef {
   _disposeListeners: Function[] = [];
   public componentTypes: Array<Type> = [];
 
-  public componentTypes: Array<Type> = [];
-
   constructor(
     private _injector: Injector,
     private _dispose: () => void) {
