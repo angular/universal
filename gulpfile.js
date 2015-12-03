@@ -3,6 +3,7 @@ var path = require('path');
 var http = require('http');
 var fs = require('fs');
 var child_process = require('child_process');
+var mkdirp = require('mkdirp');
 
 // Gulp and Plugins
 var gulp = require('gulp');
@@ -436,6 +437,26 @@ gulp.task('serve.preboot', function() {
 
 });
 
+//update-ng-bundle
+gulp.task('update-ng-bundle', function() {
+  console.log("");
+  console.log("updating scripts from angular/dist/bundle");
+  mkdirp('./web_modules', function() {
+    // angular submodule
+    // gulp.src('./angular/dist/**')
+    //  .pipe.(gulp.dest('./web_modules/'), cb);
+
+    //angular npm
+    mkdirp('./web_modules/js/bundle', function() {
+      gulp.src('./node_modules/angular2/bundles/**')
+        .pipe(gulp.dest('./web_modules/js/bundle'));
+
+      console.log("done!");
+      console.log("");
+    });
+  });
+});
+
 
 
 
@@ -444,10 +465,10 @@ gulp.task('serve.preboot', function() {
 // Utilities
 
 function getProtractorBinary(binaryName){
-  var winExt = /^win/.test(process.platform)? '.cmd' : '';
   var pkgPath = require.resolve('protractor');
   var protractorDir = path.resolve(path.join(path.dirname(pkgPath), '..', 'bin'));
-  return path.join(protractorDir, '/'+binaryName+winExt);
+  var retVal = path.join(protractorDir, '/' + binaryName);
+  return retVal;
 }
 
 // convert path to absolute from root directory
