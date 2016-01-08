@@ -2,7 +2,9 @@
   "name": "angular2-universal-preview",
   "main": "dist/server/server.js",
   "browser": "dist/client/client.js",
-  "version": "0.6.1",
+  "typings": "universal.d.ts",
+  "typescript": { "definition": "universal.d.ts" },
+  "version": "0.24.0",
   "description": "Universal (isomorphic) javascript support for Angular2",
   "homepage": "https://github.com/angular/universal",
   "license": "Apache-2.0",
@@ -12,7 +14,8 @@
     "Jeff Whelpley <jeff@gethuman.com>"
   ],
   "scripts": {
-    "prepublish": "tsc || true"
+    "build": "tsc || true",
+    "prepublish": "npm run build"
   },
   "repository": {
     "type": "git",
@@ -22,22 +25,24 @@
     "url": "https://github.com/angular/universal/issues"
   },
   "devDependencies": {
-    "typescript": "^1.6.2"
+    "typescript": "^1.7.3"
   },
   "dependencies": {
-    "@reactivex/rxjs": "5.0.0-alpha.4",
-    "angular2": "2.0.0-alpha.45",
     "css": "^2.2.1",
     "es6-shim": "^0.33.6",
     "parse5": "^1.5.0",
-    "preboot": "^1.0.0",
-    "reflect-metadata": "^0.1.2",
-    "xhr2": "^0.1.3",
-    "zone.js": "^0.5.8"
+    "preboot": "^1.0.2",
+    "angular2": "2.0.0-beta.0",
+    "es6-promise": "^3.0.2",
+    "reflect-metadata": "0.1.2",
+    "rxjs": "5.0.0-beta.0",
+    "zone.js": "0.5.10",
+    "xhr2": "0.1.3"
   },
   "peerDependencies": {
-    "angular2": "2.0.0-alpha.45",
-    "css": "^2.2.1",
+    "rxjs": "5.0.0-beta.0",
+    "angular2": "2.0.0-beta.0",
+    "css": "*",
     "parse5": "^1.5.0"
   }
 }

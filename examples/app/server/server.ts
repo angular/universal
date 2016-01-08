@@ -7,10 +7,10 @@ var path = require('path');
 
 module.exports = function(ROOT) {
   var app = express();
-  var universal = require(ROOT + '/dist/modules/universal/server');
+  var universal = require(`${ROOT}/dist/modules/universal/server`);
   // rendering engine
 
-  app.engine('ng2.html', universal.ng2engineWithPreboot);
+  app.engine('ng2.html', universal.ng2engine);
   app.set('views', path.join(ROOT, 'examples'));
   app.set('view engine', 'ng2.html');
   app.set('view options', { doctype: 'html' });
@@ -19,8 +19,8 @@ module.exports = function(ROOT) {
   var api = require('./api');
 
 
-  app.use(serveStatic(ROOT + '/dist'));
-  app.use(serveStatic(ROOT + '/examples/app/public'));
+  app.use(serveStatic(`${ROOT}/dist`));
+  app.use(serveStatic(`${ROOT}/examples/app/public`));
 
   app.use('/api', api(ROOT));
   app.use(routes(ROOT));

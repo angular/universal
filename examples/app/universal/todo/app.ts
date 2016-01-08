@@ -1,16 +1,23 @@
 /// <reference path="../../../../custom_typings/_custom.d.ts" />
 // import {bootstrap} from '../../angular2_client/bootstrap-defer';
 import {
-  bootstrap,
   ViewEncapsulation,
   Component,
   View,
   Directive,
   ElementRef,
   bind,
-  Inject,
-  CORE_DIRECTIVES
-} from 'angular2/angular2';
+  Inject
+} from 'angular2/core';
+
+import {
+  bootstrap
+} from 'angular2/bootstrap';
+
+import {
+  COMMON_DIRECTIVES
+} from 'angular2/common';
+
 import {ROUTER_PROVIDERS, ROUTER_DIRECTIVES} from 'angular2/router';
 
 import {Http, HTTP_PROVIDERS} from 'angular2/http';
@@ -24,11 +31,9 @@ import {Store, Todo, TodoFactory} from './services/TodoStore';
 
 @Component({
   selector: 'app',
-  bindings: [ Store, TodoFactory ]
-})
-@View({
+  providers: [ Store, TodoFactory ],
   encapsulation: ViewEncapsulation.None,
-  directives: [ CORE_DIRECTIVES, ROUTER_DIRECTIVES ],
+  directives: [ROUTER_DIRECTIVES],
   styles: [],
   template: `
 <section id="todoapp">
@@ -55,7 +60,7 @@ import {Store, Todo, TodoFactory} from './services/TodoStore';
     <ul id="todo-list">
 
       <li
-        *ng-for="var todo of todoStore.list"
+        *ngFor="var todo of todoStore.list"
         [class.editing]="todoEdit == todo"
         [class.completed]="todo.completed == true">
 
@@ -72,7 +77,7 @@ import {Store, Todo, TodoFactory} from './services/TodoStore';
 
         </div>
 
-        <div *ng-if="todoEdit == todo">
+        <div *ngIf="todoEdit == todo">
 
           <input class="edit"
             [class.visible]="todoEdit == todo"
@@ -86,7 +91,7 @@ import {Store, Todo, TodoFactory} from './services/TodoStore';
     </ul>
   </section>
 
-  <footer id="footer" *ng-if="todoStore.list.length">
+  <footer id="footer" *ngIf="todoStore.list.length">
     <span id="todo-count">
       <strong>{{ remainingCount() }}</strong>
       {{ pluralize(remainingCount(), 'item') }} left
@@ -180,7 +185,7 @@ export class TodoApp {
   }
 
   pluralize(count, word) {
-    return word + (count === 1 ? '' : 's');
+    return `word${count === 1 ? '' : 's'}`;
   }
 
   remainingCount() {

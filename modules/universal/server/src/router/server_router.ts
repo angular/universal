@@ -1,6 +1,5 @@
-/// <reference path="../../typings/tsd.d.ts" />
 import * as nodeUrl from 'url';
-import {Injectable, Inject, provide} from 'angular2/angular2';
+import {Injectable, Inject, provide} from 'angular2/core';
 import {LocationStrategy} from 'angular2/router';
 import {MockLocationStrategy} from 'angular2/src/mock/mock_location_strategy';
 import {BASE_URL} from '../http/server_http';
@@ -67,6 +66,8 @@ export class ServerLocationStrategy extends LocationStrategy {
 
   pushState(state: any, title: string, url: string) {/*TODO*/}
 
+  replaceState(state: any, title: string, url: string) {/*TODO*/}
+
   forward(): void {
     this._history.forward();
   }
@@ -74,6 +75,8 @@ export class ServerLocationStrategy extends LocationStrategy {
   back(): void {
     this._history.back();
   }
+
+  prepareExternalUrl(internal: string): string { return internal; }
 }
 
 export const SERVER_LOCATION_PROVIDERS: Array<any> = [

@@ -30,10 +30,10 @@
 [Design Doc](https://docs.google.com/document/d/1q6g9UlmEZDXgrkY88AJZ6MUrUxcnwhBGS0EXbVlYicY)
 
 ### Videos
-Full Stack Angular 2 - AngularConnect, Oct 2015
+Full Stack Angular 2 - AngularConnect, Oct 2015  
 [![Full Stack Angular 2](https://img.youtube.com/vi/MtoHFDfi8FM/0.jpg)](https://www.youtube.com/watch?v=MtoHFDfi8FM)
 
-Angular 2 Server Rendering - Angular U, July 2105
+Angular 2 Server Rendering - Angular U, July 2015  
 [![Angular 2 Server Rendering](http://img.youtube.com/vi/0wvZ7gakqV4/0.jpg)](http://www.youtube.com/watch?v=0wvZ7gakqV4)
 
 ## [preboot.js](/modules/preboot)
@@ -42,7 +42,7 @@ Angular 2 Server Rendering - Angular U, July 2105
 # Best Practices
 > When building Universal components in Angular 2 there are a few things to keep in mind
 
-* Know the differece between attributes and properties in relation to the DOM
+* Know the difference between attributes and properties in relation to the DOM
 * Don't manipulate the `nativeElement` directly. Use the `Renderer`
 ```typescript
 constructor(element: ElementRef, renderer: Renderer) {
@@ -53,7 +53,7 @@ constructor(element: ElementRef, renderer: Renderer) {
 * Keep your directives stateless as much as possible. For stateful directives you may need to provide an attribute that reflects the corresponding property with an initial string value such as `url` in `img` tag. For our native `<img src"">` element the `src` attribute is reflected as the `src` property of the element type `HTMLImageElement`. 
 
 # What's in a name?
-We believe the word universal is the correct when referring to a JavaScript Application that runs in more environments than the browser. (inspired by [Universal JavaScript](https://medium.com/@mjackson/universal-javascript-4761051b7ae9))
+We believe that using the word "universal" is correct when referring to a JavaScript Application that runs in more environments than the browser. (inspired by [Universal JavaScript](https://medium.com/@mjackson/universal-javascript-4761051b7ae9))
 
 # License
 [Apache-2.0](/LICENSE)

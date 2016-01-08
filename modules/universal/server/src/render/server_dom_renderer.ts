@@ -1,78 +1,72 @@
-/// <reference path="../../typings/tsd.d.ts" />
+import {
+  isPresent,
+  stringify
+} from 'angular2/src/facade/lang';
 import {
   provide,
   Inject,
   Injectable,
-  Provider,
-  Injector,
-  OpaqueToken
-} from 'angular2/angular2';
-
-import {
-  ListWrapper,
-  MapWrapper,
-  Map,
-  StringMapWrapper,
-  List
-} from 'angular2/src/core/facade/collection';
-import {
-  DomRenderer,
-  DomRenderer_,
-  RenderElementRef,
   Renderer,
-  DOCUMENT
-} from 'angular2/src/core/render/render';
-import {AnimationBuilder} from 'angular2/src/animate/animation_builder';
-import {EventManager} from 'angular2/src/core/render/dom/events/event_manager';
-import {DomSharedStylesHost} from 'angular2/src/core/render/dom/shared_styles_host';
-import {TemplateCloner} from 'angular2/src/core/render/dom/template_cloner';
-import {DOM} from 'angular2/src/core/dom/dom_adapter';
+  RenderViewRef,
+  RenderElementRef
+} from 'angular2/core';
+import {
+  DefaultRenderView,
+} from 'angular2/src/core/render/view';
 
-function resolveInternalDomView(viewRef) {
-  return viewRef;
-}
-
-function resolveInternalDomFragment(fragmentRef) {
-  return fragmentRef.nodes;
-}
-
-export {
-  DOCUMENT,
+import {DOCUMENT} from 'angular2/src/platform/dom/dom_tokens';
+import {
   DomRenderer,
   DomRenderer_
-};
+} from 'angular2/src/platform/dom/dom_renderer';
+
+import {AnimationBuilder} from 'angular2/src/animate/animation_builder';
+import {EventManager} from 'angular2/src/platform/dom/events/event_manager';
+import {DomSharedStylesHost} from 'angular2/src/platform/dom/shared_styles_host';
+import {DOM} from 'angular2/src/platform/dom/dom_adapter';
+
+import {cssHyphenate} from '../helper';
+
+function resolveInternalDomView(viewRef: RenderViewRef): DefaultRenderView<Node> {
+  return <DefaultRenderView<Node>>viewRef;
+}
 
 @Injectable()
 export class ServerDomRenderer_ extends DomRenderer_ {
   constructor(
-    private _eventManager: EventManager,
-    private _domSharedStylesHost: DomSharedStylesHost,
-    private _animate: AnimationBuilder,
+    private eventManager: EventManager,
+    private domSharedStylesHost: DomSharedStylesHost,
+    private animate: AnimationBuilder,
     @Inject(DOCUMENT) document) {
-     super(_eventManager, _domSharedStylesHost, _animate, document);
+     super(eventManager, domSharedStylesHost, animate, document);
   }
 
   setElementProperty(location: RenderElementRef, propertyName: string, propertyValue: any) {
     if (propertyName === 'value' || (propertyName === 'checked' && propertyValue !== false)) {
-      let view = resolveInternalDomView(location.renderView);
-      let element = view.boundElements[location.boundElementIndex];
+      let view: DefaultRenderView<Node> = resolveInternalDomView(location.renderView);
+      let element = <Element>view.boundElements[(<any>location).boundElementIndex];
       if (DOM.nodeName(element) === 'input') {
         DOM.setAttribute(element, propertyName, propertyValue);
         return;
       }
     } else if (propertyName === 'src') {
-      let view = resolveInternalDomView(location.renderView);
-      let element = view.boundElements[location.boundElementIndex];
+      let view: DefaultRenderView<Node> = resolveInternalDomView(location.renderView);
+      let element = <Element>view.boundElements[(<any>location).boundElementIndex];
       DOM.setAttribute(element, propertyName, propertyValue);
       return;
     }
     return super.setElementProperty(location, propertyName, propertyValue);
   }
 
+  setElementStyle(location: RenderElementRef, styleName: string, styleValue: string): void {
+    let styleNameCased = cssHyphenate(styleName);
+    super.setElementProperty(location, styleNameCased, styleValue);
+  }
+
   invokeElementMethod(location: RenderElementRef, methodName: string, args: any[]) {
     if (methodName === 'focus') {
-      let view = resolveInternalDomView(location.renderView);
-      let element = view.boundElements[location.boundElementIndex];
+      let view: DefaultRenderView<Node> = resolveInternalDomView(location.renderView);
+      let element = <Element>view.boundElements[(<any>location).boundElementIndex];
       if (DOM.nodeName(element) === 'input') {
         DOM.invoke(element, 'autofocus', null);
         return;
@@ -84,9 +78,4 @@ export class ServerDomRenderer_ extends DomRenderer_ {
 
 }
 
-
-export const SERVER_DOM_RENDERER_PROVIDERS = [
-  provide(DomRenderer, {useClass: ServerDomRenderer_}),
-  provide(Renderer, {useClass: DomRenderer})
-];
 

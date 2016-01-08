@@ -8,12 +8,12 @@ var {Router} = require('express');
 module.exports = function(ROOT) {
   var router = Router();
 
-  var universalPath = ROOT + '/dist/examples/app/universal';
+  var universalPath = `${ROOT}/dist/examples/app/universal`;
 
-  var {App}     = require(universalPath + '/test_page/app');
-  var {TodoApp} = require(universalPath + '/todo/app');
+  var {App}     = require(`${universalPath}/test_page/app`);
+  var {TodoApp} = require(`${universalPath}/todo/app`);
 
-  var {provide} = require('angular2/angular2');
+  var {provide} = require('angular2/core');
 
   var {
     HTTP_PROVIDERS,
@@ -21,24 +21,24 @@ module.exports = function(ROOT) {
     BASE_URL,
     PRIME_CACHE,
     queryParamsToBoolean
-  } = require(ROOT + '/dist/modules/server/server');
-  // require('@angular/universal')
+  } = require(`${ROOT}/dist/modules/universal/server/server`);
+  // require('angular2-universal')
 
   router.
     route('/').
     get(function ngApp(req, res) {
-      let baseUrl = 'http://localhost:3000' + req.baseUrl;
+      let baseUrl = `http://localhost:3000${req.baseUrl}`;
       let queryParams = queryParamsToBoolean(req.query);
       let options = Object.assign(queryParams, {
         // client url for systemjs
         componentUrl: 'examples/app/universal/test_page/app',
 
-        Component: App,
+        App: App,
         serverProviders: [
           // HTTP_PROVIDERS,
-          SERVER_LOCATION_PROVIDERS,
-          provide(BASE_URL, {useExisting: baseUrl}),
-          provide(PRIME_CACHE, {useExisting: true})
+          // SERVER_LOCATION_PROVIDERS,
+          // provide(BASE_URL, {useExisting: baseUrl}),
+          // provide(PRIME_CACHE, {useExisting: true})
         ],
         data: {},
 
@@ -62,13 +62,13 @@ module.exports = function(ROOT) {
   router.
     route('/examples/todo').
     get(function ngTodo(req, res) {
-      let baseUrl = 'http://localhost:3000' + req.baseUrl;
+      let baseUrl = `http://localhost:3000${req.baseUrl}`;
       let queryParams = queryParamsToBoolean(req.query);
       let options = Object.assign(queryParams , {
         // client url for systemjs
         componentUrl: 'examples/app/universal/todo/app',
 
-        Component: TodoApp,
+        App: TodoApp,
         serverProviders: [
           // HTTP_PROVIDERS,
           SERVER_LOCATION_PROVIDERS,
@@ -95,18 +95,18 @@ module.exports = function(ROOT) {
     });
 
   // modules
-  router.use('/web_modules', serveStatic(ROOT + '/web_modules'));
-  router.use('/bower_components', serveStatic(ROOT + '/bower_components'));
+  router.use('/web_modules', serveStatic(`${ROOT}/web_modules`));
+  router.use('/bower_components', serveStatic(`${ROOT}bower_components`));
 
 
   // needed for sourcemaps
 
   router.use('/src', serveStatic(ROOT + '/src'));
 
-  router.use('/@reactivex/rxjs',  serveStatic(ROOT + '/node_modules/@reactivex/rxjs'));
-  router.use('/node_modules',  serveStatic(ROOT + '/node_modules'));
-  router.use('/angular2/dist', serveStatic(ROOT + '/angular/dist/bundle'));
-  router.use('/examples/app',  serveStatic(ROOT + '/examples/app'));
+  router.use('/@reactivex/rxjs',  serveStatic(`${ROOT}/node_modules/@reactivex/rxjs`));
+  router.use('/node_modules',  serveStatic(`${ROOT}/node_modules`));
+  router.use('/angular2/dist', serveStatic(`${ROOT}/angular/dist/bundle`));
+  router.use('/examples/app',  serveStatic(`${ROOT}/examples/app`));
 
   router.use(historyApiFallback({
     // verbose: true

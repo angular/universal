@@ -1,25 +1,26 @@
 /// <reference path="../../../../custom_typings/_custom.d.ts" />
-console.time('angular2/angular2 in client');
-import * as angular from 'angular2/angular2';
-console.timeEnd('angular2/angular2 in client');
+console.time('angular2/core in client');
+import * as angular from 'angular2/core';
+console.timeEnd('angular2/core in client');
 
 import {
   Component,
   View,
   ViewEncapsulation,
-  bind,
-  CORE_DIRECTIVES
-} from 'angular2/angular2';
+  bind
+} from 'angular2/core';
 
-import {
-  Http,
-  HTTP_PROVIDERS
-} from 'angular2/http';
+import {bootstrap} from 'angular2/platform/browser';
 
-import {
-  NG_PRELOAD_CACHE_PROVIDERS,
-  PRIME_CACHE
-} from '../../../../modules/universal/client/client';
+// import {
+//   Http,
+//   HTTP_PROVIDERS
+// } from 'angular2/http';
+
+// import {
+//   NG_PRELOAD_CACHE_PROVIDERS,
+//   PRIME_CACHE
+// } from '../../../../modules/universal/client/client';
 
 
 
@@ -33,8 +34,7 @@ function transformData(data) {
 @Component({
   selector: 'app',
   providers: [],
-  encapsulation: ViewEncapsulation.Emulated,
-  directives: [ CORE_DIRECTIVES ],
+  directives: [],
   styles: [`
     #intro {
       background-color: red;
@@ -74,12 +74,12 @@ function transformData(data) {
   <div>
     <button (click)="toggleNgIf()">Toggle NgIf</button>
   </div>
-  <div *ng-if="toggle">
+  <div *ngIf="toggle">
     NgIf true
   </div>
 
   <ul>
-    <li *ng-for="var item of items">
+    <li *ngFor="var item of items">
       <input
         type="checkbox"
         [checked]="item.completed"
@@ -224,9 +224,9 @@ export class App {
 
 
 export function main() {
-  return angular.bootstrap(App, [
+  return bootstrap(App, [
     // HTTP_PROVIDERS,
-    NG_PRELOAD_CACHE_PROVIDERS,
-    bind(PRIME_CACHE).toValue(true)
+    // NG_PRELOAD_CACHE_PROVIDERS,
+    // bind(PRIME_CACHE).toValue(true)
   ]);
 }
