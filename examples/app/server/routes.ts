@@ -94,19 +94,14 @@ module.exports = function(ROOT) {
 
     });
 
-  // modules
-  router.use('/web_modules', serveStatic(`${ROOT}/web_modules`));
-  router.use('/bower_components', serveStatic(`${ROOT}bower_components`));
-
 
   // needed for sourcemaps
 
-  router.use('/src', serveStatic(ROOT + '/src'));
-
-  router.use('/@reactivex/rxjs',  serveStatic(`${ROOT}/node_modules/@reactivex/rxjs`));
+  router.use('/src', serveStatic(`${ROOT}/src`));
+  router.use('/angular2', serveStatic(`${ROOT}/node_modules/angular2`));
+  router.use('/rxjs', serveStatic(`${ROOT}/node_modules/rxjs`));
   router.use('/node_modules',  serveStatic(`${ROOT}/node_modules`));
-  router.use('/angular2/dist', serveStatic(`${ROOT}/angular/dist/bundle`));
-  router.use('/examples/app',  serveStatic(`${ROOT}/examples/app`));
+  router.use('/examples/app',  serveStatic(`${ROOT}/dist/examples/app`));
 
   router.use(historyApiFallback({
     // verbose: true

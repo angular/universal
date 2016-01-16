@@ -4,7 +4,7 @@
   "version": "0.0.1",
   "description": "Universal (isomorphic) javascript support for Angular2",
   "homepage": "https://github.com/angular/universal",
-  "license": "Apache-2.0",
+  "license": "MIT",
   "contributors": [
     "Tobias Bosch <tbosch@google.com>",
     "PatrickJS <github@gdi2290.com>",
@@ -12,7 +12,7 @@
   ],
   "scripts": {
     "prestart": "gulp build",
-    "build": "gulp build.typescript && gulp build.preboot",
+    "build": "gulp build",
     "serve": "gulp serve",
     "start": "gulp server",
     "watch": "gulp watch",
@@ -27,16 +27,10 @@
     "webdriver-start": "gulp protractor.start",
     "preprotractor": "gulp protractor.update",
     "protractor": "gulp protractor",
-    "remove-dist": "rimraf ./dist",
+    "remove-dist": "rimraf dist modules/**/dist !node_modules/**/*",
     "remove-tsd-typing": "rimraf ./tsd_typings",
-    "remove-angular2": "rimraf ./node_modules/angular2",
-    "remove-angular-typings": "rimraf ./angular/modules/angular2/typings",
-    "remove-angular-dist": "rimraf ./angular/dist",
-    "remove-web-modules": "rimraf ./web_modules",
-    "bower": "bower install",
-    "web_modules": "bash ./scripts/update-ng-bundle.sh",
     "tsd": "tsd reinstall && tsd link",
-    "postinstall": "npm run tsd && tsc || true && npm run remove-web-modules && npm run web_modules && npm run bower && npm run webdriver-update"
+    "postinstall": "npm run tsd && tsc || true && npm run webdriver-update"
   },
   "repository": {
     "type": "git",
@@ -90,6 +84,7 @@
   },
   "dependencies": {
     "angular2": "2.0.0-beta.0",
+    "angular2-universal-preview": "^0.24.0",
     "browserify": "^11.0.0",
     "css": "^2.2.1",
     "es6-shim": "^0.33.8",
@@ -100,11 +95,13 @@
     "gulp-uglify": "^1.2.0",
     "lodash": "^3.10.1",
     "parse5": "^1.5.0",
+    "preboot": "^1.0.2",
     "q": "^1.4.1",
     "reflect-metadata": "0.1.2",
     "require-dir": "^0.3.0",
     "run-sequence": "^1.1.2",
     "rxjs": "5.0.0-beta.0",
+    "systemjs": "^0.19.16",
     "vinyl-buffer": "^1.0.0",
     "vinyl-source-stream": "^1.1.0",
     "xhr2": "^0.1.3",
