@@ -71,9 +71,13 @@
     "examples/app/server/api.ts",
     "examples/app/server/routes.ts",
     "examples/app/server/server.ts",
+    "examples/app/universal/test_page/client.ts",
     "examples/app/universal/test_page/app.ts",
     "examples/app/universal/todo/app.ts",
-    "examples/app/universal/todo/services/TodoStore.ts"
+    "examples/app/universal/todo/client.ts",
+    "examples/app/universal/todo/services/TodoStore.ts",
+    "examples/app/universal/test_router/app.ts",
+    "examples/app/universal/test_router/client.ts"
   ],
   "exclude": [
     "modules/universal/client/test",
