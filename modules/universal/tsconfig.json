@@ -13,7 +13,7 @@
   	"outDir": "dist"
   },
   "exclude": [
-    "client/test",
+    "browser/test",
     "server/test",
     "node_modules"
   ],
@@ -32,10 +32,10 @@
     "server/src/server_patch.ts",
     "server/src/stringifyElement.ts",
     "server/test/router_server_spec.ts",
-    "client/index.ts",
-    "client/client.ts",
-    "client/src/ng_preload_cache.ts",
-    "client/src/bootstrap.ts"
+    "browser/index.ts",
+    "browser/browser.ts",
+    "browser/src/ng_preload_cache.ts",
+    "browser/src/bootstrap.ts"
   ],
   "formatCodeOptions": {
     "indentSize": 2,
