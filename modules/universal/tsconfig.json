@@ -29,7 +29,6 @@
     "server/src/platform/dom/server_dom_renderer.ts",
     "server/src/helper.ts",
     "server/src/render.ts",
-    "server/src/server_patch.ts",
     "server/src/stringifyElement.ts",
     "server/test/router_server_spec.ts",
     "client/index.ts",

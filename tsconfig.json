@@ -60,7 +60,6 @@
     "modules/universal/server/src/router/server_router.ts",
     "modules/universal/server/src/helper.ts",
     "modules/universal/server/src/render.ts",
-    "modules/universal/server/src/server_patch.ts",
     "modules/universal/server/src/stringifyElement.ts",
     "modules/universal/server/test/router_server_spec.ts",
     "modules/universal/client/index.ts",

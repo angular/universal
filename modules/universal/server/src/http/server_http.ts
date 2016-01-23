@@ -1,5 +1,3 @@
-import '../server_patch';
-
 import {
   provide,
   OpaqueToken,
