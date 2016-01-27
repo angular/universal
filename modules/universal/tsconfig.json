@@ -31,7 +31,7 @@
     "server/src/render.ts",
     "server/src/server_patch.ts",
     "server/src/stringifyElement.ts",
-    "server/test/router_server_spec.ts",
+    "server/test/router/server_router_spec.ts",
     "browser/index.ts",
     "browser/browser.ts",
     "browser/src/ng_preload_cache.ts",
