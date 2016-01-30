@@ -42,7 +42,7 @@ class NodeLocation implements LocationConfig {
   format(obj: NodeLocationConfig): string {
     return nodeUrl.format(obj);
   }
-  assign(parsed: NodeLocationConfig): this {
+  assign(parsed: NodeLocationConfig): NodeLocation {
     this.pathname = parsed.pathname || '';
     this.search = parsed.search || '';
     this.hash = parsed.hash;
