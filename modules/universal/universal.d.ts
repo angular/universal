@@ -28,9 +28,12 @@ export function buildNodePlatformProviders(
 export var NODE_APPLICATION_COMMON_PROVIDERS: [any];
 export var NODE_APPLICATION_PROVIDERS: [any];
 export function selectorRegExpFactory(selector: string): RegExp;
-export function ng2engine(): any;
+export function ng2ExpressEngine(): any;
+export function ng2HapiEngine(): any;
+
 export default {
-  ng2engine,
+  ng2ExpressEngine,
+  ng2HapiEngine,
   provide,
   NodeXhr,
   NodeBackend,
