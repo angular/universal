@@ -1,5 +1,5 @@
-export function ng2engine(): any;
+export function ng2ExpressEngine(): any;
 
 export default {
-  ng2engine
+  ng2ExpressEngine
 }
