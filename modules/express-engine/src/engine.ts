@@ -7,7 +7,7 @@ import {
 } from 'angular2-universal-preview';
 
 export interface engineOptions {
-  App: Function;
+  App: any;
   providers?: Array<any>;
   preboot?: Object | any;
   selector?: string;
@@ -119,12 +119,14 @@ function buildClientScripts(html: string, options: any): string {
     );
 }
 
-export function expressEngine(filePath: string, options: engineOptions, done: Function) {
+export function ng2engine(filePath: string, options: engineOptions, done: Function) {
   // defaults
   options = options || <engineOptions>{};
   options.providers = options.providers || undefined;
   options.preboot   = options.preboot   || undefined;
 
+  options.App = (typeof options.App === "function") ? [options.App] : options.App;
+  
   // read file on disk
   try {
     fs.readFile(filePath, (err, content) => {
@@ -144,27 +146,37 @@ export function expressEngine(filePath: string, options: engineOptions, done: Fu
       // bootstrap and render component to string
       var renderPromise: any = renderToString;
       const args = [options.App, options.providers];
+      
       if (options.preboot) {
         renderPromise = renderToStringWithPreboot;
         args.push(options.preboot);
       }
 
-      renderPromise(...args)
-        .then(serializedCmp => {
+       renderPromise(...args)
+        .then(serializedCmps => {
 
-          const selector: string = selectorResolver(options.App);
+         // const selector: string = selectorResolver(options.App);
 
           // selector replacer explained here
           // https://gist.github.com/gdi2290/c74afd9898d2279fef9f
           // replace our component with serialized version
-          const rendered: string = clientHtml.replace(
-            // <selector></selector>
-            selectorRegExpFactory(selector),
-            // <selector>{{ serializedCmp }}</selector>
-            serializedCmp
-            // TODO: serializedData
-          );
-
+          let rendered = clientHtml;
+          for (var targetapp in options.App){
+            let selector = selectorResolver(options.App[targetapp]);
+             // selector replacer explained here
+             // https://gist.github.com/gdi2290/c74afd9898d2279fef9f
+             // replace our component with serialized version
+             rendered = rendered.replace(
+             // <selector></selector>
+             selectorRegExpFactory(selector), 
+             // <selector>{{ serializedCmp }}</selector>
+             serializedCmps[targetapp]);
+             
+          }
+          if (options.preboot) {
+            // last array entry contains the prebot stuff...
+            rendered += serializedCmps[serializedCmps.length-1];
+          }
           done(null, buildClientScripts(rendered, options));
         })
         .catch(e => {
@@ -177,19 +189,6 @@ export function expressEngine(filePath: string, options: engineOptions, done: Fu
     done(e);
   }
 };
-
-export const ng2engine = function(...args) {
-  console.warn('DEPRECATION WARNING: `ng2engine` is no longer supported and will be removed in next release. use `expressEngine`');
-  return expressEngine(...args);
-}
-export const ng2Engine = function(...args) {
-  console.warn('DEPRECATION WARNING: `ng2Engine` is no longer supported and will be removed in next release. use `expressEngine`');
-  return expressEngine(...args);
-}
-export const ng2ExpressEngine = function(...args) {
-  console.warn('DEPRECATION WARNING: `ng2ExpressEngine` is no longer supported and will be removed in next release. use `expressEngine`');
-  return expressEngine(...args);
-}
 
 export function simpleReplace(filePath: string, options: engineOptions, done: Function) {
   // defaults
