@@ -14,11 +14,11 @@ import {bootstrap} from 'angular2/platform/browser';
 // } from '../../../../modules/universal/client/client';
 
 import {App} from './app';
+import {MyApp} from './app';
 
 export function main() {
-  return bootstrap(App, [
-    // HTTP_PROVIDERS,
-    // NG_PRELOAD_CACHE_PROVIDERS,
-    // bind(PRIME_CACHE).toValue(true)
+  return Promise.all([
+        bootstrap(App, [ /* HTTP_PROVIDERS,    // NG_PRELOAD_CACHE_PROVIDERS, // bind(PRIME_CACHE).toValue(true) */]),
+        bootstrap(MyApp, []) 
   ]);
 }
