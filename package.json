@@ -29,7 +29,7 @@
     "protractor": "gulp protractor",
     "remove-dist": "rimraf dist modules/**/dist !node_modules/**/*",
     "remove-tsd-typing": "rimraf ./tsd_typings",
-    "remove-local-modules": "rimraf node_modules/angular2-universal node_modules/preboot node_modules/angular2-universal-preview node_modules/angular2-universal node_modules/angular2-express-engine node_modules/angular2-hapi-engine",
+    "remove-local-modules": "rimraf node_modules/angular2-universal-polyfills node_modules/angular2-universal node_modules/preboot node_modules/angular2-universal-preview node_modules/angular2-universal node_modules/angular2-express-engine node_modules/angular2-hapi-engine",
     "update": "npm run remove-local-modules && npm install",
     "restart": "npm run update && gulp build && gulp server",
     "tsd": "tsd reinstall && tsd link",
