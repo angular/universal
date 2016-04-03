@@ -21,6 +21,7 @@ module.exports = function(ROOT) {
     NODE_PLATFORM_PIPES,
     REQUEST_URL,
     BASE_URL,
+    PRIME_CACHE,
     queryParamsToBoolean
   } = require('angular2-universal-preview');
   // require('angular2-universal')
@@ -32,11 +33,10 @@ module.exports = function(ROOT) {
       let options = Object.assign(queryParams, {
         // client url for systemjs
         buildClientScripts: true,
-        componentUrl: 'examples/src/universal/test_page/browser',
-
-        // directives: [appPage.App],
-        directives: [appPage.App, appPage.MyApp],
+        directives: [appPage.App],
+        // directives: [appPage.App, appPage.MyApp],
         providers: [
+          provide(PRIME_CACHE, {useValue: true}),
           provide(REQUEST_URL, {useValue: req.originalUrl}),
           provide(APP_BASE_HREF, {useValue: '/'}),
           provide(BASE_URL, {useExisting: req.originalUrl}),
@@ -48,6 +48,7 @@ module.exports = function(ROOT) {
         data: {},
 
         async: true,
+        precache: true,
 
         systemjs: {
           componentUrl: 'examples/src/universal/test_page/browser',
