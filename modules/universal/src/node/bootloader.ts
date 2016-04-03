@@ -127,10 +127,6 @@ export class Bootloader {
         throw err;
       })
       .then((configRefs: any) => {
-        if ('precache' in this._config && this._config.precache) {
-          console.log('Please set `async: true` rather than `precache: true`');
-          this._config.async = true;
-        }
         if ('async' in this._config) {
           if (!this._config.async) {
             return configRefs;
@@ -201,6 +197,38 @@ export class Bootloader {
       })
       .catch(err => {
         console.log('preboot Error:', err);
+        throw err;
+      })
+      .then((configRefs: any) => {
+        if ('precache' in this._config) {
+          if (!this._config.precache) { return configRefs; }
+          // let document = configRefs[0].applicationRef.injector.get(DOCUMENT);
+          let lastRef = configRefs[configRefs.length - 1];
+          let el = lastRef.componentRef.location.nativeElement;
+          let cache = configRefs.reduce((memo, config) => {
+            let http = config.componentRef.injector.getOptional(Http);
+            let cache = http ? arrayFlattenTree(http._rootNode.children, []) : [];
+            return memo.concat(cache);
+          }, []);
+
+          if (!cache) { return configRefs; }
+
+          let code = '' +
+          '<script>' +
+            'window.' + 'ngPreloadCache' + ' = ' +  JSON.stringify(cache, null, 2) + ';' +
+            // 'window.' + 'ngPreloadCache' + ' = ' +  JSON.stringify(cache) + // , null, 2) +
+          '</script>';
+          let script = parseFragment(code);
+          let precacheEl = DOM.createElement('div');
+          DOM.setInnerHTML(precacheEl, code);
+          DOM.insertAfter(el, precacheEl);
+          return configRefs;
+
+        }
+        return configRefs;
+      })
+      .catch(err => {
+        console.log('precache Error:', err);
         throw err;
       })
       .then((configRefs: any) => {
