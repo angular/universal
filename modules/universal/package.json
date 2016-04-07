@@ -38,7 +38,7 @@
     "angular2-hapi-engine": "file:../hapi-engine",
     "preboot": "file:../preboot",
     "angular2": "2.0.0-beta.13",
-    "zone.js": "~0.6.6",
+    "zone.js": "~0.6.8",
     "es6-shim": "^0.35.0",
     "es6-promise": "^3.0.2",
     "reflect-metadata": "0.1.2",
@@ -62,7 +62,7 @@
     "angular2-hapi-engine": ">=0.7.2",
     "rxjs": "~5.0.0-beta.2",
     "angular2": "2.0.0-beta.12 - 2.0.0-beta.13",
-    "zone.js": "~0.6.6",
+    "zone.js": "~0.6.8",
     "css": "^2.2.1",
     "parse5": "^1.5.0"
   },
