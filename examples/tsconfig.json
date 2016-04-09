@@ -7,7 +7,7 @@
     "removeComments": true,
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
-  	"sourceMap": true,
+  	"sourceMap": false,
     "listFiles": false,
     "outDir": "dist",
     "rootDir": "src"
