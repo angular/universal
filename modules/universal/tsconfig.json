@@ -10,34 +10,18 @@
     "experimentalDecorators": true,
   	"sourceMap": true,
     "listFiles": false,
-  	"outDir": "dist"
+  	"outDir": "dist",
+    "rootDir": "src"
   },
   "exclude": [
-    "client/test",
-    "server/test",
-    "node_modules"
-  ],
-  "files": [
-    "../../tsd_typings/tsd.d.ts",
-    "../../custom_typings/_custom.d.ts",
-    "universal.d.ts",
-    "server/index.ts",
-    "server/server.ts",
-    "server/src/express/engine.ts",
-    "server/src/directives/server_form.ts",
-    "server/src/http/server_http.ts",
-    "server/src/router/server_router.ts",
-    "server/src/render/server_dom_renderer.ts",
-    "server/src/ng_scripts.ts",
-    "server/src/helper.ts",
-    "server/src/render.ts",
-    "server/src/server_patch.ts",
-    "server/src/stringifyElement.ts",
-    "server/test/router_server_spec.ts",
-    "client/index.ts",
-    "client/client.ts",
-    "client/src/ng_preload_cache.ts",
-    "client/src/bootstrap.ts"
+    "typings/main",
+    "typings/main.d.ts",
+    "node_modules",
+    "preboot",
+    "node_modules/preboot/test",
+    "node_modules/preboot/src",
+    "src/browser/test",
+    "src/node/test"
   ],
   "formatCodeOptions": {
     "indentSize": 2,
@@ -52,5 +36,8 @@
     "insertSpaceAfterOpeningAndBeforeClosingNonemptyParenthesis": false,
     "placeOpenBraceOnNewLineForFunctions": false,
     "placeOpenBraceOnNewLineForControlBlocks": false
-  }
+  },
+  "compileOnSave": false,
+  "buildOnSave": false,
+  "atom": { "rewriteTsconfig": false }
 }

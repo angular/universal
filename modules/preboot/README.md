@@ -19,26 +19,26 @@ changes coming soon.
 This is a server-side library that generates client-side code.
 To use this library, you would first install it through npm:
 
-```
+```sh
 npm install preboot
 ```
 
 Then in your server-side code you would do something like this:
 
-```
+```es6
 var preboot = require('preboot');
 var prebootOptions = {};  // see options section below
-var clientCode = preboot(prebootOptions);
+var browserCode = preboot(prebootOptions);
 ```
 
-You then inject clientCode into the HEAD section of your server-side template.
+You then inject browserCode into the HEAD section of your server-side template.
 We want preboot to ONLY start recording once the web app root exists in the DOM. We are
 still playing with the best way to do this (NOTE: we have tried onLoad and
 it does not work because the callback does not get executed quickly enough).
 For now, try putting the following
 `preboot.start()` call immediately after your web app root in your server side template:
 
-```
+```html
 <web-app-root-here>
 
 </web-app-root-here>
@@ -50,30 +50,9 @@ For now, try putting the following
 Finally, once your client-side web app is "alive" it has to tell preboot that it is OK
 to replay events.
 
+```es6
+preboot.complete();
 ```
-preboot.done();
-```
-
-## Examples
-
-Server-side integrations:
-
-* [Express](docs/examples.md#express)
-* [Hapi](docs/examples.md#hapi)
-* [Gulp](docs/examples.md#gulp)
-
-Client-side integrations:
-
-* [Angular 1.x](docs/examples.md#angular-1)
-* [Angular 2](docs/examples.md#angular-2)
-* [React](docs/examples.md#react)
-* [Ember](docs/examples.md#ember)
-
-Custom strategies:
-
-* [Listening for events](docs/examples.md#listen-strategy)
-* [Replaying events](docs/examples.md#replay-strategy)
-* [Freezing screen](docs/examples.md#freeze-strategy)
 
 ## Options
 
@@ -115,21 +94,3 @@ These are the names of global events that can affect the preboot workflow:
 
 * `uglify` - You can always uglify the output of the client code stream yourself, but if you set this
 option to true preboot will do it for you.
-
-## Play
-
-If you want to play with this library you can clone it locally:
-
-```
-git clone git@github.com:jeffwhelpley/preboot.git
-cd preboot
-gulp build
-gulp play
-```
-
-Open your browser to http://localhost:3000. Make modifications to the options in build/task.build.js
-to see how preboot can be changed.
-
-## Contributors
-
-We would welcome any and all contributions. Please see the [Contributors Guide](docs/contributors.md).

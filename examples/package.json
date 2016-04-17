@@ -1,0 +1,49 @@
+{
+  "name": "examples",
+  "version": "0.0.0",
+  "description": "Universal (isomorphic) javascript support for Angular2",
+  "main": "index.js",
+  "scripts": {
+    "prebuild": "rm -rf dist",
+    "remove-modules": "rm -rf node_modules/angular2-universal node_modules/angular2-universal-polyfills node_modules/preboot node_modules/angular2-universal-preview node_modules/angular2-express-engine node_modules/angular2-hapi-engine node_modules/zone.js",
+    "reload": "npm run remove-modules && npm install",
+    "build": "tsc || true",
+    "server": "node dist/index.js",
+    "start": "npm run build && npm run server",
+    "debug": "npm run build && node-debug dist/index.js",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "preinstall": "typings install"
+  },
+  "author": "PatrickJS",
+  "license": "MIT",
+  "devDependencies": {
+    "connect-history-api-fallback": "^1.1.0",
+    "express": "^4.13.4",
+    "falcor": "^0.1.16",
+    "falcor-express": "^0.1.2",
+    "falcor-router": "^0.3.0",
+    "gulp-insert": "^0.5.0",
+    "gulp-rename": "^1.2.2",
+    "gulp-uglify": "^1.5.3",
+    "morgan": "^1.7.0",
+    "ts-node": "^0.6.1",
+    "vinyl-buffer": "^1.0.0",
+    "vinyl-source-stream": "^1.1.0",
+    "preboot": "file:../modules/preboot",
+    "angular2-hapi-engine": "file:../modules/hapi-engine",
+    "angular2-express-engine": "file:../modules/express-engine",
+    "angular2-universal": "file:../modules/universal",
+    "angular2-universal-polyfills": "file:../modules/polyfills"
+  },
+  "dependencies": {
+    "angular2": "2.0.0-beta.15",
+    "express": "^4.13.3",
+    "rxjs": "5.0.0-beta.2",
+    "zone.js": "~0.6.11",
+    "systemjs": "^0.19.18"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/angular/universal"
+  }
+}

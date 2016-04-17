@@ -1,0 +1,43 @@
+{
+  "name": "angular2-hapi-engine",
+  "main": "dist/index.js",
+  "typings": "dist/index.d.ts",
+  "version": "0.10.1",
+  "description": "Universal (isomorphic) javascript support for Angular2",
+  "homepage": "https://github.com/angular/universal",
+  "license": "MIT",
+  "contributors": [
+    "Tobias Bosch <tbosch@google.com>",
+    "PatrickJS <github@gdi2290.com>",
+    "Jeff Whelpley <jeff@gethuman.com>"
+  ],
+  "scripts": {
+    "remove-modules": "rm -rf node_modules/angular2-universal-preview node_modules/angular2-universal node_modules/angular2-express-engine node_modules/preboot node_modules/angular2-hapi-engine node_modules/angular2-universal-polyfills",
+    "reload": "npm run remove-modules && npm install",
+    "prebuild": "rm -rf dist",
+    "build": "tsc || true",
+    "postbuild": "typings install",
+    "prepublish": "npm run build"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/angular/universal"
+  },
+  "bugs": {
+    "url": "https://github.com/angular/universal/issues"
+  },
+  "devDependencies": {
+    "angular2-universal": "file:../universal",
+    "preboot": "file:../preboot",
+    "rxjs": "5.0.0-beta.2",
+    "zone.js": "~0.6.10",
+    "angular2": "2.0.0-beta.13",
+    "rimraf": "^2.5.2",
+    "typescript": "^1.8.9"
+  },
+  "dependencies": {
+  },
+  "peerDependencies": {
+    "angular2-universal": ">=0.90.0"
+  }
+}

@@ -1,0 +1,44 @@
+{
+  "name": "angular2-gulp-prerender",
+  "main": "dist/index.js",
+  "typings": "dist/index.d.ts",
+  "version": "0.10.1",
+  "description": "Prerender your Universal (isomorphic) Angular 2 app",
+  "homepage": "https://github.com/angular/universal",
+  "license": "MIT",
+  "contributors": [
+    "Tobias Bosch <tbosch@google.com>",
+    "PatrickJS <github@gdi2290.com>",
+    "Jeff Whelpley <jeff@gethuman.com>"
+  ],
+  "scripts": {
+    "remove-modules": "rm -rf dist node_modules/preboot node_modules/angular2-universal-preview node_modules/angular2-universal",
+    "reload": "npm run remove-modules && npm install",
+    "prebuild": "rm -rf dist",
+    "build": "tsc || true",
+    "prepublish": "npm run build"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/angular/universal"
+  },
+  "bugs": {
+    "url": "https://github.com/angular/universal/issues"
+  },
+  "devDependencies": {
+    "preboot": "file:../preboot",
+    "angular2-universal": "file:../universal",
+    "rimraf": "^2.5.1",
+    "angular2": "2.0.0-beta.13",
+    "rxjs": "~5.0.0-beta.2",
+    "zone.js": "~0.6.10",
+    "typescript": "^1.8.9"
+  },
+  "dependencies": {
+    "gutil": "^1.6.4",
+    "through2": "^2.0.0"
+  },
+  "peerDependencies": {
+    "angular2-universal": ">=0.90.0"
+  }
+}

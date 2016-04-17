@@ -1,0 +1,41 @@
+{
+  "name": "angular2-webpack-prerender",
+  "main": "dist/index.js",
+  "version": "0.6.0",
+  "description": "Prerender your Universal (isomorphic) Angular 2 app with Webpack",
+  "homepage": "https://github.com/angular/universal",
+  "license": "MIT",
+  "contributors": [
+    "Tobias Bosch <tbosch@google.com>",
+    "PatrickJS <github@gdi2290.com>",
+    "Jeff Whelpley <jeff@gethuman.com>"
+  ],
+  "scripts": {
+    "remove-modules": "rm -rf dist node_modules/preboot node_modules/angular2-universal-preview node_modules/angular2-universal",
+    "reload": "npm run remove-modules && npm install",
+    "prebuild": "rm -rf dist",
+    "build": "tsc || true",
+    "prepublish": "npm run build"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/angular/universal"
+  },
+  "bugs": {
+    "url": "https://github.com/angular/universal/issues"
+  },
+  "devDependencies": {
+    "preboot": "file:../preboot",
+    "angular2-universal-preview": "file:../universal",
+    "rimraf": "^2.5.1",
+    "angular2": "2.0.0-beta.12",
+    "rxjs": "~5.0.0-beta.2",
+    "zone.js": "~0.6.4",
+    "typescript": "^1.8.9"
+  },
+  "dependencies": {
+  },
+  "peerDependencies": {
+    "angular2-universal-preview": ">=0.85.1"
+  }
+}

@@ -1,44 +1,68 @@
 {
   "name": "preboot",
-  "version": "1.0.2",
-  "description": "Record and play back client side events",
-  "main": "dist/server.js",
+  "version": "2.0.5",
+  "description": "Record and play back browser events",
+  "main": "dist/src/node/preboot_node.js",
+  "browser": "dist/src/browser/preboot_browser.js",
+  "typings": "dist/src/node/preboot_node.d.ts",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "prebuild": "rm -rf dist",
+    "build": "tsc || true",
+    "prepublish": "npm run build"
   },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/angular/universal"
-  },
+  "files": [
+    "src",
+    "dist"
+  ],
   "author": "Jeff Whelpley",
-  "license": "Apache-2.0",
+  "license": "MIT",
   "contributors": [
     "Tobias Bosch <tbosch@google.com>",
     "PatrickJS <github@gdi2290.com>",
     "Jeff Whelpley <jeff@gethuman.com>"
   ],
-  "bugs": {
-    "url": "https://github.com/angular/universal/issues"
-  },
-  "homepage": "https://github.com/angular/universal/tree/master/modules/preboot",
   "devDependencies": {
-    "gulp-jasmine": "^2.1.0",
-    "jasmine": "^2.3.2",
-    "jasmine-reporters": "^2.0.7",
-    "jasmine-spec-reporter": "^2.4.0",
-    "karma": "^0.13.11",
-    "karma-jasmine": "^0.3.6"
+    "connect-livereload": "^0.5.4",
+    "del": "^2.2.0",
+    "express": "^4.13.4",
+    "gulp-jasmine": "^2.3.0",
+    "gulp-livereload": "^3.8.1",
+    "gulp-size": "^2.1.0",
+    "gulp-tslint": "^4.3.4",
+    "gulp-typedoc": "^1.2.1",
+    "gulp-typescript": "^2.12.1",
+    "jasmine": "^2.4.1",
+    "jasmine-reporters": "^2.1.1",
+    "karma": "^0.13.22",
+    "karma-browserify": "^5.0.3",
+    "karma-chrome-launcher": "^0.2.3",
+    "karma-jasmine": "^0.3.8",
+    "karma-phantomjs-launcher": "^1.0.0",
+    "open": "0.0.5",
+    "phantomjs-prebuilt": "^2.1.7",
+    "serve-static": "^1.10.2",
+    "tslint": "^3.6.0",
+    "typescript": "^1.8.9",
+    "watchify": "^3.7.0"
   },
   "dependencies": {
-    "browserify": "^11.2.0",
+    "browserify": "^13.0.0",
     "event-stream": "^3.3.2",
-    "gulp": "^3.9.0",
+    "gulp": "^3.9.1",
     "gulp-insert": "^0.5.0",
     "gulp-rename": "^1.2.2",
-    "gulp-uglify": "^1.4.2",
-    "lodash": "^3.10.1",
+    "gulp-uglify": "^1.5.3",
+    "lodash": "^4.7.0",
     "q": "^1.4.1",
     "vinyl-buffer": "^1.0.0",
     "vinyl-source-stream": "^1.1.0"
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/angular/universal"
+  },
+  "bugs": {
+    "url": "https://github.com/angular/universal/issues"
+  },
+  "homepage": "https://github.com/angular/universal/tree/master/modules/preboot"
 }

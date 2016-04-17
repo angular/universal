@@ -1,21 +1,70 @@
 {
-  "name": "angular2-universal-preview",
-  "main": "dist/server/server.js",
-  "browser": "dist/client/client.js",
-  "typings": "universal.d.ts",
-  "typescript": { "definition": "universal.d.ts" },
-  "version": "0.24.0",
+  "name": "angular2-universal",
+  "version": "0.94.2",
   "description": "Universal (isomorphic) javascript support for Angular2",
   "homepage": "https://github.com/angular/universal",
-  "license": "Apache-2.0",
+  "license": "MIT",
   "contributors": [
     "Tobias Bosch <tbosch@google.com>",
     "PatrickJS <github@gdi2290.com>",
     "Jeff Whelpley <jeff@gethuman.com>"
   ],
+  "typings": "dist/typings.d.ts",
+  "main": "dist/node/index.js",
+  "browser": "dist/browser/index.js",
+  "files": [
+    "dist",
+    "src",
+    "parse5.d.ts",
+    "parse5.js",
+    "polyfills.d.ts",
+    "polyfills.js",
+    "global.d.ts",
+    "global.js",
+    "mock.d.ts",
+    "mock.js"
+  ],
   "scripts": {
+    "remove-modules": "rm -rf node_modules/angular2-universal-preview node_modules/angular2-universal node_modules/angular2-express-engine node_modules/preboot node_modules/angular2-hapi-engine node_modules/angular2-universal-polyfills",
+    "reload": "npm run remove-modules && npm install && npm install",
+    "prebuild": "rm -rf dist",
     "build": "tsc || true",
     "prepublish": "npm run build"
+  },
+  "devDependencies": {
+    "angular2-universal": "file:.",
+    "angular2-universal-polyfills": "file:../polyfills",
+    "angular2-express-engine": "file:../express-engine",
+    "angular2-hapi-engine": "file:../hapi-engine",
+    "preboot": "file:../preboot",
+    "angular2": "2.0.0-beta.15",
+    "zone.js": "~0.6.11",
+    "es6-shim": "^0.35.0",
+    "es6-promise": "^3.0.2",
+    "reflect-metadata": "0.1.2",
+    "typescript": "~1.8.9",
+    "rxjs": "~5.0.0-beta.2",
+    "css": "^2.2.1",
+    "parse5": "^1.5.0"
+  },
+  "dependencies": {
+    "angular2-universal-polyfills": ">=0.4.0",
+    "angular2-express-engine": ">=0.10.0",
+    "angular2-hapi-engine": ">=0.10.1",
+    "xhr2": "^0.1.3",
+    "css": "^2.2.1",
+    "parse5": "^1.5.0"
+  },
+  "peerDependencies": {
+    "preboot": ">=2.0.4",
+    "angular2-universal-polyfills": ">=0.4.0",
+    "angular2-express-engine": ">=0.10.0",
+    "angular2-hapi-engine": ">=0.10.1",
+    "rxjs": "~5.0.0-beta.2",
+    "angular2": "2.0.0-beta.15",
+    "zone.js": "0.6.11 - 0.6.100",
+    "css": "^2.2.1",
+    "parse5": "^1.5.0"
   },
   "repository": {
     "type": "git",
@@ -23,26 +72,5 @@
   },
   "bugs": {
     "url": "https://github.com/angular/universal/issues"
-  },
-  "devDependencies": {
-    "typescript": "^1.7.3"
-  },
-  "dependencies": {
-    "css": "^2.2.1",
-    "es6-shim": "^0.33.6",
-    "parse5": "^1.5.0",
-    "preboot": "^1.0.2",
-    "angular2": "2.0.0-beta.0",
-    "es6-promise": "^3.0.2",
-    "reflect-metadata": "0.1.2",
-    "rxjs": "5.0.0-beta.0",
-    "zone.js": "0.5.10",
-    "xhr2": "0.1.3"
-  },
-  "peerDependencies": {
-    "rxjs": "5.0.0-beta.0",
-    "angular2": "2.0.0-beta.0",
-    "css": "*",
-    "parse5": "^1.5.0"
   }
 }
