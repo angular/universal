@@ -25,6 +25,7 @@ export interface BootloaderConfig {
   primeCache?: boolean;
   async?: boolean;
   prime?: boolean;
+  maxZoneTurns?: number;
   bootloader?: Bootloader | any;
   ngOnInit?: (config: configRefs, document: any) => any;
   ngOnStable?: (config: configRefs, document: any) => any;
@@ -33,7 +34,7 @@ export interface BootloaderConfig {
 }
 
 export class Bootloader {
-  private _config: BootloaderConfig = {};
+  private _config: BootloaderConfig = { async: true, preboot: false };
   platformRef: any;
   applicationRef: any;
   constructor(config: BootloaderConfig) {
@@ -98,6 +99,7 @@ export class Bootloader {
     let component = Component || this._config.component;
     let providers = componentProviders || this._config.componentProviders;
     let ngDoCheck = this._config.ngDoCheck || null;
+    let maxZoneTurns = Math.max(this._config.maxZoneTurns || 2000, 1);
 
     return this._applicationAll(component, providers)
       .then((configRefs: any) => {
@@ -113,10 +115,6 @@ export class Bootloader {
         throw err;
       })
       .then((configRefs: any) => {
-        if ('precache' in this._config && this._config.precache) {
-          console.log('Please set `async: true` rather than `precache: true`');
-          this._config.async = true;
-        }
         if ('async' in this._config) {
           if (!this._config.async) {
             return configRefs;
@@ -135,6 +133,10 @@ export class Bootloader {
                 function checkStable() {
                   // we setTimeout 10 after the first 20 turns
                   checkCount++;
+                  if (checkCount === maxZoneTurns) {
+                    console.warn('\nWARNING: your application is taking longer than ' + maxZoneTurns + ' Zone turns. \n');
+                    return resolve(config);
+                  }
                   if (checkCount === 20) { checkAmount = 10; }
 
                   setTimeout(() => {
