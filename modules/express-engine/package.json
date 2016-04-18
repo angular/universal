@@ -2,7 +2,7 @@
   "name": "angular2-express-engine",
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
-  "version": "0.10.0",
+  "version": "0.11.0",
   "description": "Universal (isomorphic) javascript support for Angular2",
   "homepage": "https://github.com/angular/universal",
   "license": "MIT",
@@ -26,15 +26,15 @@
     "url": "https://github.com/angular/universal/issues"
   },
   "devDependencies": {
-    "angular2": "2.0.0-beta.13",
+    "angular2": "2.0.0-beta.15",
     "rxjs": "5.0.0-beta.2",
-    "typescript": "^1.8.9",
+    "typescript": "^1.8.10",
     "angular2-universal": "file:../universal",
     "preboot": "file:../preboot"
   },
   "dependencies": {
   },
   "peerDependencies": {
-    "angular2-universal": ">=0.90.1"
+    "angular2-universal": ">=0.95.0"
   }
 }

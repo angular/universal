@@ -1,8 +1,9 @@
-import { Injectable, Inject, Optional, OpaqueToken } from 'angular2/core';
-import { PlatformLocation, APP_BASE_HREF } from 'angular2/router';
+import {Injectable, Inject, Optional} from 'angular2/core';
+import {PlatformLocation} from 'angular2/router';
 import * as nodeUrl from 'url';
+import {REQUEST_URL, BASE_URL} from '../../common';
 
-export const REQUEST_URL = new OpaqueToken('requestUrl');
+
 
 export interface LocationConfig {
   pathname?: string;
@@ -106,7 +107,7 @@ export class NodePlatformLocation extends PlatformLocation {
 
   constructor(
     @Inject(REQUEST_URL) requestUrl: string,
-    @Optional() @Inject(APP_BASE_HREF) baseUrl?: string) {
+    @Optional() @Inject(BASE_URL) baseUrl?: string) {
     super();
     this._baseHref = baseUrl || '/';
     this.pushState(null, null, joinWithSlash(this._baseHref, requestUrl));

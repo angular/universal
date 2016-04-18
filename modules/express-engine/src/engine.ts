@@ -4,7 +4,7 @@ import {DOCUMENT} from 'angular2/platform/common_dom';
 import {selectorRegExpFactory, Bootloader, BootloaderConfig} from 'angular2-universal';
 
 
-export interface ExpressEngineConfig {
+export interface ExpressEngineExtraOptions {
   server?: boolean;
   client?: boolean;
   selector?: string;
@@ -12,11 +12,17 @@ export interface ExpressEngineConfig {
   bootloader?: any;
 }
 
-export type ExpressEngineOptions = BootloaderConfig & ExpressEngineConfig;
+export type ExpressEngineConfig = BootloaderConfig & ExpressEngineExtraOptions;
 
-export function expressEngine(filePath: string, options?: ExpressEngineOptions, done?: Function) {
+export var EXPRESS_PLATFORM = null;
+
+export function disposeExpressPlatform() {
+  EXPRESS_PLATFORM = null;
+}
+
+export function expressEngine(filePath: string, options?: ExpressEngineConfig, done?: Function) {
   // defaults
-  options = options || <ExpressEngineOptions>{};
+  options = options || <ExpressEngineConfig>{};
   options.providers = options.providers || undefined;
   options.preboot   = options.preboot   || undefined;
 
@@ -46,20 +52,23 @@ export function expressEngine(filePath: string, options?: ExpressEngineOptions, 
       }
 
       // bootstrap and render component to string
-      const _options = options;
-      const _template = clientHtml;
-      const _Bootloader = Bootloader;
-      let bootloader = _options.bootloader;
-      if (_options.bootloader) {
-        bootloader = _Bootloader.create(_options.bootloader);
-      } else {
-        let doc = _Bootloader.parseDocument(_template);
-        _options.document = doc;
-        _options.template = _options.template || _template;
-        bootloader = _Bootloader.create(_options);
+      if (!EXPRESS_PLATFORM) {
+        const _options = options;
+        const _template = clientHtml;
+        const _Bootloader = Bootloader;
+        let bootloader = _options.bootloader;
+        if (_options.bootloader) {
+          bootloader = _Bootloader.create(_options.bootloader);
+        } else {
+          let doc = _Bootloader.parseDocument(_template);
+          _options.document = doc;
+          _options.template = _options.template || _template;
+          bootloader = _Bootloader.create(_options);
+        }
+        EXPRESS_PLATFORM = bootloader;
       }
 
-      bootloader.serializeApplication()
+      EXPRESS_PLATFORM.serializeApplication()
         .then(html => done(null, buildClientScripts(html, options)))
         .catch(e => {
           console.error(e.stack);
@@ -72,23 +81,23 @@ export function expressEngine(filePath: string, options?: ExpressEngineOptions, 
   }
 };
 
-export function ng2engine(filePath: string, options: ExpressEngineOptions, done: Function) {
+export function ng2engine(filePath: string, options: ExpressEngineConfig, done: Function) {
   console.warn('DEPRECATION WARNING: `ng2engine` is no longer supported and will be removed in next release. use `expressEngine`');
   return expressEngine(filePath, options, done);
 };
 
-export function ng2Engine(filePath: string, options: ExpressEngineOptions, done: Function) {
+export function ng2Engine(filePath: string, options: ExpressEngineConfig, done: Function) {
   console.warn('DEPRECATION WARNING: `ng2Engine` is no longer supported and will be removed in next release. use `expressEngine`');
   return expressEngine(filePath, options, done);
 };
-export function ng2ExpressEngine(filePath: string, options: ExpressEngineOptions, done: Function) {
+export function ng2ExpressEngine(filePath: string, options: ExpressEngineConfig, done: Function) {
   console.warn('DEPRECATION WARNING: `ng2ExpressEngine` is no longer supported and will be removed in next release. use `expressEngine`');
   return expressEngine(filePath, options, done);
 };
 
-export function simpleReplace(filePath: string, options: ExpressEngineOptions, done: Function) {
+export function simpleReplace(filePath: string, options: ExpressEngineConfig, done: Function) {
   // defaults
-  options = options || <ExpressEngineOptions>{};
+  options = options || <ExpressEngineConfig>{};
 
   // read file on disk
   try {
