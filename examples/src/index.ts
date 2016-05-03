@@ -38,7 +38,7 @@ if (framework === 'hapi') {
     server = require(example)(ROOT);
   } catch (e) {
     console.trace(e);
-    process.exit(1);
+    // process.exit(1);
   }
 
   module.exports.Server = http
@@ -46,7 +46,7 @@ if (framework === 'hapi') {
     .listen(port, SERVER_IP, function() {
       console.log(`Listening on port: ${port}`);
       // for smoke testing
-      // smokeTest();
+      smokeTest();
     });
 
 }
