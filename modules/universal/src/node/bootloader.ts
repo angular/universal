@@ -277,7 +277,7 @@ export class Bootloader {
       // var applicationRef = this.application(doc, providers);
       // .then(waitRouter)); // fixed by checkStable()
       let appInjector = this.application(doc, providers);
-      let compRef = coreLoadAndBootstrap(this.application(doc, providers), component);
+      let compRef = coreLoadAndBootstrap(appInjector, component);
       // let compRef = Promise.resolve(applicationRef.bootstrap(component));
       return compRef.then(componentRef => ({
         applicationRef: appInjector.get(ApplicationRef),
