@@ -1,6 +1,7 @@
-import {Type} from 'angular2/src/facade/lang';
-import {Provider, ComponentRef} from 'angular2/core';
-import {bootstrap as bootstrapClient} from 'angular2/platform/browser';
+import {Type} from '@angular/facade/lang';
+import {Provider} from '@angular/core';
+import {bootstrapStatic as bootstrapClient} from '@angular/platform-browser';
+import {ComponentRef} from '@angular/core/src/linker/component_factory';
 
 var prebootCompleted = false;
 

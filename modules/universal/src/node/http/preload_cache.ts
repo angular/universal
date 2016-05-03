@@ -6,7 +6,7 @@ import {
   Inject,
   EventEmitter,
   NgZone
-} from 'angular2/core';
+} from '@angular/core';
 
 import {Observable} from 'rxjs';
 
@@ -28,11 +28,11 @@ import {
   ReadyState,
   BrowserXhr,
   RequestMethod
-} from 'angular2/http';
-import {MockBackend} from 'angular2/src/http/backends/mock_backend';
+} from '@angular/http';
+import {MockBackend} from '@angular/http/backends/mock_backend';
 
 
-import {isPresent, isBlank, CONST_EXPR} from 'angular2/src/facade/lang';
+import {isPresent, isBlank, CONST_EXPR} from '@angular/facade/lang';
 
 // CJS
 import {XMLHttpRequest} from 'xhr2';

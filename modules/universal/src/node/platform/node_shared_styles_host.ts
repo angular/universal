@@ -1,8 +1,8 @@
-import {DOM} from 'angular2/src/platform/dom/dom_adapter';
-import {Inject, Injectable} from 'angular2/src/core/di';
-import {SetWrapper} from 'angular2/src/facade/collection';
-import {DOCUMENT} from 'angular2/src/platform/dom/dom_tokens';
-import {SharedStylesHost} from 'angular2/src/platform/dom/shared_styles_host';
+import {DOM} from '@angular/platform-browser/src/dom/dom_adapter';
+import {Inject, Injectable} from '@angular/core/di';
+import {SetWrapper} from '@parse5angular/facade/collection';
+import {DOCUMENT} from '@angular/platform-browser/src/dom/dom_tokens';
+import {SharedStylesHost} from '@angular/platform-browser/src/dom/shared_styles_host';
 
 @Injectable()
 export class NodeSharedStylesHost extends SharedStylesHost {
