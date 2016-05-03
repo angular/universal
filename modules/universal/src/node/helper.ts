@@ -1,8 +1,8 @@
-import {ReflectorComponentResolver} from 'angular2/src/core/linker/component_resolver';
-var componentResolver: any = new ReflectorComponentResolver();
+import {DirectiveResolver} from 'angular2/src/compiler/directive_resolver';
+let directiveResolver = new DirectiveResolver();
 
 export function serverDirectiveResolver(componentType: any): any {
-  return componentResolver.resolveComponent(componentType);
+  return directiveResolver.resolve(componentType);
 }
 
 export function selectorResolver(componentType: /*Type*/ any): string {

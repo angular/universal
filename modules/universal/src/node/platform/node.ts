@@ -11,7 +11,7 @@ import {AnimationBuilder} from 'angular2/src/animate/animation_builder';
 // Core
 import {Testability} from 'angular2/src/core/testability/testability';
 import {ReflectionCapabilities} from 'angular2/src/core/reflection/reflection_capabilities';
-import {ReflectorComponentResolver} from 'angular2/src/core/linker/component_resolver';
+import {DirectiveResolver} from 'angular2/src/compiler/directive_resolver';
 import {
   provide,
   Provider,
@@ -131,16 +131,16 @@ export function bootstrap(
     ...NODE_APP_PROVIDERS,
 
     new Provider(DOCUMENT, {
-      useFactory: (componentResolver, sharedStylesHost) => {
+      useFactory: (directiveResolver, sharedStylesHost) => {
         // TODO(gdi2290): determine a better for document on the server
-        let selector = componentResolver.resolve(appComponentType).selector;
+        let selector = directiveResolver.resolve(appComponentType);
         let serverDocument = DOM.createHtmlDocument();
         let el = DOM.createElement(selector);
         DOM.appendChild(serverDocument.body, el);
         sharedStylesHost.addHost(serverDocument.head);
         return serverDocument;
       },
-      deps: [ReflectorComponentResolver, NodeSharedStylesHost]
+      deps: [DirectiveResolver, NodeSharedStylesHost]
     }),
 
     ...(isPresent(customAppProviders) ? customAppProviders : [])
