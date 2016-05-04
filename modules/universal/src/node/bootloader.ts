@@ -1,5 +1,5 @@
-import {DOCUMENT} from 'angular2/platform/common_dom';
-import {DOM} from 'angular2/src/platform/dom/dom_adapter';
+import {DOCUMENT} from '@angular/platform-browser';
+import {DOM} from '@angular/platform-browser/src/dom/dom_adapter';
 import {
   NgZone,
   Injector,
@@ -9,8 +9,8 @@ import {
   ComponentRef,
   PlatformRef,
   ApplicationRef
-} from 'angular2/core';
-import {Http} from 'angular2/http';
+} from '@angular/core';
+import {Http} from '@angular/http';
 
 
 import {buildReflector, buildNodeProviders, buildNodeAppProviders} from './platform/node';

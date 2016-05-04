@@ -1,6 +1,6 @@
-import {OpaqueToken} from 'angular2/core';
+import {OpaqueToken} from '@angular/core';
 import {Parser, Serializer, TreeAdapters} from 'parse5';
-import {DOM} from 'angular2/src/platform/dom/dom_adapter';
+import {DOM} from '@angular/platform-browser/src/dom/dom_adapter';
 
 const parser = new Parser(TreeAdapters.htmlparser2);
 // TODO(gdi2290): fix encodeHtmlEntities: true

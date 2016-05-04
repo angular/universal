@@ -5,10 +5,10 @@ import {
   Injectable,
   Optional,
   Inject
-} from 'angular2/core';
+} from '@angular/core';
 
-import {Renderer} from 'angular2/core';
-import {isPresent, CONST_EXPR} from 'angular2/src/facade/lang';
+import {Renderer} from '@angular/core';
+import {isPresent, CONST_EXPR} from '@angular/facade/lang';
 
 export const APP_LOCATION: OpaqueToken = CONST_EXPR(new OpaqueToken('appLocation'));
 

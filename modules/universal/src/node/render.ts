@@ -4,7 +4,7 @@ import {
   buildNodeProviders,
   buildNodeAppProviders
 } from './platform/node';
-import {DOCUMENT} from 'angular2/platform/common_dom';
+import {DOCUMENT} from '@angular/platform-browser';
 import {parseDocument, serializeDocument} from './platform/document';
 
 import {
@@ -20,13 +20,13 @@ import {
   createPrebootCode
 } from './ng_preboot';
 
-import {isBlank, isPresent} from 'angular2/src/facade/lang';
+import {isBlank, isPresent} from '@angular/facade/lang';
 
-import {SharedStylesHost} from 'angular2/src/platform/dom/shared_styles_host';
+import {SharedStylesHost} from '@angular/platform-browser/src/dom/shared_styles_host';
 
-import {NgZone, ComponentRef, Provider, Type} from 'angular2/core';
-import {Http} from 'angular2/http';
-import {Router} from 'angular2/router';
+import {NgZone, ComponentRef, Provider, Type} from '@angular/core';
+import {Http} from '@angular/http';
+import {Router} from '@angular/router';
 
 
 

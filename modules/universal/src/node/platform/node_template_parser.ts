@@ -4,7 +4,7 @@ import {
   StringMapWrapper,
   SetWrapper,
   MapWrapper
-} from 'angular2/src/facade/collection';
+} from '@angular/facade/collection';
 import {
   CONST_EXPR,
   RegExpWrapper,
@@ -12,10 +12,9 @@ import {
   StringWrapper,
   isBlank,
   isArray
-} from 'angular2/src/facade/lang';
-import {Injectable, Inject, OpaqueToken, Optional} from 'angular2/core';
-import {Console} from 'angular2/src/core/console';
-import {BaseException} from 'angular2/src/facade/exceptions';
+} from '@angular/facade/lang';
+import {Injectable, Inject, OpaqueToken, Optional} from '@angular/core';
+import {BaseException} from '@angular/facade/exceptions';
 import {
   AST,
   Interpolation,
@@ -23,8 +22,9 @@ import {
   TemplateBinding,
   RecursiveAstVisitor,
   BindingPipe
-} from 'angular2/src/compiler/expression_parser/ast';
-import {Parser} from 'angular2/src/compiler/expression_parser/parser';
+} from '@angular/compiler/src/expression_parser/ast';
+import {Parser} from '@angular/compiler/src/expression_parser/parser';
+import {TemplateBinding} from '@angular/core/change_detection/parser/ast';
 import {
   CompileTokenMap,
   CompileDirectiveMetadata,
@@ -34,9 +34,9 @@ import {
   CompileTokenMetadata,
   CompileTypeMetadata
 } from 'angular2/src/compiler/compile_metadata';
-import {HtmlParser} from 'angular2/src/compiler/html_parser';
-import {splitNsName, mergeNsAndName} from 'angular2/src/compiler/html_tags';
-import {ParseSourceSpan, ParseError, ParseLocation, ParseErrorLevel} from 'angular2/src/compiler/parse_util';
+import {HtmlParser} from '@angular/compiler/html_parser';
+import {splitNsName, mergeNsAndName} from '@angular/compiler/html_tags';
+import {ParseSourceSpan, ParseError, ParseLocation} from '@angular/compiler/parse_util';
 import {MAX_INTERPOLATION_VALUES} from 'angular2/src/core/linker/view_utils';
 
 import {
@@ -58,13 +58,13 @@ import {
   ProviderAst,
   ProviderAstType,
   VariableAst
-} from 'angular2/src/compiler/template_ast';
-import {CssSelector, SelectorMatcher} from 'angular2/src/compiler/selector';
+} from '@angular/compiler/template_ast';
+import {CssSelector, SelectorMatcher} from '@angular/compiler/selector';
 
-import {ElementSchemaRegistry} from 'angular2/src/compiler/schema/element_schema_registry';
-import {preparseElement, PreparsedElement, PreparsedElementType} from 'angular2/src/compiler/template_preparser';
+import {ElementSchemaRegistry} from '@angular/compiler/schema/element_schema_registry';
+import {preparseElement, PreparsedElement, PreparsedElementType} from '@angular/compiler/template_preparser';
 
-import {isStyleUrlResolvable} from 'angular2/src/compiler/style_url_resolver';
+import {isStyleUrlResolvable} from '@angular/compiler/style_url_resolver';
 
 import {
   HtmlAstVisitor,
@@ -76,12 +76,12 @@ import {
   HtmlExpansionAst,
   HtmlExpansionCaseAst,
   htmlVisitAll
-} from 'angular2/src/compiler/html_ast';
+} from '@angular/compiler/html_ast';
 
-import {splitAtColon} from 'angular2/src/compiler/util';
-import {identifierToken, Identifiers} from 'angular2/src/compiler/identifiers';
-
-import {ProviderElementContext, ProviderViewContext} from 'angular2/src/compiler/provider_parser';
+import {splitAtColon} from '@angular/compiler/util';
+import {identifierToken, Identifiers} from '@angular/compiler/src/identifiers';
+import {ProviderElementContext, ProviderViewContext} from '@angular/compiler/src/provider_parser';
+/* tslint:disable */
 
 // Group 1 = "bind-"
 // Group 2 = "var-"
