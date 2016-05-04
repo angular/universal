@@ -1,6 +1,6 @@
 import {provide} from '@angular/core';
 import {PlatformLocation} from '@angular/common';
-import {ROUTER_PROVIDERS_COMMON} from '@angular/router';
+import {ROUTER_PROVIDERS_COMMON} from '@angular/router-deprecated';
 
 import {NodePlatformLocation} from './node_platform_location';
 

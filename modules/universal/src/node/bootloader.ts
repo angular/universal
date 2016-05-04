@@ -1,5 +1,5 @@
 import {DOCUMENT} from '@angular/platform-browser';
-import {DOM} from '@angular/platform-browser/src/dom/dom_adapter';
+import {Parse5DomAdapter} from '@angular/platform-server';
 import {
   NgZone,
   Injector,
@@ -18,7 +18,9 @@ import {parseDocument, parseFragment, serializeDocument} from './platform/docume
 import {createPrebootCode} from './ng_preboot';
 import {arrayFlattenTree} from './helper';
 
-export type configRefs = {componentRef: ComponentRef, applicationRef: ApplicationRef};
+var DOM:any = Parse5DomAdapter;
+
+export type configRefs = {componentRef: ComponentRef<any>, applicationRef: ApplicationRef};
 
 export interface BootloaderConfig {
   template?: string;

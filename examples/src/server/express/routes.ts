@@ -8,9 +8,9 @@ var routerApp = require('../../universal/test_router/app');
 var htmlApp = require('../../universal/html/html');
 var templateUrlApp = require('../../universal/template_url/app');
 
-import {enableProdMode, provide} from 'angular2/core';
-import {Http} from 'angular2/http';
-import {LocationStrategy, HashLocationStrategy} from 'angular2/platform/common';
+import {enableProdMode, provide} from '@angular/core';
+import {Http} from '@angular/http';
+import {LocationStrategy, HashLocationStrategy} from '@angular/common';
 
 enableProdMode();
 

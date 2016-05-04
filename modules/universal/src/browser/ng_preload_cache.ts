@@ -10,7 +10,7 @@ import {
 import {
   isPresent,
   isBlank
-} from '@angular/facade/lang';
+} from '@angular/core/src/facade/lang';
 
 import {
   provide,

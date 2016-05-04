@@ -2,10 +2,9 @@
 import {Parse5DomAdapter} from '@angular/platform-server/src/parse5_adapter';
 Parse5DomAdapter.makeCurrent();
 
-import {ListWrapper, MapWrapper} from '@angular/facade/collection';
-import {DOM} from '@angular/platform-browser/src/dom/dom_adapter';
-import {isPresent, isString, StringWrapper} from '@angular/facade/lang';
-
+import {ListWrapper, MapWrapper} from '@angular/core/src/facade/collection';
+import {isPresent, isString, StringWrapper} from '@angular/core/src/facade/lang';
+var DOM:any = Parse5DomAdapter;
 var _singleTagWhitelist = ['br', 'hr', 'input'];
 export function stringifyElement(el): string {
   var result = '';

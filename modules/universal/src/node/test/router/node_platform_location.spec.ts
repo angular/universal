@@ -1,4 +1,4 @@
-import {describe, it, expect, beforeEach} from '@angular/testing';
+import {describe, it, expect, beforeEach} from '@angular/core/testing';
 
 import {format, parse} from 'url';
 import {PlatformLocation} from '@angular/common';

@@ -5,7 +5,7 @@ import * as fs from 'fs';
 import {ORIGIN_URL, BASE_URL} from '../../common';
 import {NgZone, Inject, Optional} from '@angular/core';
 import {XHR} from '@angular/compiler';
-import {PromiseWrapper, PromiseCompleter} from '@angular/facade/promise';
+import {PromiseWrapper, PromiseCompleter} from '@angular/core/src/facade/promise';
 
 export class NodeXHRImpl extends XHR {
   _baseUrl: string;

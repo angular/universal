@@ -8,8 +8,9 @@ import {
 } from '@angular/core';
 
 import {Renderer} from '@angular/core';
-import {isPresent, CONST_EXPR} from '@angular/facade/lang';
+import {isPresent} from '@angular/core/src/facade/lang';
 
+const CONST_EXPR = v => v;
 export const APP_LOCATION: OpaqueToken = CONST_EXPR(new OpaqueToken('appLocation'));
 
 @Directive({

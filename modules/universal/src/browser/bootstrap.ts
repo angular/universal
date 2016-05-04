@@ -1,4 +1,4 @@
-import {Type} from '@angular/facade/lang';
+import {Type} from '@angular/core/src/facade/lang';
 import {Provider} from '@angular/core';
 import {bootstrapStatic as bootstrapClient} from '@angular/platform-browser';
 import {ComponentRef} from '@angular/core/src/linker/component_factory';
@@ -14,7 +14,7 @@ export function prebootComplete(value?: any) {
 
 export function bootstrap(appComponentType: /*Type*/ any,
                           appProviders: Array<Type | Provider | any | any[]> = null):
-  Promise<ComponentRef> {
+  Promise<ComponentRef<any>> {
 
   return bootstrapClient(appComponentType, appProviders)
     .then(prebootComplete);

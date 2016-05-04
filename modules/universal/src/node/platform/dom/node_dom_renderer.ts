@@ -2,8 +2,8 @@ import {
   isPresent,
   isBlank,
   stringify
-} from '@angular/facade/lang';
-import {ListWrapper} from '@angular/facade/collection';
+} from '@angular/core/src/facade/lang';
+import {ListWrapper} from '@angular/core/src/facade/collection';
 import {
   provide,
   Inject,
@@ -12,16 +12,18 @@ import {
   RenderComponentType
 } from '@angular/core';
 
-import {DOCUMENT} from '@angular/platform-browser/src/dom/dom_tokens';
+import {DOCUMENT} from '@angular/platform-browser';
 import {DomRenderer, DomRootRenderer, DomRootRenderer_} from '@angular/platform-browser/src/dom/dom_renderer';
 
-import {AnimationBuilder} from '@angular/animate/animation_builder';
+import {AnimationBuilder} from '@angular/platform-browser/src/animate/animation_builder';
 import {EventManager} from '@angular/platform-browser/src/dom/events/event_manager';
 import {DomSharedStylesHost} from '@angular/platform-browser/src/dom/shared_styles_host';
-import {DOM} from '@angular/platform-browser/src/dom/dom_adapter';
-import {ViewEncapsulation} from '@angular/core/metadata';
+import {Parse5DomAdapter} from '@angular/platform-server';
+import {ViewEncapsulation} from '@angular/core';
 
 import {cssHyphenate} from '../../helper';
+
+var DOM:any = Parse5DomAdapter;
 
 @Injectable()
 export class NodeDomRootRenderer_ extends DomRootRenderer {

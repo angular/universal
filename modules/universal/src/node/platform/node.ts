@@ -1,17 +1,17 @@
 // Facade
-import {Type, isPresent, CONST_EXPR} from '@angular/facade/lang';
+import {Type, isPresent} from '@angular/core/src/facade/lang';
 
 // Compiler
 import {COMPILER_PROVIDERS, XHR} from '@angular/compiler';
 
 // Animate
-import {BrowserDetails} from '@angular/animate/browser_details';
-import {AnimationBuilder} from '@angular/animate/animation_builder';
+import {BrowserDetails} from '@angular/platform-browser/src/animate/browser_details';
+import {AnimationBuilder} from '@angular/platform-browser/src/animate/animation_builder';
 
 // Core
-import {Testability} from '@angular/core/testability/testability';
-import {ReflectionCapabilities} from '@angular/core/reflection/reflection_capabilities';
-import {DirectiveResolver} from '@angular/core/linker/directive_resolver';
+import {Testability} from '@angular/core/src/testability/testability';
+import {ReflectionCapabilities} from '@angular/core/src/reflection/reflection_capabilities';
+import {DirectiveResolver} from '@angular/compiler';
 import {
   provide,
   Provider,
@@ -34,14 +34,13 @@ import {
 // Common
 import {COMMON_DIRECTIVES, COMMON_PIPES, FORM_PROVIDERS} from '@angular/common';
 
-// Platform
-import {Parse5DomAdapter} from '@angular/platform-server/src/parse5_adapter';
-Parse5DomAdapter.makeCurrent(); // ensure Parse5DomAdapter is used
+
 // Platform.Dom
-import {DOM} from '@angular/platform-browser/dom/dom_adapter';
+import {Parse5DomAdapter} from '@angular/platform-server';
+Parse5DomAdapter.makeCurrent(); // ensure Parse5DomAdapter is used
 import {EventManager, EVENT_MANAGER_PLUGINS} from '@angular/platform-browser/src/dom/events/event_manager';
 import {DomEventsPlugin} from '@angular/platform-browser/src/dom/events/dom_events';
-import {KeyEventsPlugin} from '@angular/src/platform-browser/src/dom/events/key_events';
+import {KeyEventsPlugin} from '@angular/platform-browser/src/dom/events/key_events';
 import {HammerGesturesPlugin} from '@angular/platform-browser/src/dom/events/hammer_gestures';
 import {DomSharedStylesHost, SharedStylesHost} from '@angular/platform-browser/src/dom/shared_styles_host';
 import {
@@ -51,15 +50,19 @@ import {
 import {ELEMENT_PROBE_PROVIDERS} from '@angular/platform-browser';
 import {DOCUMENT} from '@angular/platform-browser/src/dom/dom_tokens';
 import {DomRootRenderer} from '@angular/platform-browser/src/dom/dom_renderer';
-import {RootRenderer} from '@angular/core/render/api';
+import {RootRenderer} from '@angular/core/src/render/api';
 
-import {TemplateParser} from '@angular/compiler/template_parser';
+import {TemplateParser} from '@angular/compiler/src/template_parser';
 
 import {NodeDomRootRenderer_} from './dom/node_dom_renderer';
 import {NodeXHRImpl} from './node_xhr_impl';
 import {NodeSharedStylesHost} from './node_shared_styles_host';
 import {NodeTemplateParser} from './node_template_parser';
 import {NODE_PLATFORM_DIRECTIVES} from '../directives';
+
+var CONST_EXPR = v => v;
+
+var DOM:any = Parse5DomAdapter;
 
 export function initNodeAdapter() {
   Parse5DomAdapter.makeCurrent();
@@ -123,7 +126,7 @@ export const NODE_APP_PROVIDERS: Array<any> = CONST_EXPR([
 export function bootstrap(
   appComponentType: Type,
   customAppProviders: Array<any> = null,
-  customComponentProviders: Array<any> = null): Promise<ComponentRef> {
+  customComponentProviders: Array<any> = null): Promise<ComponentRef<any>> {
 
   reflector.reflectionCapabilities = new ReflectionCapabilities();
 

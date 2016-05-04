@@ -1,8 +1,10 @@
-import {DOM} from '@angular/platform-browser/src/dom/dom_adapter';
-import {Inject, Injectable} from '@angular/core/di';
-import {SetWrapper} from '@parse5angular/facade/collection';
+import {Parse5DomAdapter} from '@angular/platform-server';
+import {Inject, Injectable} from '@angular/core';
+import {SetWrapper} from '@angular/core/src/facade/collection';
 import {DOCUMENT} from '@angular/platform-browser/src/dom/dom_tokens';
 import {SharedStylesHost} from '@angular/platform-browser/src/dom/shared_styles_host';
+
+const DOM:any = Parse5DomAdapter;
 
 @Injectable()
 export class NodeSharedStylesHost extends SharedStylesHost {

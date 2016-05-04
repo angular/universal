@@ -1,20 +1,5 @@
 /* tslint:disable */
-import {
-  ListWrapper,
-  StringMapWrapper,
-  SetWrapper,
-  MapWrapper
-} from '@angular/facade/collection';
-import {
-  CONST_EXPR,
-  RegExpWrapper,
-  isPresent,
-  StringWrapper,
-  isBlank,
-  isArray
-} from '@angular/facade/lang';
 import {Injectable, Inject, OpaqueToken, Optional} from '@angular/core';
-import {BaseException} from '@angular/facade/exceptions';
 import {
   AST,
   Interpolation,
@@ -24,7 +9,6 @@ import {
   BindingPipe
 } from '@angular/compiler/src/expression_parser/ast';
 import {Parser} from '@angular/compiler/src/expression_parser/parser';
-import {TemplateBinding} from '@angular/core/change_detection/parser/ast';
 import {
   CompileTokenMap,
   CompileDirectiveMetadata,
@@ -33,11 +17,11 @@ import {
   CompileProviderMetadata,
   CompileTokenMetadata,
   CompileTypeMetadata
-} from 'angular2/src/compiler/compile_metadata';
-import {HtmlParser} from '@angular/compiler/html_parser';
-import {splitNsName, mergeNsAndName} from '@angular/compiler/html_tags';
-import {ParseSourceSpan, ParseError, ParseLocation} from '@angular/compiler/parse_util';
-import {MAX_INTERPOLATION_VALUES} from 'angular2/src/core/linker/view_utils';
+} from '@angular/compiler/src/compile_metadata';
+import {HtmlParser} from '@angular/compiler/src/html_parser';
+import {splitNsName, mergeNsAndName} from '@angular/compiler/src/html_tags';
+import {ParseSourceSpan, ParseError, ParseLocation, ParseErrorLevel} from '@angular/compiler/src/parse_util';
+import {MAX_INTERPOLATION_VALUES} from '@angular/core/src/linker/view_utils';
 
 import {
   ElementAst,
@@ -58,13 +42,13 @@ import {
   ProviderAst,
   ProviderAstType,
   VariableAst
-} from '@angular/compiler/template_ast';
-import {CssSelector, SelectorMatcher} from '@angular/compiler/selector';
+} from '@angular/compiler/src/template_ast';
+import {CssSelector, SelectorMatcher} from '@angular/compiler/src/selector';
 
-import {ElementSchemaRegistry} from '@angular/compiler/schema/element_schema_registry';
-import {preparseElement, PreparsedElement, PreparsedElementType} from '@angular/compiler/template_preparser';
+import {ElementSchemaRegistry} from '@angular/compiler/src/schema/element_schema_registry';
+import {preparseElement, PreparsedElement, PreparsedElementType} from '@angular/compiler/src/template_preparser';
 
-import {isStyleUrlResolvable} from '@angular/compiler/style_url_resolver';
+import {isStyleUrlResolvable} from '@angular/compiler/src/style_url_resolver';
 
 import {
   HtmlAstVisitor,
@@ -76,9 +60,9 @@ import {
   HtmlExpansionAst,
   HtmlExpansionCaseAst,
   htmlVisitAll
-} from '@angular/compiler/html_ast';
+} from '@angular/compiler/src/html_ast';
 
-import {splitAtColon} from '@angular/compiler/util';
+import {splitAtColon} from '@angular/compiler/src/util';
 import {identifierToken, Identifiers} from '@angular/compiler/src/identifiers';
 import {ProviderElementContext, ProviderViewContext} from '@angular/compiler/src/provider_parser';
 /* tslint:disable */
@@ -119,7 +103,7 @@ var TEXT_CSS_SELECTOR = CssSelector.parse('*')[0];
    TEMPLATE_TRANSFORMS,
    TemplateParseError,
    TemplateParseResult
- } from 'angular2/src/compiler/template_parser';
+ } from '@angular/compiler/src/template_parser';
 
 @Injectable()
 export class NodeTemplateParser {
@@ -138,7 +122,7 @@ export class NodeTemplateParser {
     }
     if (errors.length > 0) {
       var errorString = errors.join('\n');
-      throw new BaseException(`Template parse errors:\n${errorString}`);
+      throw new Error(`Template parse errors:\n${errorString}`);
     }
     return result.templateAst;
   }
@@ -184,7 +168,7 @@ class TemplateParseVisitor implements HtmlAstVisitor {
               directives: CompileDirectiveMetadata[], pipes: CompilePipeMetadata[],
               private _exprParser: Parser, private _schemaRegistry: ElementSchemaRegistry) {
     this.selectorMatcher = new SelectorMatcher();
-    ListWrapper.forEachWithIndex(directives,
+    directives.forEach(
                                  (directive: CompileDirectiveMetadata, index: number) => {
                                    var selector = CssSelector.parse(directive.selector);
                                    this.selectorMatcher.addSelectables(selector, directive);
@@ -206,7 +190,7 @@ class TemplateParseVisitor implements HtmlAstVisitor {
       this._checkPipes(ast, sourceSpan);
       if (isPresent(ast) &&
           (<Interpolation>ast.ast).expressions.length > MAX_INTERPOLATION_VALUES) {
-        throw new BaseException(
+        throw new Error(
             `Only support at most ${MAX_INTERPOLATION_VALUES} interpolation values!`);
       }
       return ast;
@@ -449,7 +433,8 @@ class TemplateParseVisitor implements HtmlAstVisitor {
                      targetRefs: ElementOrDirectiveRef[], targetVars: VariableAst[]): boolean {
     var attrName = this._normalizeAttributeName(attr.name);
     var attrValue = attr.value;
-    var bindParts = RegExpWrapper.firstMatch(BIND_NAME_REGEXP, attrName);
+    BIND_NAME_REGEXP.lastIndex = 0;
+    var bindParts = BIND_NAME_REGEXP.exec(attrName);
     var hasBinding = false;
     if (isPresent(bindParts)) {
       hasBinding = true;
@@ -590,7 +575,7 @@ class TemplateParseVisitor implements HtmlAstVisitor {
     // Need to sort the directives so that we get consistent results throughout,
     // as selectorMatcher uses Maps inside.
     // Also dedupe directives as they might match more than one time!
-    var directives = ListWrapper.createFixedSize(this.directivesIndex.size);
+    var directives = new Array(this.directivesIndex.size);
     selectorMatcher.match(elementCssSelector, (selector, directive) => {
       directives[this.directivesIndex.get(directive)] = directive;
     });
@@ -629,7 +614,7 @@ class TemplateParseVisitor implements HtmlAstVisitor {
     });
     elementOrDirectiveRefs.forEach((elOrDirRef) => {
       if (elOrDirRef.value.length > 0) {
-        if (!SetWrapper.has(matchedReferences, elOrDirRef.name)) {
+        if (!matchedReferences.has(elOrDirRef.name)) {
           this._reportError(`There is no directive with "exportAs" set to "${elOrDirRef.value}"`,
                             elOrDirRef.sourceSpan);
         };
@@ -648,11 +633,13 @@ class TemplateParseVisitor implements HtmlAstVisitor {
                                            sourceSpan: ParseSourceSpan,
                                            targetPropertyAsts: BoundElementPropertyAst[]) {
     if (isPresent(hostProps)) {
-      StringMapWrapper.forEach(hostProps, (expression: string, propName: string) => {
-        var exprAst = this._parseBinding(expression, sourceSpan);
-        targetPropertyAsts.push(
+      for (let propName in hostProps) {
+        if (hostProps.hasOwnProperty(propName)) {
+          var exprAst = this._parseBinding(hostProps[propName], sourceSpan);
+          targetPropertyAsts.push(
             this._createElementPropertyAst(elementName, propName, exprAst, sourceSpan));
-      });
+        }
+      }
     }
   }
 
@@ -660,9 +647,9 @@ class TemplateParseVisitor implements HtmlAstVisitor {
                                         sourceSpan: ParseSourceSpan,
                                         targetEventAsts: BoundEventAst[]) {
     if (isPresent(hostListeners)) {
-      StringMapWrapper.forEach(hostListeners, (expression: string, propName: string) => {
-        this._parseEvent(propName, expression, sourceSpan, [], targetEventAsts);
-      });
+      for (let propName in hostListeners) {
+        this._parseEvent(propName, hostListeners[propName], sourceSpan, [], targetEventAsts);
+      }
     }
   }
 
@@ -679,15 +666,15 @@ class TemplateParseVisitor implements HtmlAstVisitor {
         }
       });
 
-      StringMapWrapper.forEach(directiveProperties, (elProp: string, dirProp: string) => {
-        var boundProp = boundPropsByName.get(elProp);
+      for (let dirProp in directiveProperties) {
+        var boundProp = boundPropsByName.get(directiveProperties[dirProp]);
 
         // Bindings are optional, so this binding only needs to be set up if an expression is given.
         if (isPresent(boundProp)) {
           targetBoundDirectiveProps.push(new BoundDirectivePropertyAst(
               dirProp, boundProp.name, boundProp.expression, boundProp.sourceSpan));
         }
-      });
+      }
     }
   }
 
@@ -712,8 +699,8 @@ class TemplateParseVisitor implements HtmlAstVisitor {
   private _createElementPropertyAst(elementName: string, name: string, ast: AST,
                                     sourceSpan: ParseSourceSpan): BoundElementPropertyAst {
     var unit = null;
-    var bindingType;
-    var boundPropertyName;
+    var bindingType: PropertyBindingType;
+    var boundPropertyName: string;
     var parts = name.split(PROPERTY_PARTS_SEPARATOR);
     if (parts.length === 1) {
       boundPropertyName = this._schemaRegistry.getMappedPropName(parts[0]);
@@ -746,7 +733,7 @@ class TemplateParseVisitor implements HtmlAstVisitor {
       }
     }
 
-    return new BoundElementPropertyAst(boundPropertyName, bindingType, ast, unit, sourceSpan);
+    return new BoundElementPropertyAst(boundPropertyName, bindingType, null, ast, unit, sourceSpan);
   }
 
 
@@ -787,11 +774,12 @@ class TemplateParseVisitor implements HtmlAstVisitor {
                                                 events: BoundEventAst[]) {
     var allDirectiveEvents = new Set<string>();
     directives.forEach(directive => {
-      StringMapWrapper.forEach(directive.directive.outputs,
-                               (eventName: string, _) => { allDirectiveEvents.add(eventName); });
+      for (let eventName in directive.directive.outputs) {
+        allDirectiveEvents.add(eventName);
+      }
     });
     events.forEach(event => {
-      if (isPresent(event.target) || !SetWrapper.has(allDirectiveEvents, event.name)) {
+      if (isPresent(event.target) || !allDirectiveEvents.has(event.name)) {
         this._reportError(
             `Event binding ${event.fullName} not emitted by any directive on an embedded template`,
             event.sourceSpan);
@@ -841,7 +829,7 @@ class ElementOrDirectiveRef {
 }
 
 export function splitClasses(classAttrValue: string): string[] {
-  return StringWrapper.split(classAttrValue.trim(), /\s+/g);
+  return classAttrValue.trim().split(/\s+/g);
 }
 
 class ElementContext {
@@ -853,7 +841,7 @@ class ElementContext {
       var ngContentSelectors = directives[0].directive.template.ngContentSelectors;
       for (var i = 0; i < ngContentSelectors.length; i++) {
         var selector = ngContentSelectors[i];
-        if (StringWrapper.equals(selector, '*')) {
+        if (selector === '*') {
           wildcardNgContentIndex = i;
         } else {
           matcher.addSelectables(CssSelector.parse(ngContentSelectors[i]), i);
@@ -870,7 +858,7 @@ class ElementContext {
     var ngContentIndices = [];
     this._ngContentIndexMatcher.match(
         selector, (selector, ngContentIndex) => { ngContentIndices.push(ngContentIndex); });
-    ListWrapper.sort(ngContentIndices);
+    ngContentIndices.sort()
     if (isPresent(this._wildcardNgContentIndex)) {
       ngContentIndices.push(this._wildcardNgContentIndex);
     }
@@ -926,3 +914,11 @@ function removeDuplicates(items: CompileMetadataWithType[]): CompileMetadataWith
   return res;
 }
 /* tslint:enable */
+
+function isPresent(obj: any): boolean {
+  return obj !== undefined && obj !== null;
+}
+
+function isBlank(obj: any): boolean {
+  return obj === undefined || obj === null;
+}
