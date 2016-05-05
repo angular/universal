@@ -129,8 +129,8 @@ module.exports = function(ROOT) {
         ],
         providers: [
           provide(REQUEST_URL, {useValue: req.originalUrl}),
-          // NODE_HTTP_PROVIDERS,
-          // NODE_ROUTER_PROVIDERS,
+          ...NODE_HTTP_PROVIDERS,
+          ...NODE_ROUTER_PROVIDERS,
         ],
         data: {},
         async: queryParams.async === false ? false : true,

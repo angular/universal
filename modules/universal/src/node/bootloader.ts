@@ -1,5 +1,4 @@
 import {DOCUMENT} from '@angular/platform-browser';
-import {Parse5DomAdapter} from '@angular/platform-server';
 import {
   NgZone,
   Injector,
@@ -18,7 +17,11 @@ import {parseDocument, parseFragment, serializeDocument} from './platform/docume
 import {createPrebootCode} from './ng_preboot';
 import {arrayFlattenTree} from './helper';
 
-var DOM:any = Parse5DomAdapter;
+import {Parse5DomAdapter} from '@angular/platform-server';
+Parse5DomAdapter.makeCurrent(); // ensure Parse5DomAdapter is used
+import {getDOM} from '@angular/platform-browser/src/dom/dom_adapter';
+var DOM: any = getDOM();
+
 
 export type configRefs = {componentRef: ComponentRef<any>, applicationRef: ApplicationRef};
 

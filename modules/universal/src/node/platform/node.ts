@@ -36,8 +36,6 @@ import {COMMON_DIRECTIVES, COMMON_PIPES, FORM_PROVIDERS} from '@angular/common';
 
 
 // Platform.Dom
-import {Parse5DomAdapter} from '@angular/platform-server';
-Parse5DomAdapter.makeCurrent(); // ensure Parse5DomAdapter is used
 import {EventManager, EVENT_MANAGER_PLUGINS} from '@angular/platform-browser/src/dom/events/event_manager';
 import {DomEventsPlugin} from '@angular/platform-browser/src/dom/events/dom_events';
 import {KeyEventsPlugin} from '@angular/platform-browser/src/dom/events/key_events';
@@ -47,7 +45,7 @@ import {
   HAMMER_GESTURE_CONFIG,
   HammerGestureConfig
 } from '@angular/platform-browser/src/dom/events/hammer_gestures';
-import {ELEMENT_PROBE_PROVIDERS} from '@angular/platform-browser';
+import {ELEMENT_PROBE_PROVIDERS, BROWSER_SANITIZATION_PROVIDERS} from '@angular/platform-browser';
 import {DOCUMENT} from '@angular/platform-browser/src/dom/dom_tokens';
 import {DomRootRenderer} from '@angular/platform-browser/src/dom/dom_renderer';
 import {RootRenderer} from '@angular/core/src/render/api';
@@ -61,8 +59,10 @@ import {NodeTemplateParser} from './node_template_parser';
 import {NODE_PLATFORM_DIRECTIVES} from '../directives';
 
 var CONST_EXPR = v => v;
-
-var DOM: any = Parse5DomAdapter;
+import {Parse5DomAdapter} from '@angular/platform-server';
+Parse5DomAdapter.makeCurrent(); // ensure Parse5DomAdapter is used
+import {getDOM} from '@angular/platform-browser/src/dom/dom_adapter';
+var DOM: any = getDOM();
 
 export function initNodeAdapter() {
   Parse5DomAdapter.makeCurrent();
@@ -77,16 +77,17 @@ export const NODE_APP_PLATFORM: Array<any> = CONST_EXPR([
 ]);
 
 function _exceptionHandler(): ExceptionHandler {
-  return new ExceptionHandler(Parse5DomAdapter, false);
+  return new ExceptionHandler(getDOM(), false);
 }
 
 function _document(): any {
-  return DOM.createHtmlDocument();
+  return getDOM().createHtmlDocument();
 }
 
 export const NODE_APP_COMMON_PROVIDERS: Array<any> = CONST_EXPR([
   ...APPLICATION_COMMON_PROVIDERS,
   ...FORM_PROVIDERS,
+  ...BROWSER_SANITIZATION_PROVIDERS,
   new Provider(PLATFORM_PIPES, {useValue: COMMON_PIPES, multi: true}),
   new Provider(PLATFORM_DIRECTIVES, {useValue: COMMON_DIRECTIVES, multi: true}),
   new Provider(ExceptionHandler, {useFactory: _exceptionHandler, deps: []}),

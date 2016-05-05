@@ -18,12 +18,15 @@ import {DomRenderer, DomRootRenderer, DomRootRenderer_} from '@angular/platform-
 import {AnimationBuilder} from '@angular/platform-browser/src/animate/animation_builder';
 import {EventManager} from '@angular/platform-browser/src/dom/events/event_manager';
 import {DomSharedStylesHost} from '@angular/platform-browser/src/dom/shared_styles_host';
-import {Parse5DomAdapter} from '@angular/platform-server';
 import {ViewEncapsulation} from '@angular/core';
 
 import {cssHyphenate} from '../../helper';
 
-var DOM:any = Parse5DomAdapter;
+import {Parse5DomAdapter} from '@angular/platform-server';
+Parse5DomAdapter.makeCurrent(); // ensure Parse5DomAdapter is used
+import {getDOM} from '@angular/platform-browser/src/dom/dom_adapter';
+var DOM: any = getDOM();
+
 
 @Injectable()
 export class NodeDomRootRenderer_ extends DomRootRenderer {
