@@ -62,7 +62,7 @@ import {NODE_PLATFORM_DIRECTIVES} from '../directives';
 
 var CONST_EXPR = v => v;
 
-var DOM:any = Parse5DomAdapter;
+var DOM: any = Parse5DomAdapter;
 
 export function initNodeAdapter() {
   Parse5DomAdapter.makeCurrent();
@@ -77,7 +77,7 @@ export const NODE_APP_PLATFORM: Array<any> = CONST_EXPR([
 ]);
 
 function _exceptionHandler(): ExceptionHandler {
-  return new ExceptionHandler(DOM, false);
+  return new ExceptionHandler(Parse5DomAdapter, false);
 }
 
 function _document(): any {
