@@ -18,7 +18,7 @@ import * as http from 'http';
 import * as https from 'https';
 import * as url from 'url';
 
-import {ORIGIN_URL, BASE_URL} from '../../common';
+import {ORIGIN_URL, BASE_URL, REQUEST_COOKIE, Cookie} from '../../common';
 
 export class NodeConnection implements Connection {
   public readyState: ReadyState;
@@ -30,7 +30,8 @@ export class NodeConnection implements Connection {
     baseResponseOptions: ResponseOptions,
     ngZome: NgZone,
     @Inject(ORIGIN_URL) originUrl: string = '',
-    @Optional() @Inject(BASE_URL) baseUrl?: string) {
+    @Optional() @Inject(BASE_URL) baseUrl?: string,
+    @Optional() @Inject(REQUEST_COOKIE) requestCookie?: Cookie) {
 
     this.request = req;
     baseUrl = baseUrl || '/';
@@ -41,6 +42,14 @@ export class NodeConnection implements Connection {
 
     let _reqInfo: any = url.parse(url.resolve(url.resolve(originUrl, baseUrl), req.url));
     _reqInfo.method = RequestMethod[req.method].toUpperCase();
+
+    if (isPresent(requestCookie)){
+      if (!isPresent(req.headers)){
+        req.headers = new Headers();
+      }
+
+      req.headers.append('Cookie', requestCookie.get());
+    }
 
     if (isPresent(req.headers)) {
       _reqInfo.headers = {};
