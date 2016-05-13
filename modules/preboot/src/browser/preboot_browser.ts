@@ -11,6 +11,7 @@ import * as bufferManager from './buffer_manager';
 import * as logManager from './log';
 import * as freezeSpin from './freeze/freeze_with_spinner';
 import {PrebootOptions} from '../interfaces/preboot_options';
+import {PrebootState, addAppState, getAppState} from './preboot_state';
 
 // this is an impl of PrebootRef which can be passed into other client modules
 // so they don't have to directly ref dom or log. this used so that users can
@@ -18,19 +19,11 @@ import {PrebootOptions} from '../interfaces/preboot_options';
 // note that log is defined this way because browserify can blank it out.
 /* tslint:disable:no-empty */
 let preboot = {
-  dom: dom,
+  appRoots:[],
   log: logManager.log || function () {}
 };
 
-// in each client-side module, we store state in an object so we can mock
-// it out during testing and easily reset it as necessary
-let state = {
-    canComplete: true,      // set to false if preboot paused through an event
-    completeCalled: false,  // set to true once the completion event has been raised
-    freeze: null,           // only used if freeze option is passed in
-    opts: null,
-    started: false
-};
+let state = PrebootState;
 
 /**
  * Once bootstrap has completed, we replay events,
@@ -38,19 +31,17 @@ let state = {
  */
 export function complete() {
   preboot.log(2, eventManager.state.events);
-
-  // track that complete has been called
-  state.completeCalled = true;
-
-  // if we can't complete (i.e. preboot paused), just return right away
-  if (!state.canComplete) { return; }
-
-  // else we can complete, so get started with events
-  let opts = state.opts;
-  eventManager.replayEvents(preboot, opts);                 // replay events on browser DOM
-  if (opts.buffer) { bufferManager.switchBuffer(preboot); } // switch from server to browser buffer
-  if (opts.freeze) { state.freeze.cleanup(preboot); }       // cleanup freeze divs like overlay
-  eventManager.cleanup(preboot, opts);                      // cleanup event listeners
+  // complete per appRoot
+  state.opts.appRoot.forEach(appRoot => {
+    let appstate = getAppState(appRoot);
+    appstate.completeCalled = true; 
+    if (appstate.canComplete){
+      eventManager.replayEvents(preboot, state.opts);                 // replay events on browser DOM
+      if (state.opts.buffer) { bufferManager.switchBuffer(preboot); } // switch from server to browser buffer
+      if (state.opts.freeze) { state.freeze.cleanup(preboot); }       // cleanup freeze divs like overlay
+      eventManager.cleanup(preboot, state.opts);                      // cleanup event listeners
+    }
+  })
 }
 
 /**
@@ -59,15 +50,15 @@ export function complete() {
 function load() {
   let opts = state.opts;
 
-  // re-initialize dom now that we have the body
-  dom.init({ window: window });
-
-  // grab the root element
-  var root = dom.getDocumentNode(opts.appRoot);
-
-  // make sure the app root is set
-  dom.updateRoots(root, root, root);
-
+  state.opts.appRoot.forEach(appRoot => {
+    // re-initialize each approot now that we have the body
+    // grab the root element
+    // var root = dom.getDocumentNode(opts.appRoot);
+    // make sure the app root is set
+    var root = dom.getDocumentNode(appRoot);
+    preboot.appRoots.push(dom.init_appRoot(appRoot, {window:window}).updateRoots(root, root, root));
+  })
+ 
   // if we are buffering, need to switch around the divs
   if (opts.buffer) { bufferManager.prep(preboot); }
 
@@ -87,14 +78,15 @@ function load() {
  * call it again right away
  */
 function resume() {
-  state.canComplete = true;
-
-  if (state.completeCalled) {
-
-    // using setTimeout to fix weird bug where err thrown on
-    // serverRoot.remove() in buffer switch
-    setTimeout(complete, 10);
-  }
+  state.opts.appRoot.forEach(appRoot =>{
+    let appstate = getAppState(appRoot);
+    appstate.canComplete = true; 
+    if (appstate.completeCalled){
+       // using setTimeout to fix weird bug where err thrown on
+       // serverRoot.remove() in buffer switch
+       setTimeout(complete, 10);
+    }
+  });
 }
 
 /**
@@ -104,7 +96,9 @@ function resume() {
 export function init(opts: PrebootOptions) {
     state.opts = opts;
     preboot.log(1, opts);
-    dom.init({ window: window });
+    state.opts.appRoot.forEach(appRoot => {
+      preboot.appRoots.push(dom.init_appRoot(appRoot, {window:window}))
+    }); 
 }
 
 /**
@@ -116,14 +110,12 @@ export function start() {
   // we can only start once, so don't do anything if called multiple times
   if (state.started) { return; }
 
-  // initialize the window
-  dom.init({ window: window });
-
-  // load once the document ready
-  dom.onLoad(load);
-
-  // set up other handlers
-  dom.on(opts.pauseEvent, () => state.canComplete = false);
-  dom.on(opts.resumeEvent, resume);
-  dom.on(opts.completeEvent, complete);
+  state.opts.appRoot.forEach(appRoot => {
+      var appRootEl = dom.init_appRoot(appRoot, {window:window});
+      preboot.appRoots.push(appRootEl)
+      appRootEl.onLoad(load)
+      appRootEl.on(opts.pauseEvent, () => getAppState(appRoot).canComplete = false);
+      appRootEl.on(opts.resumeEvent, resume);
+      appRootEl.on(opts.completeEvent, complete);
+  }); 
 }
