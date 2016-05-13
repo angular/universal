@@ -1,6 +1,7 @@
-import {PrebootRef} from '../../interfaces/preboot_ref';
+import {AppState} from '../../interfaces/preboot_ref';
 import {ListenStrategy} from '../../interfaces/strategy';
 import {NodeEvent} from '../../interfaces/event';
+import * as app from '../app'
 
 // regex for how events defined in Angular 2 templates; for example:
 //    <div on-click="blah()">
@@ -57,8 +58,8 @@ export function addNodeEvents(node: any) {
  * This listen strategy will look for a specific attribute which contains all the elements
  * that a given element is listening to.
  */
-export function getNodeEvents(preboot: PrebootRef, strategy: ListenStrategy): NodeEvent[] {
+export function getNodeEvents(appstate:AppState, strategy: ListenStrategy): NodeEvent[] {
   state.nodeEvents = [];
-  walkDOM(preboot.dom.state.body, addNodeEvents);
+  walkDOM(appstate.body, addNodeEvents);
   return state.nodeEvents;
 }

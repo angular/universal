@@ -16,7 +16,7 @@ import * as listenEvt from './listen/listen_by_event_bindings';
 import * as listenSelect from './listen/listen_by_selectors';
 import * as replayHydrate from './replay/replay_after_hydrate';
 import * as replayRerender from './replay/replay_after_rerender';
-import * as dom from './dom'
+import * as app from './app'
 
 const caretPositionEvents = ['keyup', 'keydown', 'focusin', 'mouseup', 'mousedown'];
 const caretPositionNodes = ['INPUT', 'TEXTAREA'];
@@ -58,7 +58,7 @@ export function getEventHandler(appstate: AppState, strategy: ListenStrategy, no
 
     // if we want to raise an event that others can listen for
     if (strategy.dispatchEvent) {
-       dom.dispatchGlobalEvent(appstate, strategy.dispatchEvent);
+       app.dispatchGlobalEvent(appstate, strategy.dispatchEvent);
     }
 
     // if callback provided for a custom action when an event occurs
@@ -72,7 +72,7 @@ export function getEventHandler(appstate: AppState, strategy: ListenStrategy, no
     } else {
       appstate.activeNode = {
         node: event.target,
-        nodeKey: dom.getNodeKey(event.target, appstate.serverRoot)
+        nodeKey: app.getNodeKey(event.target, appstate.serverRoot)
       };
     }
 
@@ -80,12 +80,12 @@ export function getEventHandler(appstate: AppState, strategy: ListenStrategy, no
     if (caretPositionEvents.indexOf(eventName) >= 0 &&
       caretPositionNodes.indexOf(node.tagName) >= 0) {
 
-      appstate.selection = dom.getSelection(node);
+      appstate.selection = app.getSelection(node);
     }
 
     // todo: need another solution for this hack
     if (eventName === 'keyup' && event.which === 13 && node.attributes['(keyup.enter)']) {
-      dom.dispatchGlobalEvent(appstate, 'PrebootFreeze');
+      app.dispatchGlobalEvent(appstate, 'PrebootFreeze');
     }
 
     // we will record events for later replay unless explicitly marked as doNotReplay
@@ -97,7 +97,7 @@ export function getEventHandler(appstate: AppState, strategy: ListenStrategy, no
         time: (new Date()).getTime()
       };
       
-      eventObj.nodeKey = dom.getNodeKey(node, appstate.serverRoot);
+      eventObj.nodeKey = app.getNodeKey(node, appstate.serverRoot);
       state.events.push(eventObj);
     }
   };
@@ -170,9 +170,9 @@ export function cleanup(appstate:AppState) {
     setTimeout(function () {
 
       // find the client node in the new client view
-      let activeClientNode =  dom.findClientNode(appstate, activeNode.node, activeNode.nodeKey);
+      let activeClientNode =  app.findClientNode(appstate, activeNode.node, activeNode.nodeKey);
       if (activeClientNode) {
-        dom.setSelection(activeClientNode, appstate.selection);
+        app.setSelection(activeClientNode, appstate.selection);
       } else {
       //  preboot.log(6, activeNode);
       }

@@ -5,7 +5,7 @@
  *    start() - when preboot should start listening to events
  *    done() - when preboot should start replaying events
  */
-import * as dom from './dom';
+
 import * as eventManager from './event_manager';
 import * as bufferManager from './buffer_manager';
 import * as logManager from './log';
@@ -31,7 +31,7 @@ export function complete() {
       eventManager.replayEvents(app);                 // replay events on browser DOM
       if (app.opts.buffer) { bufferManager.switchBuffer(app); } // switch from server to browser buffer
       if (app.opts.freeze) { app.freeze.cleanup(app); }       // cleanup freeze divs like overlay
-      eventManager.cleanup(app);                      // cleanup event listeners
+      eventManager.cleanup(app);                            // cleanup event listeners
     }
   })
 }
@@ -45,7 +45,7 @@ function load() {
     // grab the root element
     // var root = dom.getDocumentNode(opts.appRoot);
     // make sure the app root is set
-    var root = dom.getDocumentNode(appstate);
+    var root = app.getDocumentNode(appstate);
     app.initAppRoot(appstate, {window:window})
     app.updateAppRoots(appstate, root, root, root);
   

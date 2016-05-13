@@ -5,9 +5,8 @@
  * Note that this technique would only work if the app root is somewhere within
  * the body tag in the HTML document.
  */
-import {PrebootRef, AppState} from '../interfaces/preboot_ref';
+import {AppState} from '../interfaces/preboot_ref';
 import * as app from './app'
-import * as dom from './dom'
 
 // expose state for testing purposes
 export let state = { switched: false };
@@ -49,7 +48,7 @@ export function switchBuffer(appstate:AppState) {
 
   // remove the server root if not same as client and not the body
   if (serverRoot !== clientRoot && serverRoot.nodeName !== 'BODY') {
-    dom.removeNode(serverRoot);
+    app.removeNode(serverRoot);
   }
 
   // display the client
