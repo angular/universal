@@ -5,7 +5,9 @@
  * Note that this technique would only work if the app root is somewhere within
  * the body tag in the HTML document.
  */
-import {PrebootRef} from '../interfaces/preboot_ref';
+import {PrebootRef, AppState} from '../interfaces/preboot_ref';
+import * as app from './app'
+import * as dom from './dom'
 
 // expose state for testing purposes
 export let state = { switched: false };
@@ -13,10 +15,10 @@ export let state = { switched: false };
 /**
  * Create a second div that will be the client root for an app
  */
-export function prep(preboot: PrebootRef) {
+export function prep(appstate:AppState) {
 
   // server root is the app root when we get started
-  let serverRoot = preboot.dom.state.appRoot;
+  let serverRoot = appstate.appRoot;
 
   // client root is going to be a shallow clone of the server root
   let clientRoot = serverRoot.cloneNode(false);
@@ -28,33 +30,33 @@ export function prep(preboot: PrebootRef) {
   serverRoot.parentNode.insertBefore(clientRoot, serverRoot);
 
   // update the dom manager to store the server and client roots (first param is appRoot)
-  preboot.dom.updateRoots(serverRoot, serverRoot, clientRoot);
+  app.updateAppRoots(appstate, serverRoot, serverRoot, clientRoot);
 }
 
 /**
  * We want to simultaneously remove the server node from the DOM
  * and display the client node
  */
-export function switchBuffer(preboot: PrebootRef) {
-  let domState = preboot.dom.state;
+export function switchBuffer(appstate:AppState) {
+  
 
   // get refs to the roots
-  let clientRoot = domState.clientRoot || domState.appRoot;
-  let serverRoot = domState.serverRoot || domState.appRoot;
+  let clientRoot = appstate.clientRoot || appstate.appRoot;
+  let serverRoot = appstate.serverRoot || appstate.appRoot;
 
   // don't do anything if already switched
   if (state.switched) { return; }
 
   // remove the server root if not same as client and not the body
   if (serverRoot !== clientRoot && serverRoot.nodeName !== 'BODY') {
-    preboot.dom.removeNode(serverRoot);
+    dom.removeNode(serverRoot);
   }
 
   // display the client
   clientRoot.style.display = 'block';
 
   // update the roots; first param is the new appRoot; serverRoot now null
-  preboot.dom.updateRoots(clientRoot, null, clientRoot);
+   app.updateAppRoots(clientRoot, null, clientRoot);
 
   // finally mark state as switched
   state.switched = true;

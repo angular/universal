@@ -5,9 +5,9 @@
  * centralizes our DOM related interactions so we can more easily
  * add fixes for different browser quirks
  */
-import {Element} from '../interfaces/element';
-import {CursorSelection} from '../interfaces/preboot_ref';
-import { AppState } from './preboot_state'
+import { Element } from '../interfaces/element';
+import { CursorSelection } from '../interfaces/preboot_ref';
+import { AppState } from '../interfaces/preboot_ref';
 
 export let nodeCache = {};
 
@@ -15,8 +15,8 @@ export let nodeCache = {};
 /**
  * Get a node in the document
  */
-export function getDocumentNode(app:AppState, selector: string): Element {
-  return app.document.querySelector(selector);
+export function getDocumentNode(app:AppState): Element {
+  return app.document.querySelector(app.appRootName);
 }
 
 /**

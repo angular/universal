@@ -1,6 +1,7 @@
 import {Element} from '../interfaces/element';
 import { PrebootOptions } from '../interfaces/preboot_options'
-import { PrebootState, AppState } from './preboot_state'
+import { PrebootState } from './preboot_state'
+import { GlobalState, AppState } from '../interfaces/preboot_ref';
 
 let state = PrebootState;
 

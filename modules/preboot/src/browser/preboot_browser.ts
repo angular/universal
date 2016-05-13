@@ -10,10 +10,11 @@ import * as eventManager from './event_manager';
 import * as bufferManager from './buffer_manager';
 import * as logManager from './log';
 import * as freezeSpin from './freeze/freeze_with_spinner';
+import *  as app from './app'
 import { Element } from '../interfaces/element';
 import { PrebootOptions } from '../interfaces/preboot_options';
-import *  as app from './app'
-import { PrebootState, AppState } from './preboot_state';
+import { PrebootState } from './preboot_state';
+import { AppState } from '../interfaces/preboot_ref';
 
 let state = PrebootState;
 
@@ -27,10 +28,10 @@ export function complete() {
   state.apps.forEach(app => {
     app.completeCalled = true; 
     if (app.canComplete){
-      eventManager.replayEvents(null, app.opts);                 // replay events on browser DOM
-      if (app.opts.buffer) { bufferManager.switchBuffer(null); } // switch from server to browser buffer
-      if (app.opts.freeze) { app.freeze.cleanup(null); }       // cleanup freeze divs like overlay
-      eventManager.cleanup(null, app.opts);                      // cleanup event listeners
+      eventManager.replayEvents(app);                 // replay events on browser DOM
+      if (app.opts.buffer) { bufferManager.switchBuffer(app); } // switch from server to browser buffer
+      if (app.opts.freeze) { app.freeze.cleanup(app); }       // cleanup freeze divs like overlay
+      eventManager.cleanup(app);                      // cleanup event listeners
     }
   })
 }
@@ -50,7 +51,7 @@ function load() {
   
  
     // if we are buffering, need to switch around the divs
-    if (appstate.opts.buffer) { bufferManager.prep(null); }
+    if (appstate.opts.buffer) { bufferManager.prep(appstate); }
 
     // if we could potentially freeze the UI, we need to prep (i.e. to add divs for overlay, etc.)
     // note: will need to alter this logic when we have more than one freeze strategy
@@ -59,7 +60,7 @@ function load() {
         appstate.freeze.prep(null, appstate.opts);
  
         // start listening to events
-        eventManager.startListening(null, appstate.opts);
+        eventManager.startListening(appstate);
     }  
   });
 }
