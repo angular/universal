@@ -18,9 +18,9 @@ export interface AppState{
     window?: any,
     document?: any,
     body?: any,
-    appRoot?: Element,
-    serverRoot?: Element,
-    clientRoot?: Element
+    appRoot?: any,
+    serverRoot?: any,
+    clientRoot?: any
 }
 
 let state:GlobalState = {
