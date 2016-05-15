@@ -25,13 +25,13 @@ let state = PrebootState;
 export function complete() {
   // preboot.log(2, eventManager.state.events);
   // complete per appRoot
-  state.apps.forEach(app => {
-    app.completeCalled = true; 
-    if (app.canComplete){
-      eventManager.replayEvents(app);                 // replay events on browser DOM
-      if (app.opts.buffer) { bufferManager.switchBuffer(app); } // switch from server to browser buffer
-      if (app.opts.freeze) { app.freeze.cleanup(app); }       // cleanup freeze divs like overlay
-      eventManager.cleanup(app);                            // cleanup event listeners
+  state.apps.forEach(appstate => {
+    appstate.completeCalled = true; 
+    if (appstate.canComplete){
+      eventManager.replayEvents(app, appstate);                 // replay events on browser DOM
+      if (appstate.opts.buffer) { bufferManager.switchBuffer(app, appstate); } // switch from server to browser buffer
+      if (appstate.opts.freeze) { appstate.freeze.cleanup(app, appstate); }       // cleanup freeze divs like overlay
+      eventManager.cleanup(app, appstate);                            // cleanup event listeners
     }
   })
 }
@@ -51,16 +51,16 @@ function load() {
   
  
     // if we are buffering, need to switch around the divs
-    if (appstate.opts.buffer) { bufferManager.prep(appstate); }
+    if (appstate.opts.buffer) { bufferManager.prep(app, appstate); }
 
     // if we could potentially freeze the UI, we need to prep (i.e. to add divs for overlay, etc.)
     // note: will need to alter this logic when we have more than one freeze strategy
     if (appstate.opts.freeze) {
         appstate.freeze = appstate.opts.freeze.name === 'spinner' ? freezeSpin : appstate.opts.freeze;
-        appstate.freeze.prep(null, appstate.opts);
+        appstate.freeze.prep(app, appstate.opts);
  
         // start listening to events
-        eventManager.startListening(appstate);
+        eventManager.startListening(app, appstate);
     }  
   });
 }

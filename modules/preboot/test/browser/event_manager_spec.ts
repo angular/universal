@@ -1,20 +1,39 @@
 import * as eventManager from '../../src/browser/event_manager';
+import { AppState } from '../../src/interfaces/preboot_ref'
 
 describe('event_manager', function () {
   describe('getEventHandler()', function () {
     it('should do nothing if not listening', function () {
-      let preboot = { dom: {} };
+      let app = {};
+      let appstate:AppState =  { 
+           freeze:null,
+           appRootName:null, 
+           opts:null, 
+           canComplete:false, 
+           completeCalled:false, 
+           started:false
+         };
       let strategy = {};
       let node = {};
       let eventName = 'click';
       let event = {};
       
       eventManager.state.listening = false;
-      eventManager.getEventHandler(preboot, strategy, node, eventName)(event);
+      eventManager.getEventHandler(app, appstate, strategy, node, eventName)(event);
     });
     
     it('should call preventDefault', function () {
-      let preboot = { dom: {} };
+      let app = {
+         getNodeKey: function(){ return "";}
+      };
+      let appstate:AppState =  { 
+           freeze:null,
+           appRootName:null, 
+           opts:null, 
+           canComplete:false, 
+           completeCalled:false, 
+           started:false
+         };
       let strategy = { preventDefault: true };
       let node = {};
       let eventName = 'click';
@@ -22,29 +41,47 @@ describe('event_manager', function () {
       
       spyOn(event, 'preventDefault');
       eventManager.state.listening = true;
-      eventManager.getEventHandler(preboot, strategy, node, eventName)(event);
+      eventManager.getEventHandler(app, appstate, strategy, node, eventName)(event);
       expect(event.preventDefault).toHaveBeenCalled();
     });
     
     it('should dispatch global event', function () {
-      let preboot = { 
-        dom: {
-          dispatchGlobalEvent: function () {}
-        } 
+      let app = {
+          dispatchGlobalEvent: function () {},
+          getNodeKey: function(){ return "";}
       };
+      let appstate:AppState =  { 
+           freeze:null,
+           appRootName:null, 
+           opts:null, 
+           canComplete:false, 
+           completeCalled:false, 
+           started:false
+         };
       let strategy = { dispatchEvent: 'yo yo yo' };
       let node = {};
       let eventName = 'click';
       let event = {};
       
-      spyOn(preboot.dom, 'dispatchGlobalEvent');
+      spyOn(app, 'dispatchGlobalEvent');
       eventManager.state.listening = true;
-      eventManager.getEventHandler(preboot, strategy, node, eventName)(event);
-      expect(preboot.dom.dispatchGlobalEvent).toHaveBeenCalledWith(strategy.dispatchEvent);
+      eventManager.getEventHandler(app, appstate, strategy, node, eventName)(event);
+      expect(app.dispatchGlobalEvent).toHaveBeenCalledWith(appstate, strategy.dispatchEvent);
     });
     
     it('should call action', function () {
-      let preboot = { dom: {} };
+      let app = {
+          dispatchGlobalEvent: function () {},
+           getNodeKey: function(){ return "";}
+      };
+      let appstate:AppState =  { 
+           freeze:null,
+           appRootName:null, 
+           opts:null, 
+           canComplete:false, 
+           completeCalled:false, 
+           started:false
+         };
       let strategy = { action: function () {} };
       let node = {};
       let eventName = 'click';
@@ -52,20 +89,27 @@ describe('event_manager', function () {
       
       spyOn(strategy, 'action');
       eventManager.state.listening = true;
-      eventManager.getEventHandler(preboot, strategy, node, eventName)(event);
-      expect(strategy.action).toHaveBeenCalledWith(preboot, node, event);
+      eventManager.getEventHandler(app, appstate, strategy, node, eventName)(event);
+      expect(strategy.action).toHaveBeenCalledWith(appstate, node, event);
     });
     
     it('should track focus', function () {
-      let preboot = { 
-        dom: { 
-          state: {}, 
-          getNodeKey: function() {
+     
+      let app = {
+           getNodeKey: function() {
             return null;
           }
-        }, 
-        activeNode: null
       };
+      let appstate:AppState =  { 
+           freeze:null,
+           appRootName:null, 
+           opts:null, 
+           canComplete:false, 
+           completeCalled:false, 
+           started:false,
+           activeNode:null
+         };
+         
       let strategy = { trackFocus: true };
       let node = {};
       let eventName = 'focusin';
@@ -76,25 +120,48 @@ describe('event_manager', function () {
       };  
       
       eventManager.state.listening = true;
-      eventManager.getEventHandler(preboot, strategy, node, eventName)(event);
-      expect(preboot.activeNode).toEqual(expected);
+      eventManager.getEventHandler(app, appstate, strategy, node, eventName)(event);
+      expect(appstate.activeNode).toEqual(expected);
     });
     
     it('should add to events', function () {
-      let preboot = { dom: {}, time: (new Date()).getTime() };
+      let expected_time  = new Date().getTime();
+      
+      let appstate:AppState =  { 
+           freeze:null,
+           appRootName:null, 
+           opts:null, 
+           canComplete:false, 
+           completeCalled:false, 
+           started:false
+         };
+         
       let strategy = {};
       let node = {};
+      let app = {
+         getNodeKey: function(){ return node;}
+      };
+      
       let eventName = 'click';
       let event = { type: 'focusin', target: { name: 'foo' }};
       
       eventManager.state.listening = true;
       eventManager.state.events = [];
-      eventManager.getEventHandler(preboot, strategy, node, eventName)(event);
+      eventManager.getEventHandler(app, appstate, strategy, node, eventName)(event, expected_time);
+      console.log(eventManager.state.events)
+      
+      console.log([{
+        node: node,
+        event: event,
+        name: eventName,
+        time: expected_time
+      }]);
+      
       expect(eventManager.state.events).toEqual([{
         node: node,
         event: event,
         name: eventName,
-        time: preboot.time
+        time: expected_time
       }]); 
     });
     
@@ -104,26 +171,45 @@ describe('event_manager', function () {
       let node = {};
       let eventName = 'click';
       let event = { type: 'focusin', target: { name: 'foo' }};
-      
+      let app = {};
+      let appstate:AppState =  { 
+           freeze:null,
+           appRootName:null, 
+           opts:null, 
+           canComplete:false, 
+           completeCalled:false, 
+           started:false
+         };
+         
       eventManager.state.listening = true;
       eventManager.state.events = [];
-      eventManager.getEventHandler(preboot, strategy, node, eventName)(event);
+      eventManager.getEventHandler(app, appstate, strategy, node, eventName)(event);
       expect(eventManager.state.events).toEqual([]); 
     });
   });
   
   describe('addEventListeners()', function () {
     it('should add nodeEvents to listeners', function () {
-      let preboot = { dom: {} };
+      //let preboot = { dom: {} };
       let nodeEvent1 = { node: { name: 'zoo', addEventListener: function () {} }, eventName: 'foo' };
       let nodeEvent2 = { node: { name: 'shoo', addEventListener: function () {} }, eventName: 'moo' };
       let nodeEvents = [nodeEvent1, nodeEvent2];
       let strategy = {};
-      
+      let app = {};
       spyOn(nodeEvent1.node, 'addEventListener');
       spyOn(nodeEvent2.node, 'addEventListener');
+      
+      let appstate:AppState =  { 
+           freeze:null,
+           appRootName:null, 
+           opts:null, 
+           canComplete:false, 
+           completeCalled:false, 
+           started:false
+         };
+         
       eventManager.state.eventListeners = [];
-      eventManager.addEventListeners(preboot, nodeEvents, strategy);
+      eventManager.addEventListeners(app, appstate, nodeEvents, strategy);
       expect(nodeEvent1.node.addEventListener).toHaveBeenCalled();
       expect(nodeEvent2.node.addEventListener).toHaveBeenCalled();
       expect(eventManager.state.eventListeners.length).toEqual(2);
@@ -133,38 +219,62 @@ describe('event_manager', function () {
   
   describe('startListening()', function () {
     it('should set the listening state', function () {
-      let preboot = { dom: {} };
+      let app = {};
+      let appstate:AppState =  { 
+           freeze:null,
+           appRootName:null, 
+           opts:{listen:{}}, 
+           canComplete:false, 
+           completeCalled:false, 
+           started:false
+         };
       let opts = { listen: [] };
       
       eventManager.state.listening = false;
-      eventManager.startListening(preboot, opts);
+      eventManager.startListening(app, appstate);
       expect(eventManager.state.listening).toEqual(true);  
     });  
   });
   
   describe('replayEvents()', function () {
     it('should set listening to false', function () {
-      let preboot = { dom: {}, log: function () {} };
+      let app = {};
+      let appstate:AppState =  { 
+           freeze:null,
+           appRootName:null, 
+           opts:{replay:{}}, 
+           canComplete:false, 
+           completeCalled:false, 
+           started:false
+         };
       let opts = { replay: [] };
       let evts = [{ foo: 'choo' }];
       
-      spyOn(preboot, 'log');
+     // spyOn(preboot, 'log');
       eventManager.state.listening = true;
       eventManager.state.events = evts;
-      eventManager.replayEvents(preboot, opts);
+      eventManager.replayEvents(app, appstate);
       expect(eventManager.state.listening).toEqual(false);
-      expect(preboot.log).toHaveBeenCalledWith(5, evts);
+     // expect(preboot.log).toHaveBeenCalledWith(5, evts);
     });
   });
   
   describe('cleanup()', function () {
     it('should set events to empty array', function () {
-      let preboot = { dom: {} };
+      let app = {};
+      let appstate:AppState =  { 
+           freeze:null,
+           appRootName:null, 
+           opts:null, 
+           canComplete:false, 
+           completeCalled:false, 
+           started:false
+         };
       let opts = {};
       
       eventManager.state.eventListeners = [];
       eventManager.state.events = [{ foo: 'moo' }];
-      eventManager.cleanup(preboot, opts);
+      eventManager.cleanup(app, appstate);
       expect(eventManager.state.events).toEqual([]);
     });
   });

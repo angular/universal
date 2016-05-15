@@ -11,7 +11,7 @@ export let state = {
 /**
  * Clean up the freeze elements from the DOM
  */
-export function cleanup(appstate:AppState) {
+export function cleanup(app, appstate:AppState) {
   app.removeNode(state.overlay);
   app.removeNode(state.spinner);
 
@@ -22,7 +22,7 @@ export function cleanup(appstate:AppState) {
 /**
  * Prepare for freeze by adding elements to the DOM and adding an event handler
  */
-export function prep(appstate:AppState) {
+export function prep(app, appstate:AppState) {
   let freezeOpts = appstate.freeze || {};
   let freezeStyles = freezeOpts.styles || {};
   let overlayStyles = freezeStyles.overlay || {};
@@ -51,6 +51,6 @@ export function prep(appstate:AppState) {
     state.spinner.style.display = 'block';
 
     // preboot should end in under 5 seconds, but if it doesn't unfreeze just in case  
-    setTimeout(() => cleanup(appstate), freezeOpts.timeout);
+    setTimeout(() => cleanup(app, appstate), freezeOpts.timeout);
   });
 }

@@ -16,7 +16,7 @@ export function initAppRoot(app:AppState, options:any) : any{
          app.serverRoot = app.clientRoot = app.appRoot;
      }
 }
-export function updateAppRoots(app:AppState, appRoot:any, clientRoot?:any, serverRoot?:any){
+export function updateAppRoots(app:AppState, appRoot:any, serverRoot?:any, clientRoot?:any){
     if (app){
         app.appRoot = appRoot;
         app.clientRoot = clientRoot;

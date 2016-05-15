@@ -6,7 +6,6 @@
  * the body tag in the HTML document.
  */
 import {AppState} from '../interfaces/preboot_ref';
-import * as app from './app'
 
 // expose state for testing purposes
 export let state = { switched: false };
@@ -14,7 +13,7 @@ export let state = { switched: false };
 /**
  * Create a second div that will be the client root for an app
  */
-export function prep(appstate:AppState) {
+export function prep(app, appstate:AppState) {
 
   // server root is the app root when we get started
   let serverRoot = appstate.appRoot;
@@ -36,7 +35,7 @@ export function prep(appstate:AppState) {
  * We want to simultaneously remove the server node from the DOM
  * and display the client node
  */
-export function switchBuffer(appstate:AppState) {
+export function switchBuffer(app, appstate:AppState) {
   
 
   // get refs to the roots
@@ -55,7 +54,7 @@ export function switchBuffer(appstate:AppState) {
   clientRoot.style.display = 'block';
 
   // update the roots; first param is the new appRoot; serverRoot now null
-   app.updateAppRoots(clientRoot, null, clientRoot);
+   app.updateAppRoots(appstate, clientRoot, null, clientRoot);
 
   // finally mark state as switched
   state.switched = true;

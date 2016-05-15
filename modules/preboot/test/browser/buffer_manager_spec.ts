@@ -12,23 +12,30 @@ describe('buffer_manager', function () {
           insertBefore: function () {}
         }
       };
-      let preboot = {
-        dom: {
-          state: { appRoot: serverRoot },
-          updateRoots: function () {}
-        }
+      let appstate = {
+          appRoot: serverRoot,
+          opts:{},
+          freeze:null,
+          appRootName:"",
+          canComplete: false,      
+          completeCalled: false,   
+          started:false, 
+      }
+      
+      let app = {
+          updateAppRoots: function () {}
       };
       
       spyOn(serverRoot, 'cloneNode').and.callThrough();
       spyOn(serverRoot.parentNode, 'insertBefore');
-      spyOn(preboot.dom, 'updateRoots');
+      spyOn(app, 'updateAppRoots');
       
-      prep(preboot);
+      prep(app, appstate)
       
       expect(clientRoot.style.display).toEqual('none');
       expect(serverRoot.cloneNode).toHaveBeenCalled();
       expect(serverRoot.parentNode.insertBefore).toHaveBeenCalledWith(clientRoot, serverRoot);
-      expect(preboot.dom.updateRoots).toHaveBeenCalledWith(serverRoot, serverRoot, clientRoot);
+      expect(app.updateAppRoots).toHaveBeenCalledWith(appstate, serverRoot, serverRoot, clientRoot);
     });  
   });
   
@@ -40,23 +47,35 @@ describe('buffer_manager', function () {
       let serverRoot = {
         nodeName: 'div'
       };
-      let preboot = {
-        dom: {
-          state: { clientRoot: clientRoot, serverRoot: serverRoot },
-          removeNode: function () {},
-          updateRoots: function () {}
-        }
+      
+      let appstate = {
+          appRoot: null,
+          clientRoot:clientRoot,
+          serverRoot:serverRoot,
+          opts:{},
+          freeze:null,
+          appRootName:"",
+          canComplete: false,      
+          completeCalled: false,   
+          started:false, 
+      }
+      
+      let app = {
+         removeNode: function () {},
+         updateAppRoots: function () {}
       };
       
-      spyOn(preboot.dom, 'removeNode');
-      spyOn(preboot.dom, 'updateRoots');
+
+      
+      spyOn(app, 'removeNode');
+      spyOn(app, 'updateAppRoots');
       state.switched = false;
       
-      switchBuffer(preboot);
+      switchBuffer(app, appstate);
       
       expect(clientRoot.style.display).toEqual('block');
-      expect(preboot.dom.removeNode).toHaveBeenCalledWith(serverRoot);
-      expect(preboot.dom.updateRoots).toHaveBeenCalledWith(clientRoot, null, clientRoot);
+      expect(app.removeNode).toHaveBeenCalledWith(serverRoot);
+      expect(app.updateAppRoots).toHaveBeenCalledWith(appstate, clientRoot, null, clientRoot);
     });
 
     it('should not switch because already switched', function () {
@@ -66,23 +85,35 @@ describe('buffer_manager', function () {
       let serverRoot = {
         nodeName: 'div'
       };
-      let preboot = {
-        dom: {
-          state: { clientRoot: clientRoot, serverRoot: serverRoot },
-          removeNode: function () {},
-          updateRoots: function () {}
-        }
+      
+        let appstate = {
+          appRoot: null,
+          clientRoot:clientRoot,
+          serverRoot:serverRoot,
+          opts:{},
+          freeze:null,
+          appRootName:"",
+          canComplete: false,      
+          completeCalled: false,   
+          started:false, 
+      }
+      
+      let app = {
+         removeNode: function () {},
+         updateAppRoots: function () {}
       };
       
-      spyOn(preboot.dom, 'removeNode');
-      spyOn(preboot.dom, 'updateRoots');
+     
+      
+      spyOn(app, 'removeNode');
+      spyOn(app, 'updateAppRoots');
       state.switched = true;
       
-      switchBuffer(preboot);
+      switchBuffer(app, appstate);
       
       expect(clientRoot.style.display).toEqual('none');
-      expect(preboot.dom.removeNode).not.toHaveBeenCalled();
-      expect(preboot.dom.updateRoots).not.toHaveBeenCalled();
+      expect(app.removeNode).not.toHaveBeenCalled();
+      expect(app.updateAppRoots).not.toHaveBeenCalled();
     });
     
     it('should not remove server root because it is the body', function () {
@@ -92,23 +123,34 @@ describe('buffer_manager', function () {
       let serverRoot = {
         nodeName: 'BODY'
       };
-      let preboot = {
-        dom: {
-          state: { clientRoot: clientRoot, serverRoot: serverRoot },
-          removeNode: function () {},
-          updateRoots: function () {}
-        }
-      };
       
-      spyOn(preboot.dom, 'removeNode');
-      spyOn(preboot.dom, 'updateRoots');
+        let appstate = {
+          appRoot: null,
+          clientRoot:clientRoot,
+          serverRoot:serverRoot,
+          opts:{},
+          freeze:null,
+          appRootName:"",
+          canComplete: false,      
+          completeCalled: false,   
+          started:false, 
+      }
+      
+      let app = {
+         removeNode: function () {},
+         updateAppRoots: function () {}
+      };
+   
+      
+      spyOn(app, 'removeNode');
+      spyOn(app, 'updateAppRoots');
       state.switched = false;
       
-      switchBuffer(preboot);
+      switchBuffer(app, appstate);
       
       expect(clientRoot.style.display).toEqual('block');
-      expect(preboot.dom.removeNode).not.toHaveBeenCalled();
-      expect(preboot.dom.updateRoots).toHaveBeenCalledWith(clientRoot, null, clientRoot);
+      expect(app.removeNode).not.toHaveBeenCalled();
+      expect(app.updateAppRoots).toHaveBeenCalledWith(appstate, clientRoot, null, clientRoot);
     });
     
     it('should not remove server root because it is the body', function () {
@@ -116,23 +158,36 @@ describe('buffer_manager', function () {
         style: { display: 'none' },
         nodeName: 'DIV'
       };
-      let preboot = {
-        dom: {
-          state: { clientRoot: clientRoot, serverRoot: clientRoot },
-          removeNode: function () {},
-          updateRoots: function () {}
-        }
+      
+      let appstate = {
+          appRoot: null,
+          clientRoot:clientRoot,
+          serverRoot:clientRoot,
+          opts:{},
+          freeze:null,
+          appRootName:"",
+          canComplete: false,      
+          completeCalled: false,   
+          started:false, 
+      }
+      
+      let app = {
+         removeNode: function () {},
+         updateAppRoots: function () {}
+         
       };
       
-      spyOn(preboot.dom, 'removeNode');
-      spyOn(preboot.dom, 'updateRoots');
+      
+      
+      spyOn(app, 'removeNode');
+      spyOn(app, 'updateAppRoots');
       state.switched = false;
       
-      switchBuffer(preboot);
+      switchBuffer(app, appstate);
       
       expect(clientRoot.style.display).toEqual('block');
-      expect(preboot.dom.removeNode).not.toHaveBeenCalled();
-      expect(preboot.dom.updateRoots).toHaveBeenCalledWith(clientRoot, null, clientRoot);
+      expect(app.removeNode).not.toHaveBeenCalled();
+      expect(app.updateAppRoots).toHaveBeenCalledWith(appstate, clientRoot, null, clientRoot);
     });
   });
 });

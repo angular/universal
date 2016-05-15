@@ -1,4 +1,4 @@
-import {PrebootRef} from '../../interfaces/preboot_ref';
+import {AppState} from '../../interfaces/preboot_ref';
 import {ReplayStrategy} from '../../interfaces/strategy';
 import {PrebootEvent} from '../../interfaces/event';
 
@@ -9,7 +9,7 @@ import {PrebootEvent} from '../../interfaces/event';
  * 
  * any events that could not be replayed for whatever reason are returned.
  */
-export function replayEvents(preboot: PrebootRef, strategy: ReplayStrategy, events: PrebootEvent[]): PrebootEvent[] {
+export function replayEvents(app, appstate:AppState, strategy: ReplayStrategy, events: PrebootEvent[]): PrebootEvent[] {
   let remainingEvents = [];
   events = events || [];
 
@@ -19,7 +19,7 @@ export function replayEvents(preboot: PrebootRef, strategy: ReplayStrategy, even
 
     // if we should check to see if the node exists in the DOM before dispatching
     // note: this can be expensive so this option is false by default
-    if (strategy.checkIfExists && !preboot.dom.appContains(node)) {
+    if (strategy.checkIfExists && ! app.appContains(appstate, node)) {
       remainingEvents.push(eventData);
     } else {
       node.dispatchEvent(event);

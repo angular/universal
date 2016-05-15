@@ -58,7 +58,7 @@ export function addNodeEvents(node: any) {
  * This listen strategy will look for a specific attribute which contains all the elements
  * that a given element is listening to.
  */
-export function getNodeEvents(appstate:AppState, strategy: ListenStrategy): NodeEvent[] {
+export function getNodeEvents(app, appstate:AppState, strategy: ListenStrategy): NodeEvent[] {
   state.nodeEvents = [];
   walkDOM(appstate.body, addNodeEvents);
   return state.nodeEvents;

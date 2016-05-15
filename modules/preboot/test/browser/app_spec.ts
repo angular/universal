@@ -1,15 +1,31 @@
-import * as dom from '../../src/browser/dom';
+import * as app from '../../src/browser/app';
+import { AppState } from '../../src/interfaces/preboot_ref'
 
-describe('dom', function () {
-  describe('init()', function () {
+describe('app', function () {
+  describe('initAppRoot()', function () {
     it('set values based on input', function () {
       let opts = { window: { document: { body: {}}}};
-      dom.init(opts);
-      expect(dom.state.window).toEqual(opts.window);
-      expect(dom.state.document).toEqual(opts.window.document);
-      expect(dom.state.body).toEqual(opts.window.document.body);
-      expect(dom.state.appRoot).toEqual(opts.window.document.body);
-      expect(dom.state.clientRoot).toEqual(opts.window.document.body);
+      let appstate:AppState =  { 
+       freeze:null,
+       appRootName:null, 
+       opts:null, 
+       canComplete:false, 
+       completeCalled:false, 
+       started:false, 
+       window:null, 
+       document:null, 
+       body:null, 
+       appRoot:null, 
+       clientRoot:null, 
+       serverRoot:null};
+       
+      app.initAppRoot(appstate, opts);
+      
+      expect(appstate.window).toEqual(opts.window);
+      expect(appstate.document).toEqual(opts.window.document);
+      expect(appstate.body).toEqual(opts.window.document.body);
+      expect(appstate.appRoot).toEqual(opts.window.document.body);
+      expect(appstate.clientRoot).toEqual(opts.window.document.body);
     });  
   });
   
@@ -18,10 +34,26 @@ describe('dom', function () {
       let appRoot = {};
       let serverRoot = {};
       let clientRoot = {};
-      dom.updateRoots(appRoot, serverRoot, clientRoot);
-      expect(dom.state.appRoot).toBe(appRoot);
-      expect(dom.state.serverRoot).toBe(serverRoot);
-      expect(dom.state.clientRoot).toBe(clientRoot);  
+      
+      let appstate:AppState =  { 
+       freeze:null,
+       appRootName:null, 
+       opts:null, 
+       canComplete:false, 
+       completeCalled:false, 
+       started:false, 
+       window:null, 
+       document:null, 
+       body:null, 
+       appRoot:null, 
+       clientRoot:null, 
+       serverRoot:null};
+       
+      app.updateAppRoots(appstate, appRoot, serverRoot, clientRoot);
+      
+      expect(appstate.appRoot).toBe(appRoot);
+      expect(appstate.serverRoot).toBe(serverRoot);
+      expect(appstate.clientRoot).toBe(clientRoot);  
     });  
   });
   
@@ -30,8 +62,18 @@ describe('dom', function () {
       let selector = 'foo > man > choo';
       let appRoot = { querySelector: function () {} };
       spyOn(appRoot, 'querySelector');
-      dom.state.appRoot = appRoot;
-      dom.getAppNode(selector);
+      
+      let appstate:AppState =  { 
+       freeze:null,
+       appRootName:null, 
+       opts:null, 
+       canComplete:false, 
+       completeCalled:false, 
+       started:false, 
+       appRoot:appRoot
+      };
+      app.getAppNode(appstate, selector);
+      
       expect(appRoot.querySelector).toHaveBeenCalledWith(selector);
     });  
   });
@@ -41,8 +83,18 @@ describe('dom', function () {
       let selector = 'foo > man > choo';
       let appRoot = { querySelectorAll: function () {} };
       spyOn(appRoot, 'querySelectorAll');
-      dom.state.appRoot = appRoot;
-      dom.getAllAppNodes(selector);
+      
+         let appstate:AppState =  { 
+       freeze:null,
+       appRootName:null, 
+       opts:null, 
+       canComplete:false, 
+       completeCalled:false, 
+       started:false, 
+       appRoot:appRoot
+      };
+            
+      app.getAllAppNodes(appstate, selector);
       expect(appRoot.querySelectorAll).toHaveBeenCalledWith(selector);
     });  
   });
@@ -52,8 +104,18 @@ describe('dom', function () {
       let selector = 'foo > man > choo';
       let clientRoot = { querySelectorAll: function () {} };
       spyOn(clientRoot, 'querySelectorAll');
-      dom.state.clientRoot = clientRoot;
-      dom.getClientNodes(selector);
+      
+      let appstate:AppState =  { 
+        freeze:null,
+        appRootName:null, 
+        opts:null, 
+        canComplete:false, 
+        completeCalled:false, 
+        started:false, 
+        clientRoot:clientRoot
+      };
+      
+      app.getClientNodes(appstate, selector);
       expect(clientRoot.querySelectorAll).toHaveBeenCalledWith(selector);
     });  
   });
@@ -62,10 +124,21 @@ describe('dom', function () {
     it('should call window addEventListener for load event', function () {
       let handler = function () {};
       let window = { addEventListener: function () {} };
-      spyOn(window, 'addEventListener');
-      dom.state.window = window;
-      dom.onLoad(handler);
-      expect(window.addEventListener).toHaveBeenCalledWith('load', handler);
+      let document = { addEventListener: function () {} };
+      spyOn(document, 'addEventListener');
+      
+      let appstate:AppState =  { 
+       freeze:null,
+       appRootName:null, 
+       opts:null, 
+       canComplete:false, 
+       completeCalled:false, 
+       started:false, 
+       window:window, 
+       document:document
+      };
+      app.onLoad(appstate, handler);
+      expect(document.addEventListener).toHaveBeenCalledWith('DOMContentLoaded', handler);
     });  
   });
   
@@ -75,8 +148,18 @@ describe('dom', function () {
       let handler = function () {};
       let document = { addEventListener: function () {} };
       spyOn(document, 'addEventListener');
-      dom.state.document = document;
-      dom.on(eventName, handler);
+     
+      let appstate:AppState =  { 
+       freeze:null,
+       appRootName:null, 
+       opts:null, 
+       canComplete:false, 
+       completeCalled:false, 
+       started:false, 
+       document:document
+      };
+      
+      app.on(appstate, eventName, handler);
       expect(document.addEventListener).toHaveBeenCalledWith(eventName, handler);
     });  
   });
@@ -87,9 +170,19 @@ describe('dom', function () {
       let window = { Event: function () {} };
       let document = { dispatchEvent: function () {} };
       spyOn(document, 'dispatchEvent');
-      dom.state.window = window;
-      dom.state.document = document;
-      dom.dispatchGlobalEvent(eventName);
+      
+      let appstate:AppState =  { 
+       freeze:null,
+       appRootName:null, 
+       opts:null, 
+       canComplete:false, 
+       completeCalled:false, 
+       started:false, 
+       window:window,
+       document:document
+      };
+      
+      app.dispatchGlobalEvent(appstate, eventName);
       expect(document.dispatchEvent).toHaveBeenCalled();
     });  
   });
@@ -100,8 +193,18 @@ describe('dom', function () {
       let eventName = 'boo';
       let window = { Event: function () {} };
       spyOn(node, 'dispatchEvent');
-      dom.state.window = window;
-      dom.dispatchNodeEvent(node, eventName);
+      
+      let appstate:AppState =  { 
+       freeze:null,
+       appRootName:null, 
+       opts:null, 
+       canComplete:false, 
+       completeCalled:false, 
+       started:false, 
+       window:window
+      };
+      
+      app.dispatchNodeEvent(appstate, node, eventName);
       expect(node.dispatchEvent).toHaveBeenCalled();
     });  
   });
@@ -122,10 +225,20 @@ describe('dom', function () {
       
       spyOn(body, 'appendChild');
       spyOn(document, 'createElement').and.callThrough();
-      dom.state.document = document;
-      dom.state.body = body;
       
-      dom.addNodeToBody(type, className, styles);
+     let appstate:AppState =  { 
+       freeze:null,
+       appRootName:null, 
+       opts:null, 
+       canComplete:false, 
+       completeCalled:false, 
+       started:false, 
+       document:document, 
+       body:body
+      };
+     
+      
+      app.addNodeToBody(appstate, type, className, styles);
       
       expect(document.createElement).toHaveBeenCalledWith(type);
       expect(newElem.className).toEqual(className);
@@ -136,26 +249,26 @@ describe('dom', function () {
   
   describe('removeNode()', function () {
     it('should not do anything if nothing passed in', function () {
-      dom.removeNode(null);  
+      app.removeNode(null);  
     });
     
     it('should call remove on node if it exists', function () {
       let node = { remove: function () {} };
       spyOn(node, 'remove');
-      dom.removeNode(node);
+      app.removeNode(node);
       expect(node.remove).toHaveBeenCalled();  
     });
     
     it('should set display none when remove not there', function () {
       let node = { style: { display: '' }};
-      dom.removeNode(node);
+      app.removeNode(node);
       expect(node.style.display).toEqual('none');
     });
   });
   
   describe('getSelection', function() {
     it('should return zero if nothing passed in', function() {
-      expect(dom.getSelection(null)).toEqual({
+      expect(app.getSelection(null)).toEqual({
         start: 0,
         end: 0,
         direction: 'forward'
@@ -164,11 +277,8 @@ describe('dom', function () {
     
     it('should return the length of the node text if nothing else', function() {
       let node = { focus: function() { }, value: 'booyeah' };
-
-      dom.state.document = {};
-      
       let expected = { start: 7, end: 7, direction: 'forward' };
-      let actual = dom.getSelection(node);
+      let actual = app.getSelection(node);
       expect(actual).toEqual(expected);
     });
     
@@ -181,14 +291,14 @@ describe('dom', function () {
       };
       
       let expected = { start: 1, end: 3, direction: 'backward' };
-      let actual = dom.getSelection(node);
+      let actual = app.getSelection(node);
       expect(actual).toEqual(expected);
     });
   });
   
   describe('setSelection()', function() {
     it('should do nothing if no node passed in', function() {
-      dom.setSelection(null, null);
+      app.setSelection(null, null);
     });
     
     it('should use setSelectionRange on node if available', function() {
@@ -205,7 +315,7 @@ describe('dom', function () {
       spyOn(node, 'focus');
       spyOn(node, 'setSelectionRange');
       
-      dom.setSelection(node, selection);
+      app.setSelection(node, selection);
       expect(node.focus).toHaveBeenCalled();
       expect(node.setSelectionRange).toHaveBeenCalledWith(selection.start, selection.end, selection.direction);
     });
@@ -239,25 +349,33 @@ describe('dom', function () {
     
     describe('getNodeKey()', function () {
       it('should generate a key based of the node structure', function () {
-        let actual = dom.getNodeKey(node, rootNode);
+        let actual = app.getNodeKey(node, rootNode);
         expect(actual).toEqual(expectedNodeKey);
       });
     });
     
     describe('findClientNode()', function () {
       it('should return null if no serverNode passed in', function () {
-        expect(dom.findClientNode(null)).toBeNull();
+        expect(app.findClientNode(null, null)).toBeNull();
       });
       
       it('should get a node from cache', function () {
         let clientNode = { name: 'zoo' };
-        dom.nodeCache[expectedNodeKey] = [{
+        app.nodeCache[expectedNodeKey] = [{
           serverNode: node,
           clientNode: clientNode
         }];
-        dom.state.serverRoot = rootNode;
-        
-        let actual = dom.findClientNode(node);
+         let appstate:AppState =  { 
+           freeze:null,
+           appRootName:null, 
+           opts:null, 
+           canComplete:false, 
+           completeCalled:false, 
+           started:false,
+           serverRoot:rootNode
+         };
+   
+        let actual = app.findClientNode(appstate, node);
         expect(actual).toBe(clientNode);
       });
       

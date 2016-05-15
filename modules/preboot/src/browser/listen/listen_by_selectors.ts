@@ -1,7 +1,6 @@
 import {AppState} from '../../interfaces/preboot_ref';
 import {ListenStrategy} from '../../interfaces/strategy';
 import {NodeEvent} from '../../interfaces/event';
-import * as app from '../app'
 
 /**
  * This listen strategy uses a list of selectors maped to events. For example:
@@ -10,7 +9,7 @@ import * as app from '../app'
  *      'button': ['click']
  *    }
  */
-export function getNodeEvents(appstate:AppState, strategy: ListenStrategy): NodeEvent[] {
+export function getNodeEvents(app, appstate:AppState, strategy: ListenStrategy): NodeEvent[] {
   let nodeEvents = [];
   let eventsBySelector = strategy.eventsBySelector || {};
   let selectors = Object.keys(eventsBySelector);
