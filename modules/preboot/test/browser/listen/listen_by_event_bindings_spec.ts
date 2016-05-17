@@ -53,6 +53,7 @@ describe('listen_by_event_bindings', function () {
   
   describe('getNodeEvents()', function () {
     it('should return an empty array if no body', function () {
+      let app = {};
       let appstate:AppState =  { 
            freeze:null,
            appRootName:null, 
@@ -63,7 +64,7 @@ describe('listen_by_event_bindings', function () {
        };
       let strategy = {};
       let expected = [];
-      let actual = getNodeEvents(appstate, strategy);
+      let actual = getNodeEvents(app, appstate, strategy);
       expect(actual).toEqual(expected);
     });  
   });

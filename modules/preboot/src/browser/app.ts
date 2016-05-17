@@ -29,7 +29,7 @@ export function addApp(appRoot:string, options:PrebootOptions){
        freeze:null,
        appRootName:appRoot, 
        opts:options, 
-       canComplete:false, 
+       canComplete:true, 
        completeCalled:false, 
        started:false, 
        window:null, 
@@ -42,8 +42,9 @@ export function addApp(appRoot:string, options:PrebootOptions){
    return app;    
 }
 export function getApp(appRoot:string):AppState{
-    state.apps.forEach(state => {if(state.appRootName === appRoot)return state;});
-    return undefined;
+    var retval = undefined;
+    state.apps.forEach(state => {if(state.appRootName === appRoot) retval = state;});
+    return retval;
 }
 
 /**
@@ -51,9 +52,9 @@ export function getApp(appRoot:string):AppState{
  */
 export function onLoad(app:AppState, handler: Function) {
   if (app.document && app.document.readyState === 'interactive') {
-    handler();
+    handler(app.appRootName);
   } else {
-    app.document.addEventListener('DOMContentLoaded', handler);
+    app.document.addEventListener('DOMContentLoaded', ()=>{handler(app.appRootName)});
   }
 }
 
@@ -62,7 +63,7 @@ export function onLoad(app:AppState, handler: Function) {
  * we use the document to do this.
  */
 export function on(app:AppState, eventName: string, handler: Function) {
-  app.document.addEventListener(eventName, handler);
+  app.document.addEventListener(eventName, ()=>{handler(app.appRootName)});
 }
 
 /**
@@ -188,7 +189,7 @@ export function setSelection(node: Element, selection: CursorSelection) {
 /**
  * Get a unique key for a node in the DOM
  */
-export function getNodeKey(node: Element, rootNode: Element): string {
+export function getNodeKey(appstate:AppState, node: Element, rootNode: Element): string {
   let ancestors = [];
   let temp = node;
   while (temp && temp !== rootNode) {
@@ -201,8 +202,8 @@ export function getNodeKey(node: Element, rootNode: Element): string {
     ancestors.push(temp);
   }
 
-  // now go backwards starting from the root
-  let key = node.nodeName;
+  // now go backwards starting from the root, appending the appname to unique identify the node later..
+  let key = node.nodeName + '_' + appstate.appRootName;
   let len = ancestors.length;
 
   for (let i = (len - 1); i >= 0; i--) {
@@ -231,7 +232,7 @@ export function findClientNode(app:AppState, serverNode: Element, nodeKey?: any)
   if (!serverNode) { return null; }
 
   // we use the string of the node to compare to the client node & as key in cache
-  let serverNodeKey = nodeKey || getNodeKey(serverNode, app.serverRoot);
+  let serverNodeKey = nodeKey || getNodeKey(app, serverNode, app.serverRoot);
 
   // first check to see if we already mapped this node
   let nodes = nodeCache[serverNodeKey] || [];
@@ -256,7 +257,7 @@ export function findClientNode(app:AppState, serverNode: Element, nodeKey?: any)
   for (let clientNode of clientNodes) {
 
     // todo: this assumes a perfect match which isn't necessarily true
-    if (getNodeKey(clientNode, app.clientRoot) === serverNodeKey) {
+    if (getNodeKey(app, clientNode, app.clientRoot) === serverNodeKey) {
 
       // add the client/server node pair to the cache
       nodeCache[serverNodeKey] = nodeCache[serverNodeKey] || [];

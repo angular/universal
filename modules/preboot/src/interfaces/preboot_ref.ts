@@ -20,6 +20,7 @@ export interface AppState {
     clientRoot?: any,
     activeNode?: any;               // copied from prebootref for strategies
     selection?: CursorSelection;    // copied from prebootref for strategies
+    switched?:boolean;
 }
 
 /*

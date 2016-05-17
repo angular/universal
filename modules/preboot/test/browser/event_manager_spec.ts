@@ -126,10 +126,10 @@ describe('event_manager', function () {
     
     it('should add to events', function () {
       let expected_time  = new Date().getTime();
-      
+      let appname = "app"
       let appstate:AppState =  { 
            freeze:null,
-           appRootName:null, 
+           appRootName:appname, 
            opts:null, 
            canComplete:false, 
            completeCalled:false, 
@@ -148,20 +148,17 @@ describe('event_manager', function () {
       eventManager.state.listening = true;
       eventManager.state.events = [];
       eventManager.getEventHandler(app, appstate, strategy, node, eventName)(event, expected_time);
-      console.log(eventManager.state.events)
-      
-      console.log([{
-        node: node,
-        event: event,
-        name: eventName,
-        time: expected_time
-      }]);
-      
+     
+     console.log("events")
+     console.log(eventManager.state.events);
+     console.log("done.")
       expect(eventManager.state.events).toEqual([{
         node: node,
         event: event,
+        appname:appname,
         name: eventName,
-        time: expected_time
+        time: expected_time,
+        nodeKey: node
       }]); 
     });
     

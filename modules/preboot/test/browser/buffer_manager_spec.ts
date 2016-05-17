@@ -92,10 +92,11 @@ describe('buffer_manager', function () {
           serverRoot:serverRoot,
           opts:{},
           freeze:null,
-          appRootName:"",
+          appRootName:"app",
           canComplete: false,      
           completeCalled: false,   
           started:false, 
+          switched:true
       }
       
       let app = {
@@ -107,7 +108,7 @@ describe('buffer_manager', function () {
       
       spyOn(app, 'removeNode');
       spyOn(app, 'updateAppRoots');
-      state.switched = true;
+      
       
       switchBuffer(app, appstate);
       

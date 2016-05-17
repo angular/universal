@@ -18,7 +18,7 @@ export function replayEvents(app, appstate:AppState, strategy: ReplayStrategy, e
     let event = eventData.event;
     let serverNode = eventData.node;
     let nodeKey = eventData.nodeKey;
-    let clientNode = app.findClientNode(serverNode, nodeKey);
+    let clientNode = app.findClientNode(appstate, serverNode, nodeKey);
 
     // if client node found, need to explicitly set value and then dispatch event
     if (clientNode) {

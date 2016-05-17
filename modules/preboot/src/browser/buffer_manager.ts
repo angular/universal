@@ -43,7 +43,7 @@ export function switchBuffer(app, appstate:AppState) {
   let serverRoot = appstate.serverRoot || appstate.appRoot;
 
   // don't do anything if already switched
-  if (state.switched) { return; }
+  if (appstate.switched) { return; }
 
   // remove the server root if not same as client and not the body
   if (serverRoot !== clientRoot && serverRoot.nodeName !== 'BODY') {
@@ -57,5 +57,5 @@ export function switchBuffer(app, appstate:AppState) {
    app.updateAppRoots(appstate, clientRoot, null, clientRoot);
 
   // finally mark state as switched
-  state.switched = true;
+  appstate.switched = true;
 }

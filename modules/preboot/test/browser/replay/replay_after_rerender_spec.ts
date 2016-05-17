@@ -26,15 +26,15 @@ describe('replay_after_rerender', function () {
     });
 
     it('should dispatch all events', function () {
-      let node1 = { name: 'node1', dispatchEvent: function (evt) {} };
-      let node2 = { name: 'node2', dispatchEvent: function (evt) {} };
+      let node1 = { appname:'app', name: 'node1', dispatchEvent: function (evt) {} };
+      let node2 = { appname:'app', name: 'node2', dispatchEvent: function (evt) {} };
       let app = {
-          findClientNode: function (node) { return node; },
+          findClientNode: function (app, node, key  ) { return node; },
           log: function () {}
       };
        let appstate:AppState =  { 
            freeze:null,
-           appRootName:null, 
+           appRootName:'app', 
            opts:null, 
            canComplete:false, 
            completeCalled:false, 
@@ -43,8 +43,8 @@ describe('replay_after_rerender', function () {
        
       let strategy = {};
       let events = [
-        { name: 'evt1', event: { name: 'evt1' }, node: node1, nodeKey: 'node1' },
-        { name: 'evt2', event: { name: 'evt2' }, node: node2, nodeKey: 'node2' }
+        { appname:'app', name: 'evt1', event: { name: 'evt1' }, node: node1, nodeKey: 'node1' },
+        { appname:'app', name: 'evt2', event: { name: 'evt2' }, node: node2, nodeKey: 'node2' }
       ];
       let expected = [];
 
@@ -57,25 +57,25 @@ describe('replay_after_rerender', function () {
       expect(actual).toEqual(expected);
       expect(node1.dispatchEvent).toHaveBeenCalledWith(events[0].event);
       expect(node2.dispatchEvent).toHaveBeenCalledWith(events[1].event);
-      expect(app.findClientNode).toHaveBeenCalledWith(node1, 'node1');
-      expect(app.findClientNode).toHaveBeenCalledWith(node2, 'node2');
+      expect(app.findClientNode).toHaveBeenCalledWith(appstate, node1, 'node1');
+      expect(app.findClientNode).toHaveBeenCalledWith(appstate, node2, 'node2');
      // expect(app.log).toHaveBeenCalledWith(3, node1, node1, events[0].event);
      // expect(app.log).toHaveBeenCalledWith(3, node2, node2, events[1].event);
     });
 
     it('should dispatch one event and return the other', function () {
-      let node1 = { name: 'node1', dispatchEvent: function (evt) {} };
-      let node2 = { name: 'node2', dispatchEvent: function (evt) {} };
+      let node1 = { appname:'app', name: 'node1', dispatchEvent: function (evt) {} };
+      let node2 = { appname:'app', name: 'node2', dispatchEvent: function (evt) {} };
 
       let app = {
-          findClientNode: function (node) {
-            return node.name === 'node1' ? node : null;
+          findClientNode: function (app, servernode, nodekey) {
+            return servernode.name === 'node1' ? servernode : null;
           },
           log: function () {}
       };
        let appstate:AppState =  { 
            freeze:null,
-           appRootName:null, 
+           appRootName:'app', 
            opts:null, 
            canComplete:false, 
            completeCalled:false, 
@@ -84,11 +84,11 @@ describe('replay_after_rerender', function () {
        
       let strategy = {};
       let events = [
-        { name: 'evt1', event: { name: 'evt1' }, node: node1, nodeKey: 'node1' },
-        { name: 'evt2', event: { name: 'evt2' }, node: node2, nodeKey: 'node2' }
+        { appname:'app', name: 'evt1', event: { name: 'evt1' }, node: node1, nodeKey: 'node1' },
+        { appname:'app', name: 'evt2', event: { name: 'evt2' }, node: node2, nodeKey: 'node2' }
       ];
       let expected = [
-        { name: 'evt2', event: { name: 'evt2' }, node: node2, nodeKey: 'node2' }
+        { appname:'app', name: 'evt2', event: { name: 'evt2' }, node: node2, nodeKey: 'node2' }
       ];
 
       spyOn(node1, 'dispatchEvent');
@@ -100,8 +100,8 @@ describe('replay_after_rerender', function () {
       expect(actual).toEqual(expected);
       expect(node1.dispatchEvent).toHaveBeenCalledWith(events[0].event);
       expect(node2.dispatchEvent).not.toHaveBeenCalled();
-      expect(app.findClientNode).toHaveBeenCalledWith(node1, 'node1');
-      expect(app.findClientNode).toHaveBeenCalledWith(node2, 'node2');
+      expect(app.findClientNode).toHaveBeenCalledWith(appstate, node1, 'node1');
+      expect(app.findClientNode).toHaveBeenCalledWith(appstate, node2, 'node2');
      // expect(preboot.log).toHaveBeenCalledWith(3, node1, node1, events[0].event);
      // expect(preboot.log).toHaveBeenCalledWith(4, node2);
     });

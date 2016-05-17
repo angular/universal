@@ -71,7 +71,7 @@ export function getEventHandler(app, appstate: AppState, strategy: ListenStrateg
     } else {
       appstate.activeNode = {
         node: event.target,
-        nodeKey: app.getNodeKey(event.target, appstate.serverRoot)
+        nodeKey: app.getNodeKey(appstate, event.target, appstate.serverRoot)
       };
     }
 
@@ -92,11 +92,12 @@ export function getEventHandler(app, appstate: AppState, strategy: ListenStrateg
       let eventObj: PrebootEvent = {
         node: node,
         event: event,
+        appname:appstate.appRootName,
         name: eventName,
         time: time || (new Date()).getTime()
       };
       
-      //eventObj.nodeKey = app.getNodeKey(node, appstate.serverRoot);
+      eventObj.nodeKey = app.getNodeKey(appstate, node, appstate.serverRoot);
       state.events.push(eventObj);
     }
   };
@@ -115,6 +116,7 @@ export function addEventListeners(app, appstate:AppState, nodeEvents: NodeEvent[
     node.addEventListener(eventName, handler);
     state.eventListeners.push({
       node: node,
+      appname:appstate.appRootName,
       name: eventName,
       handler: handler
     });
@@ -178,11 +180,17 @@ export function cleanup(app, appstate:AppState) {
     }, 1);
   }
 
-  // cleanup the event listeners
+  // cleanup the event listeners for this app
+  // for just this app, not the others...
   for (let listener of state.eventListeners) {
-    listener.node.removeEventListener(listener.name, listener.handler);
+    if (listener.appname === appstate.appRootName)
+      listener.node.removeEventListener(listener.name, listener.handler);
   }
 
-  // finally clear out the events
-  state.events = [];
+  // finally clear out the events for this app again...
+  for (var event of state.events){
+    if (event.appname == appstate.appRootName)
+      state.events.splice(state.events.indexOf(event), 1);
+  }
+ // state.events = [];
 }

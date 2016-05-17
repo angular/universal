@@ -32,7 +32,7 @@ describe('replay_after_hydrate', function () {
       };
        let appstate:AppState =  { 
            freeze:null,
-           appRootName:null, 
+           appRootName:'app', 
            opts:null, 
            canComplete:false, 
            completeCalled:false, 
@@ -43,8 +43,8 @@ describe('replay_after_hydrate', function () {
         checkIfExists: false
       };
       let events = [
-        { name: 'evt1', event: { name: 'evt1' }, node: node1 },
-        { name: 'evt2', event: { name: 'evt2' }, node: node2 }
+        { appname:'app', name: 'evt1', event: { name: 'evt1' }, node: node1 },
+        { appname:'app', name: 'evt2', event: { name: 'evt2' }, node: node2 }
       ];
       let expected = [];
       
@@ -69,7 +69,7 @@ describe('replay_after_hydrate', function () {
       };
        let appstate:AppState =  { 
            freeze:null,
-           appRootName:null, 
+           appRootName:'app', 
            opts:null, 
            canComplete:false, 
            completeCalled:false, 
@@ -79,11 +79,11 @@ describe('replay_after_hydrate', function () {
         checkIfExists: true
       };
       let events = [
-        { name: 'evt1', event: { name: 'evt1' }, node: node1 },
-        { name: 'evt2', event: { name: 'evt2' }, node: node2 }
+        { appname:'app', name: 'evt1', event: { name: 'evt1' }, node: node1 },
+        { appname:'app', name: 'evt2', event: { name: 'evt2' }, node: node2 }
       ];
       let expected = [
-        { name: 'evt2', event: { name: 'evt2' }, node: node2 }
+        { appname:'app', name: 'evt2', event: { name: 'evt2' }, node: node2 }
       ];
       
       spyOn(node1, 'dispatchEvent');

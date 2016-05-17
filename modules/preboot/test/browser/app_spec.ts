@@ -138,7 +138,7 @@ describe('app', function () {
        document:document
       };
       app.onLoad(appstate, handler);
-      expect(document.addEventListener).toHaveBeenCalledWith('DOMContentLoaded', handler);
+      expect(document.addEventListener).toHaveBeenCalledWith('DOMContentLoaded', jasmine.any(Function));
     });  
   });
   
@@ -160,7 +160,7 @@ describe('app', function () {
       };
       
       app.on(appstate, eventName, handler);
-      expect(document.addEventListener).toHaveBeenCalledWith(eventName, handler);
+      expect(document.addEventListener).toHaveBeenCalledWith(eventName, jasmine.any(Function));
     });  
   });
   
@@ -343,13 +343,22 @@ describe('app', function () {
       }]
     };
     let rootNode = document.childNodes[2];
-    let expectedNodeKey = 'DIV_s2_s4';
-
+    let expectedNodeKey = 'DIV_app_s2_s4';
+      let appstate = {
+          appRoot: null,
+          opts:{},
+          freeze:null,
+          appRootName:"app",
+          canComplete: false,      
+          completeCalled: false,   
+          started:false, 
+      }
+    
     addParent(document);
     
     describe('getNodeKey()', function () {
       it('should generate a key based of the node structure', function () {
-        let actual = app.getNodeKey(node, rootNode);
+        let actual = app.getNodeKey(appstate, node, rootNode);
         expect(actual).toEqual(expectedNodeKey);
       });
     });
@@ -367,7 +376,7 @@ describe('app', function () {
         }];
          let appstate:AppState =  { 
            freeze:null,
-           appRootName:null, 
+           appRootName:"app", 
            opts:null, 
            canComplete:false, 
            completeCalled:false, 
