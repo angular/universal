@@ -27,12 +27,16 @@ export function parseDocument(documentHtml: string): Object {
     throw new Error('parseDocument needs to be a string to be parsed correctly');
   }
   
+  const doc = parser.parse(documentHtml);
+  
+  /*
   // Build entire doc <!doctype><html> etc
   if (documentHtml.indexOf('<html>') > -1 && documentHtml.indexOf('</html>') > -1) {
     const doc = parser.parse(documentHtml);
   }
   // ASP.NET case : parse only the fragment - don't build entire <html> doc
   const doc = parser.parseFragment(documentHtml);
+  */
   
   let rootNode;
   let bodyNode;
