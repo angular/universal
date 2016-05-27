@@ -40,7 +40,7 @@
 [Design Doc](https://docs.google.com/document/d/1q6g9UlmEZDXgrkY88AJZ6MUrUxcnwhBGS0EXbVlYicY)
 
 ### Videos
-Angular 2 Universal Patterns - ng-conf, May 2016
+Angular 2 Universal Patterns - ng-conf, May 2016  
 [![Angular 2 Universal Patterns](http://img.youtube.com/vi/TCj_oC3m6_U/0.jpg)](https://www.youtube.com/watch?v=TCj_oC3m6_U)
 
 Angular Universal Source Code - ReadTheSource, January 2016  
@@ -57,6 +57,8 @@ Angular 2 Server Rendering - Angular U, July 2015
 
 # Best Practices
 > When building Universal components in Angular 2 there are a few things to keep in mind.
+
+> Note: Universal currently only works with `router-deprecated`
 
 * Know the difference between attributes and properties in relation to the DOM.
 * Don't manipulate the `nativeElement` directly. Use the `Renderer`. We do this to ensure that in any environment we're able to change our view.
