@@ -38,7 +38,7 @@ export function ignoreUnusedStrategies(
 /**
  * Generate browser code as a readable stream for preboot based on the input options
  */
-export function getBrowserCodeStream(appName:string, opts?: PrebootOptions): any {
+export function getBrowserCodeStream(appName: string, opts?: PrebootOptions): any {
   opts = normalize(opts);
 
   let bOpts = {
@@ -65,8 +65,8 @@ export function getBrowserCodeStream(appName:string, opts?: PrebootOptions): any
   let outputStream = b.bundle()
     .pipe(source('src/browser/preboot_browser.js'))
     .pipe(buffer())
-    .pipe(insert.append('\n\n;preboot.init("' + appName+ '",' + stringifyWithFunctions(opts) + ');\n\n'))
-    .pipe(insert.append('\n\n;preboot.init("' + appName+ '2",' + stringifyWithFunctions(opts) + ');\n\n'))
+    .pipe(insert.append('\n\n;preboot.init("' + appName + '",' + stringifyWithFunctions(opts) + ');\n\n'))
+    .pipe(insert.append('\n\n;preboot.init("' + appName + '2",' + stringifyWithFunctions(opts) + ');\n\n'))
     .pipe(rename('preboot.js'));
 
   // uglify if the option is passed in
@@ -80,7 +80,7 @@ export var getClientCodeStream = getBrowserCodeStream;
  * Generate browser code as a string for preboot
  * based on the input options
  */
-export function getBrowserCode(appname:string, opts?: PrebootOptions, done?: Function): any {
+export function getBrowserCode(appname: string, opts?: PrebootOptions, done?: Function): any {
   let deferred = Q.defer();
   let clientCode = '';
 
@@ -91,7 +91,7 @@ export function getBrowserCode(appname:string, opts?: PrebootOptions, done?: Fun
   }
 
   // get the browser code
-  getBrowserCodeStream(appname,opts)
+  getBrowserCodeStream(appname, opts)
     .pipe(eventStream.map(function(file, cb) {
       clientCode += file.contents;
       cb(null, file);

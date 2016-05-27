@@ -1,6 +1,6 @@
 /**
  * This is the main entry point for preboot on the browser.
- * The primary methods are:
+ * The primary methods are: 
  *    init() - called automatically to initialize preboot according to options
  *    start() - when preboot should start listening to events
  *    done() - when preboot should start replaying events
@@ -10,11 +10,11 @@ import * as eventManager from './event_manager';
 import * as bufferManager from './buffer_manager';
 import * as logManager from './log';
 import * as freezeSpin from './freeze/freeze_with_spinner';
-import *  as app from './app'
+import *  as app from './app';
 import { Element } from '../interfaces/element';
 import { PrebootOptions } from '../interfaces/preboot_options';
 import { PrebootState } from './preboot_state';
-import { AppState } from '../interfaces/preboot_ref';
+import { AppState } from '../interfaces/app';
 
 let state = PrebootState;
 
@@ -22,15 +22,18 @@ let state = PrebootState;
  * Once bootstrap has completed, we replay events,
  * switch buffer and then cleanup
  */
-export function complete(appName:string) {
-  if (appName !== undefined){ completeApp(app.getApp(appName)); }
-  else {  state.apps.forEach(appstate => { completeApp(appstate); }); }
+export function complete(appName: string) {
+  if (appName !== undefined) { 
+    completeApp(app.getApp(appName)); 
+  } else { 
+    state.apps.forEach(appstate => { completeApp(appstate); }); 
+  }
 }
 
-function completeApp(appstate:AppState){
+function completeApp(appstate: AppState) {
   // preboot.log(2, eventManager.state.events);
     appstate.completeCalled = true; 
-    if (appstate.canComplete){
+    if (appstate.canComplete) {
       eventManager.replayEvents(app, appstate);                 // replay events on browser DOM
   
       if (appstate.opts.buffer) { bufferManager.switchBuffer(app, appstate); } // switch from server to browser buffer
@@ -42,18 +45,21 @@ function completeApp(appstate:AppState){
 /**
  * Get function to run once window has loaded
  */
-function load(appName:string) {
-  if (appName !== undefined){ loadApp(app.getApp(appName)); }
-  else {  state.apps.forEach(appstate => { loadApp(appstate); }); }
+function load(appName: string) {
+  if (appName !== undefined) { 
+    loadApp(app.getApp(appName)); 
+  } else { 
+    state.apps.forEach(appstate => { loadApp(appstate); }); 
+  }
 }
 
-function loadApp(appstate:AppState){
+function loadApp(appstate: AppState) {
    // re-initialize each approot now that we have the body
   // grab the root element
   // var root = dom.getDocumentNode(opts.appRoot);
   // make sure the app root is set
   var root = app.getDocumentNode(appstate);
-  app.initAppRoot(appstate, {window:window})
+  app.initAppRoot(appstate, {window: window});
   app.updateAppRoots(appstate, root, root, root);
 
   // if we are buffering, need to switch around the divs
@@ -74,23 +80,22 @@ function loadApp(appstate:AppState){
  * Resume the completion process; if complete already called,
  * call it again right away
  */
-function resume(appName:string) {
-   if (appName !== undefined){ 
+function resume(appName: string) {
+   if (appName !== undefined) { 
      resumeApp(app.getApp(appName));
-  }
-  else { 
-    state.apps.forEach(appstate =>{
+  } else { 
+    state.apps.forEach(appstate => {
        resumeApp(appstate);
     });
   }
 }
 
-function resumeApp(appstate:AppState) {
+function resumeApp(appstate: AppState) {
    appstate.canComplete = true; 
-      if (appstate.completeCalled){
+      if (appstate.completeCalled) {
         // using setTimeout to fix weird bug where err thrown on
         // serverRoot.remove() in buffer switch
-         setTimeout(()=>{complete(appstate.appRootName)}, 10);
+         setTimeout(() => { complete(appstate.appRootName); }, 10);
       }
 }
 
@@ -100,29 +105,30 @@ function resumeApp(appstate:AppState) {
  * *
  * To call multiple times like init('app1', {}), init('app2', {})
  */
-export function init(appName:string, opts: PrebootOptions) {
+export function init(appName: string, opts: PrebootOptions) {
    var appstate = app.addApp(appName, opts);
-   app.initAppRoot(appstate, {window:window});  
+   app.initAppRoot(appstate, {window: window});  
 }
 
 /**
  * Start preboot by starting to record events
  */
-export function start(appName?:string) {
-  //let opts = state.opts;
-  if (appName !== undefined){ startApp(app.getApp(appName)); }
-  else { 
+export function start(appName?: string) {
+  // let opts = state.opts;
+  if (appName !== undefined) {
+     startApp(app.getApp(appName)); 
+  } else { 
     state.apps.forEach(app => { startApp(app); });
-   }
+  }
 }
 
-function startApp(appstate:AppState){
+function startApp(appstate: AppState) {
    // we can only start once, so don't do anything if called multiple times
-   //if (appstate.started) { return }
+   // if (appstate.started) { return }
    
-   app.initAppRoot(appstate, {window:window});
+   app.initAppRoot(appstate, {window: window});
   
-   app.onLoad(appstate, load)
+   app.onLoad(appstate, load);
    app.on(appstate, appstate.opts.pauseEvent, () => appstate.canComplete = false);
    app.on(appstate, appstate.opts.resumeEvent, resume);
    app.on(appstate, appstate.opts.completeEvent, complete);  

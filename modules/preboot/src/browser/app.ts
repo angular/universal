@@ -1,14 +1,15 @@
 import { Element } from '../interfaces/element';
-import { PrebootOptions } from '../interfaces/preboot_options'
-import { PrebootState } from './preboot_state'
-import { GlobalState, AppState, CursorSelection } from '../interfaces/preboot_ref';
+import { PrebootOptions } from '../interfaces/preboot_options';
+import { PrebootState } from './preboot_state';
+import { App, AppState } from '../interfaces/app';
+import { CursorSelection } from '../interfaces/preboot_ref';
 
 
 let state = PrebootState;
 export let nodeCache = {};
 
-export function initAppRoot(app:AppState, options:any) : any{
-     if (app){
+export function initAppRoot(app: AppState, options: any) : any {
+     if (app) {
          app.window = options.window || app.window || {};
          app.document = options.document || (app.window && app.window.document) || {};
          app.body = options.body || (app.document && app.document.body);
@@ -16,45 +17,45 @@ export function initAppRoot(app:AppState, options:any) : any{
          app.serverRoot = app.clientRoot = app.appRoot;
      }
 }
-export function updateAppRoots(app:AppState, appRoot:any, serverRoot?:any, clientRoot?:any){
-    if (app){
+export function updateAppRoots(app: AppState, appRoot: any, serverRoot?: any, clientRoot?: any) {
+    if (app) {
         app.appRoot = appRoot;
         app.clientRoot = clientRoot;
         app.serverRoot = serverRoot;
     }
 }
 
-export function addApp(appRoot:string, options:PrebootOptions){
+export function addApp(appRoot: string, options: PrebootOptions) {
    var app = { 
-       freeze:null,
-       appRootName:appRoot, 
-       opts:options, 
-       canComplete:true, 
-       completeCalled:false, 
-       started:false, 
-       window:null, 
-       document:null, 
-       body:null, 
-       appRoot:null, 
-       clientRoot:null, 
-       serverRoot:null};
+       freeze: null,
+       appRootName: appRoot, 
+       opts: options, 
+       canComplete: true, 
+       completeCalled: false, 
+       started: false, 
+       window: null, 
+       document: null, 
+       body: null, 
+       appRoot: null, 
+       clientRoot: null, 
+       serverRoot: null};
    state.apps.push(app);
    return app;    
 }
-export function getApp(appRoot:string):AppState{
+export function getApp(appRoot: string): AppState {
     var retval = undefined;
-    state.apps.forEach(state => {if(state.appRootName === appRoot) retval = state;});
+    state.apps.forEach(state => {if (state.appRootName === appRoot) { retval = state; } });
     return retval;
 }
 
 /**
  * Add event listener at window level
  */
-export function onLoad(app:AppState, handler: Function) {
+export function onLoad(app: AppState, handler: Function) {
   if (app.document && app.document.readyState === 'interactive') {
     handler(app.appRootName);
   } else {
-    app.document.addEventListener('DOMContentLoaded', ()=>{handler(app.appRootName)});
+    app.document.addEventListener('DOMContentLoaded', () => { handler(app.appRootName); });
   }
 }
 
@@ -62,35 +63,35 @@ export function onLoad(app:AppState, handler: Function) {
  * These are global events that get passed around. Currently
  * we use the document to do this.
  */
-export function on(app:AppState, eventName: string, handler: Function) {
-  app.document.addEventListener(eventName, ()=>{handler(app.appRootName)});
+export function on(app: AppState, eventName: string, handler: Function) {
+  app.document.addEventListener(eventName, () => { handler(app.appRootName); });
 }
 
 /**
  * Get a node in the document
  */
-export function getDocumentNode(app:AppState): Element {
+export function getDocumentNode(app: AppState): Element {
   return app.document.querySelector(app.appRootName);
 }
 
 /**
  * Get one app node
  */
-export function getAppNode(app:AppState, selector: string): Element {
+export function getAppNode(app: AppState, selector: string): Element {
   return app.appRoot.querySelector(selector);
 }
 
 /**
  * Get all app nodes for a given selector
  */
-export function getAllAppNodes(app:AppState, selector: string): Element[] {
+export function getAllAppNodes(app: AppState, selector: string): Element[] {
   return app.appRoot.querySelectorAll(selector);
 }
 
 /**
  * Get all nodes under the client root
  */
-export function getClientNodes(app:AppState, selector: string): Element[] {
+export function getClientNodes(app: AppState, selector: string): Element[] {
   return app.clientRoot.querySelectorAll(selector);
 }
 
@@ -98,28 +99,28 @@ export function getClientNodes(app:AppState, selector: string): Element[] {
 /**
  * Dispatch an event on the document
  */
-export function dispatchGlobalEvent(app:AppState, eventName: string) {
+export function dispatchGlobalEvent(app: AppState, eventName: string) {
   app.document.dispatchEvent(new app.window.Event(eventName));
 }
 
 /**
  * Dispatch an event on a specific node
  */
-export function dispatchNodeEvent(app:AppState, node: Element, eventName: string) {
+export function dispatchNodeEvent(app: AppState, node: Element, eventName: string) {
   node.dispatchEvent(new app.window.Event(eventName));
 }
 
 /**
  * Check to see if the app contains a particular node
  */
-export function appContains(app:AppState, node: Element) {
+export function appContains(app: AppState, node: Element) {
   return app.appRoot.contains(node);
 }
 
 /**
  * Create a new element
  */
-export function addNodeToBody(app:AppState, type: string, className: string, styles: Object): Element {
+export function addNodeToBody(app: AppState, type: string, className: string, styles: Object): Element {
   let elem = app.document.createElement(type);
   elem.className = className;
 
@@ -141,7 +142,7 @@ export function removeNode(node: Element) {
   if (!node) { return; }
 
   node.remove ?
-    node.remove() :
+    node.remove() : 
     node.style.display = 'none';
 }
 
@@ -189,7 +190,7 @@ export function setSelection(node: Element, selection: CursorSelection) {
 /**
  * Get a unique key for a node in the DOM
  */
-export function getNodeKey(appstate:AppState, node: Element, rootNode: Element): string {
+export function getNodeKey(appstate: AppState, node: Element, rootNode: Element): string {
   let ancestors = [];
   let temp = node;
   while (temp && temp !== rootNode) {
@@ -226,7 +227,7 @@ export function getNodeKey(appstate:AppState, node: Element, rootNode: Element):
  * Given a node from the server rendered view, find the equivalent
  * node in the client rendered view.
  */
-export function findClientNode(app:AppState, serverNode: Element, nodeKey?: any): Element {
+export function findClientNode(app: AppState, serverNode: Element, nodeKey?: any): Element {
 
   // if nothing passed in, then no client node
   if (!serverNode) { return null; }

@@ -1,5 +1,5 @@
 import {replayEvents} from '../../../src/browser/replay/replay_after_hydrate';
-import { AppState } from '../../../src/interfaces/preboot_ref'
+import { App, AppState } from '../../../src/interfaces/app';
 
 describe('replay_after_hydrate', function () {
   describe('replayEvents()', function () {
@@ -8,13 +8,13 @@ describe('replay_after_hydrate', function () {
           appContains: function(){}
       };
       
-       let appstate:AppState =  { 
-           freeze:null,
-           appRootName:null, 
-           opts:null, 
-           canComplete:false, 
-           completeCalled:false, 
-           started:false
+       let appstate: AppState =  { 
+           freeze: null,
+           appRootName: null, 
+           opts: null, 
+           canComplete: false, 
+           completeCalled: false, 
+           started: false
        };
        
       let strategy = {};
@@ -30,21 +30,21 @@ describe('replay_after_hydrate', function () {
       let app  = { 
           appContains: function () { return false; }
       };
-       let appstate:AppState =  { 
-           freeze:null,
-           appRootName:'app', 
-           opts:null, 
-           canComplete:false, 
-           completeCalled:false, 
-           started:false
+       let appstate: AppState =  { 
+           freeze: null,
+           appRootName: 'app', 
+           opts: null, 
+           canComplete: false, 
+           completeCalled: false, 
+           started: false
        };
        
       let strategy = {
         checkIfExists: false
       };
       let events = [
-        { appname:'app', name: 'evt1', event: { name: 'evt1' }, node: node1 },
-        { appname:'app', name: 'evt2', event: { name: 'evt2' }, node: node2 }
+        { appname: 'app', name: 'evt1', event: { name: 'evt1' }, node: node1 },
+        { appname: 'app', name: 'evt2', event: { name: 'evt2' }, node: node2 }
       ];
       let expected = [];
       
@@ -67,23 +67,23 @@ describe('replay_after_hydrate', function () {
             return node.name === 'node1';
           }
       };
-       let appstate:AppState =  { 
-           freeze:null,
-           appRootName:'app', 
-           opts:null, 
-           canComplete:false, 
-           completeCalled:false, 
-           started:false
+       let appstate: AppState =  { 
+           freeze: null,
+           appRootName: 'app', 
+           opts: null, 
+           canComplete: false, 
+           completeCalled: false, 
+           started: false
        };
       let strategy = {
         checkIfExists: true
       };
       let events = [
-        { appname:'app', name: 'evt1', event: { name: 'evt1' }, node: node1 },
-        { appname:'app', name: 'evt2', event: { name: 'evt2' }, node: node2 }
+        { appname: 'app', name: 'evt1', event: { name: 'evt1' }, node: node1 },
+        { appname: 'app', name: 'evt2', event: { name: 'evt2' }, node: node2 }
       ];
       let expected = [
-        { appname:'app', name: 'evt2', event: { name: 'evt2' }, node: node2 }
+        { appname: 'app', name: 'evt2', event: { name: 'evt2' }, node: node2 }
       ];
       
       spyOn(node1, 'dispatchEvent');

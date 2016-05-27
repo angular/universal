@@ -1,5 +1,5 @@
 import {getNodeEvents} from '../../../src/browser/listen/listen_by_selectors';
-import { AppState } from '../../../src/interfaces/preboot_ref'
+import { AppState } from '../../../src/interfaces/app';
 
 describe('listen_by_selectors', function () {
   describe('getNodeEvents()', function () {
@@ -7,13 +7,13 @@ describe('listen_by_selectors', function () {
       let app = {
           getAllAppNodes: () => null
       };
-       let appstate:AppState =  { 
-           freeze:null,
-           appRootName:null, 
-           opts:null, 
-           canComplete:false, 
-           completeCalled:false, 
-           started:false
+       let appstate: AppState =  { 
+           freeze: null,
+           appRootName: null, 
+           opts: null, 
+           canComplete: false, 
+           completeCalled: false, 
+           started: false
        };
       let strategy = {
         eventsBySelector: { 'div.blah': ['evt1', 'evt2'] }
@@ -27,13 +27,13 @@ describe('listen_by_selectors', function () {
        let app = {
           getAllAppNodes: () => [{ name: 'one' }, { name: 'two' }]
       };
-       let appstate:AppState =  { 
-           freeze:null,
-           appRootName:null, 
-           opts:null, 
-           canComplete:false, 
-           completeCalled:false, 
-           started:false
+       let appstate: AppState =  { 
+           freeze: null,
+           appRootName: null, 
+           opts: null, 
+           canComplete: false, 
+           completeCalled: false, 
+           started: false
        };
        
       let strategy = {

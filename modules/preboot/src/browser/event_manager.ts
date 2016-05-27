@@ -2,11 +2,11 @@
  * This module coordinates all preboot events on the client side
  */
 import {PrebootEvent} from '../interfaces/event';
-import {AppState} from '../interfaces/preboot_ref';
-import {PrebootOptions} from '../interfaces/preboot_options';
+import {AppState} from '../interfaces/app';
 import {ListenStrategy} from '../interfaces/strategy';
 import {Element} from '../interfaces/element';
 import {DomEvent, NodeEvent} from '../interfaces/event';
+import { App } from '../interfaces/app';
 
 
 // import all the listen and replay strategies here
@@ -44,8 +44,8 @@ export let strategies = {
  * must match the Angular pattern for event handlers (i.e. either (event)='blah()' or
  * on-event='blah'
  */
-export function getEventHandler(app, appstate: AppState, strategy: ListenStrategy, node: Element, eventName: string): Function {
-  return function (event: DomEvent, time?:number) {
+export function getEventHandler(app: App, appState: AppState, strategy: ListenStrategy, node: Element, eventName: string): Function {
+  return function (event: DomEvent, time?: number) {
 
     // if we aren't listening anymore (i.e. bootstrap complete) then don't capture any more events
     if (!state.listening) { return; }
@@ -57,21 +57,21 @@ export function getEventHandler(app, appstate: AppState, strategy: ListenStrateg
 
     // if we want to raise an event that others can listen for
     if (strategy.dispatchEvent) {
-       app.dispatchGlobalEvent(appstate, strategy.dispatchEvent);
+       app.dispatchGlobalEvent(appState, strategy.dispatchEvent);
     }
 
     // if callback provided for a custom action when an event occurs
     if (strategy.action) {
-      strategy.action(appstate, node, event);
+      strategy.action(appState, node, event);
     }
 
     // this is for tracking focus; if no caret, then no active node; else set the node and node key
     if (caretPositionEvents.indexOf(eventName) < 0) {
-      appstate.activeNode = null;
+      appState.activeNode = null;
     } else {
-      appstate.activeNode = {
+      appState.activeNode = {
         node: event.target,
-        nodeKey: app.getNodeKey(appstate, event.target, appstate.serverRoot)
+        nodeKey: app.getNodeKey(appState, event.target, appState.serverRoot)
       };
     }
 
@@ -79,12 +79,12 @@ export function getEventHandler(app, appstate: AppState, strategy: ListenStrateg
     if (caretPositionEvents.indexOf(eventName) >= 0 &&
       caretPositionNodes.indexOf(node.tagName) >= 0) {
 
-      appstate.selection = app.getSelection(node);
+      appState.selection = app.getSelection(node);
     }
 
     // todo: need another solution for this hack
     if (eventName === 'keyup' && event.which === 13 && node.attributes['(keyup.enter)']) {
-      app.dispatchGlobalEvent(appstate, 'PrebootFreeze');
+      app.dispatchGlobalEvent(appState, 'PrebootFreeze');
     }
 
     // we will record events for later replay unless explicitly marked as doNotReplay
@@ -92,12 +92,12 @@ export function getEventHandler(app, appstate: AppState, strategy: ListenStrateg
       let eventObj: PrebootEvent = {
         node: node,
         event: event,
-        appname:appstate.appRootName,
+        appname: appState.appRootName,
         name: eventName,
         time: time || (new Date()).getTime()
       };
       
-      eventObj.nodeKey = app.getNodeKey(appstate, node, appstate.serverRoot);
+      eventObj.nodeKey = app.getNodeKey(appState, node, appState.serverRoot);
       state.events.push(eventObj);
     }
   };
@@ -106,17 +106,17 @@ export function getEventHandler(app, appstate: AppState, strategy: ListenStrateg
 /**
  * Loop through node events and add listeners
  */
-export function addEventListeners(app, appstate:AppState, nodeEvents: NodeEvent[], strategy: ListenStrategy) {
+export function addEventListeners(app, appState: AppState, nodeEvents: NodeEvent[], strategy: ListenStrategy) {
   for (let nodeEvent of nodeEvents) {
     let node = nodeEvent.node;
     let eventName = nodeEvent.eventName;
-    let handler = getEventHandler(app, appstate, strategy, node, eventName);
+    let handler = getEventHandler(app, appState, strategy, node, eventName);
 
     // add the actual event listener and keep a ref so we can remove the listener during cleanup
     node.addEventListener(eventName, handler);
     state.eventListeners.push({
       node: node,
-      appname:appstate.appRootName,
+      appname: appState.appRootName,
       name: eventName,
       handler: handler
     });
@@ -128,13 +128,13 @@ export function addEventListeners(app, appstate:AppState, nodeEvents: NodeEvent[
  * Note that the getNodeEvents fn is gathered here without many safety
  * checks because we are doing all of those in src/server/normalize.ts.
  */
-export function startListening(app, appstate: AppState) {
+export function startListening(app: App, appState: AppState) {
   state.listening = true;
 
-  for (let strategy of appstate.opts.listen) {
+  for (let strategy of appState.opts.listen) {
     let getNodeEvents = strategy.getNodeEvents || strategies.listen[strategy.name].getNodeEvents;
-    let nodeEvents = getNodeEvents(app, appstate, strategy); // TODO:refactor strategies...
-    addEventListeners(app, appstate, nodeEvents, strategy);
+    let nodeEvents = getNodeEvents(app, appState, strategy); // TODO: refactor strategies...
+    addEventListeners(app, appState, nodeEvents, strategy);
   }
 }
 
@@ -145,12 +145,12 @@ export function startListening(app, appstate: AppState) {
  * Note that as with startListening() above, there are very little safety checks
  * here in getting the replayEvents fn because those checks are in normalize.ts.
  */
-export function replayEvents(app, appstate:AppState) {
+export function replayEvents(app: App, appState: AppState) {
   state.listening = false;
 
-  for (let strategy of appstate.opts.replay) {
+  for (let strategy of appState.opts.replay) {
     let replayEvts = strategy.replayEvents || strategies.replay[strategy.name].replayEvents;
-    state.events = replayEvts(app, appstate, strategy, state.events); // TODO:refactor strategies...
+    state.events = replayEvts(app, appState, strategy, state.events); // TODO: refactor strategies...
   }
 
   // it is probably an error if there are remaining events, but just log for now
@@ -161,8 +161,8 @@ export function replayEvents(app, appstate:AppState) {
  * Go through all the event listeners and clean them up
  * by removing them from the given node (i.e. element)
  */
-export function cleanup(app, appstate:AppState) {
-  let activeNode = appstate.activeNode;
+export function cleanup(app: App, appState: AppState) {
+  let activeNode = appState.activeNode;
 
   // if there is an active node set, it means focus was tracked in one or more of the listen strategies
   if (activeNode) {
@@ -171,9 +171,9 @@ export function cleanup(app, appstate:AppState) {
     setTimeout(function () {
 
       // find the client node in the new client view
-      let activeClientNode =  app.findClientNode(appstate, activeNode.node, activeNode.nodeKey);
+      let activeClientNode =  app.findClientNode(appState, activeNode.node, activeNode.nodeKey);
       if (activeClientNode) {
-        app.setSelection(activeClientNode, appstate.selection);
+        app.setSelection(activeClientNode, appState.selection);
       } else {
       //  preboot.log(6, activeNode);
       }
@@ -183,14 +183,16 @@ export function cleanup(app, appstate:AppState) {
   // cleanup the event listeners for this app
   // for just this app, not the others...
   for (let listener of state.eventListeners) {
-    if (listener.appname === appstate.appRootName)
+    if (listener.appname === appState.appRootName || listener.appname === undefined) {
       listener.node.removeEventListener(listener.name, listener.handler);
+    }
   }
 
   // finally clear out the events for this app again...
   for (var event of state.events){
-    if (event.appname == appstate.appRootName)
+    if (event.appname === appState.appRootName || event.appname === undefined) {
       state.events.splice(state.events.indexOf(event), 1);
+    }
   }
  // state.events = [];
 }

@@ -1,5 +1,5 @@
 import {state, walkDOM, addNodeEvents, getNodeEvents} from '../../../src/browser/listen/listen_by_event_bindings';
-import { AppState } from '../../../src/interfaces/preboot_ref'
+import { AppState } from '../../../src/interfaces/app';
 
 describe('listen_by_event_bindings', function () {
   describe('walkDOM', function () {
@@ -54,13 +54,13 @@ describe('listen_by_event_bindings', function () {
   describe('getNodeEvents()', function () {
     it('should return an empty array if no body', function () {
       let app = {};
-      let appstate:AppState =  { 
-           freeze:null,
-           appRootName:null, 
-           opts:null, 
-           canComplete:false, 
-           completeCalled:false, 
-           started:false
+      let appstate: AppState =  { 
+           freeze: null,
+           appRootName: null, 
+           opts: null, 
+           canComplete: false, 
+           completeCalled: false, 
+           started: false
        };
       let strategy = {};
       let expected = [];

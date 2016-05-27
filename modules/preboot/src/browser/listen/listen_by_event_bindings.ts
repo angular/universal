@@ -1,9 +1,9 @@
-import {AppState} from '../../interfaces/preboot_ref';
+import {AppState} from '../../interfaces/app';
 import {ListenStrategy} from '../../interfaces/strategy';
 import {NodeEvent} from '../../interfaces/event';
-import * as app from '../app'
+import * as app from '../app';
 
-// regex for how events defined in Angular 2 templates; for example:
+// regex for how events defined in Angular 2 templates; for example: 
 //    <div on-click="blah()">
 //    <div (click)="blah()">
 const ngEventPattern = /^(?:on-|\()([-\w]+)\)?$/;
@@ -12,7 +12,7 @@ const ngEventPattern = /^(?:on-|\()([-\w]+)\)?$/;
 export let state = { nodeEvents: [] };
 
 /**
- * This is from Crockford to walk the DOM (http://whlp.ly/1Ii6YbR).
+ * This is from Crockford to walk the DOM (http: //whlp.ly/1Ii6YbR).
  * Recursively walk DOM tree and execute input param function at
  * each node.
  */
@@ -58,7 +58,7 @@ export function addNodeEvents(node: any) {
  * This listen strategy will look for a specific attribute which contains all the elements
  * that a given element is listening to.
  */
-export function getNodeEvents(app, appstate:AppState, strategy: ListenStrategy): NodeEvent[] {
+export function getNodeEvents(app, appstate: AppState, strategy: ListenStrategy): NodeEvent[] {
   state.nodeEvents = [];
   walkDOM(appstate.body, addNodeEvents);
   return state.nodeEvents;

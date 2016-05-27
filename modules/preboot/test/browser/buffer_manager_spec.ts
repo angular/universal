@@ -1,4 +1,5 @@
 import {state, prep, switchBuffer} from '../../src/browser/buffer_manager';
+import { App } from '../../src/interfaces/app';
 
 describe('buffer_manager', function () {
   describe('prep()', function () {
@@ -12,17 +13,17 @@ describe('buffer_manager', function () {
           insertBefore: function () {}
         }
       };
-      let appstate = {
+      let appState = {
           appRoot: serverRoot,
-          opts:{},
-          freeze:null,
-          appRootName:"",
+          opts: {},
+          freeze: null,
+          appRootName: "",
           canComplete: false,      
           completeCalled: false,   
-          started:false, 
-      }
+          started: false, 
+      };
       
-      let app = {
+      let app: App = {
           updateAppRoots: function () {}
       };
       
@@ -30,12 +31,12 @@ describe('buffer_manager', function () {
       spyOn(serverRoot.parentNode, 'insertBefore');
       spyOn(app, 'updateAppRoots');
       
-      prep(app, appstate)
+      prep(app, appState);
       
       expect(clientRoot.style.display).toEqual('none');
       expect(serverRoot.cloneNode).toHaveBeenCalled();
       expect(serverRoot.parentNode.insertBefore).toHaveBeenCalledWith(clientRoot, serverRoot);
-      expect(app.updateAppRoots).toHaveBeenCalledWith(appstate, serverRoot, serverRoot, clientRoot);
+      expect(app.updateAppRoots).toHaveBeenCalledWith(appState, serverRoot, serverRoot, clientRoot);
     });  
   });
   
@@ -48,19 +49,19 @@ describe('buffer_manager', function () {
         nodeName: 'div'
       };
       
-      let appstate = {
+      let appState = {
           appRoot: null,
-          clientRoot:clientRoot,
-          serverRoot:serverRoot,
-          opts:{},
-          freeze:null,
-          appRootName:"",
+          clientRoot: clientRoot,
+          serverRoot: serverRoot,
+          opts: {},
+          freeze: null,
+          appRootName: "",
           canComplete: false,      
           completeCalled: false,   
-          started:false, 
-      }
+          started: false, 
+      };
       
-      let app = {
+      let app: App = {
          removeNode: function () {},
          updateAppRoots: function () {}
       };
@@ -71,11 +72,11 @@ describe('buffer_manager', function () {
       spyOn(app, 'updateAppRoots');
       state.switched = false;
       
-      switchBuffer(app, appstate);
+      switchBuffer(app, appState);
       
       expect(clientRoot.style.display).toEqual('block');
       expect(app.removeNode).toHaveBeenCalledWith(serverRoot);
-      expect(app.updateAppRoots).toHaveBeenCalledWith(appstate, clientRoot, null, clientRoot);
+      expect(app.updateAppRoots).toHaveBeenCalledWith(appState, clientRoot, null, clientRoot);
     });
 
     it('should not switch because already switched', function () {
@@ -86,20 +87,20 @@ describe('buffer_manager', function () {
         nodeName: 'div'
       };
       
-        let appstate = {
+        let appState = {
           appRoot: null,
-          clientRoot:clientRoot,
-          serverRoot:serverRoot,
-          opts:{},
-          freeze:null,
-          appRootName:"app",
+          clientRoot: clientRoot,
+          serverRoot: serverRoot,
+          opts: {},
+          freeze: null,
+          appRootName: "app",
           canComplete: false,      
           completeCalled: false,   
-          started:false, 
-          switched:true
-      }
+          started: false, 
+          switched: true
+      };
       
-      let app = {
+      let app: App = {
          removeNode: function () {},
          updateAppRoots: function () {}
       };
@@ -110,7 +111,7 @@ describe('buffer_manager', function () {
       spyOn(app, 'updateAppRoots');
       
       
-      switchBuffer(app, appstate);
+      switchBuffer(app, appState);
       
       expect(clientRoot.style.display).toEqual('none');
       expect(app.removeNode).not.toHaveBeenCalled();
@@ -125,19 +126,19 @@ describe('buffer_manager', function () {
         nodeName: 'BODY'
       };
       
-        let appstate = {
+      let appState = {
           appRoot: null,
-          clientRoot:clientRoot,
-          serverRoot:serverRoot,
-          opts:{},
-          freeze:null,
-          appRootName:"",
+          clientRoot: clientRoot,
+          serverRoot: serverRoot,
+          opts: {},
+          freeze: null,
+          appRootName: "",
           canComplete: false,      
           completeCalled: false,   
-          started:false, 
-      }
+          started: false, 
+      };
       
-      let app = {
+      let app: App = {
          removeNode: function () {},
          updateAppRoots: function () {}
       };
@@ -147,11 +148,11 @@ describe('buffer_manager', function () {
       spyOn(app, 'updateAppRoots');
       state.switched = false;
       
-      switchBuffer(app, appstate);
+      switchBuffer(app, appState);
       
       expect(clientRoot.style.display).toEqual('block');
       expect(app.removeNode).not.toHaveBeenCalled();
-      expect(app.updateAppRoots).toHaveBeenCalledWith(appstate, clientRoot, null, clientRoot);
+      expect(app.updateAppRoots).toHaveBeenCalledWith(appState, clientRoot, null, clientRoot);
     });
     
     it('should not remove server root because it is the body', function () {
@@ -160,19 +161,19 @@ describe('buffer_manager', function () {
         nodeName: 'DIV'
       };
       
-      let appstate = {
+      let appState = {
           appRoot: null,
-          clientRoot:clientRoot,
-          serverRoot:clientRoot,
-          opts:{},
-          freeze:null,
-          appRootName:"",
+          clientRoot: clientRoot,
+          serverRoot: clientRoot,
+          opts: {},
+          freeze: null,
+          appRootName: "",
           canComplete: false,      
           completeCalled: false,   
-          started:false, 
-      }
+          started: false, 
+      };
       
-      let app = {
+      let app: App = {
          removeNode: function () {},
          updateAppRoots: function () {}
          
@@ -184,11 +185,11 @@ describe('buffer_manager', function () {
       spyOn(app, 'updateAppRoots');
       state.switched = false;
       
-      switchBuffer(app, appstate);
+      switchBuffer(app, appState);
       
       expect(clientRoot.style.display).toEqual('block');
       expect(app.removeNode).not.toHaveBeenCalled();
-      expect(app.updateAppRoots).toHaveBeenCalledWith(appstate, clientRoot, null, clientRoot);
+      expect(app.updateAppRoots).toHaveBeenCalledWith(appState, clientRoot, null, clientRoot);
     });
   });
 });

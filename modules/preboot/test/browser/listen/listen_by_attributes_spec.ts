@@ -1,5 +1,5 @@
 import {getNodeEvents} from '../../../src/browser/listen/listen_by_attributes';
-import { AppState } from '../../../src/interfaces/preboot_ref'
+import { AppState } from '../../../src/interfaces/app';
 
 
 describe('listen_by_attributes', function () {
@@ -9,13 +9,13 @@ describe('listen_by_attributes', function () {
       let app = {
           getAllAppNodes: function () { return null; }
       };
-      let appstate:AppState =  { 
-           freeze:null,
-           appRootName:null, 
-           opts:null, 
-           canComplete:false, 
-           completeCalled:false, 
-           started:false
+      let appstate: AppState =  { 
+           freeze: null,
+           appRootName: null, 
+           opts: null, 
+           canComplete: false, 
+           completeCalled: false, 
+           started: false
        };
       let strategy = {};
       let expected = [];
@@ -31,13 +31,13 @@ describe('listen_by_attributes', function () {
       let app = {
           getAllAppNodes: function () { return nodes; }
       };
-      let appstate:AppState =  { 
-           freeze:null,
-           appRootName:null, 
-           opts:null, 
-           canComplete:false, 
-           completeCalled:false, 
-           started:false
+      let appstate: AppState =  { 
+           freeze: null,
+           appRootName: null, 
+           opts: null, 
+           canComplete: false, 
+           completeCalled: false, 
+           started: false
        };
       let strategy = {};
       let expected = [
