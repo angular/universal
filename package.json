@@ -25,10 +25,11 @@
     "install-universal" : "cd ./modules/universal && npm install",
     "install-examples"  : "cd ./examples && npm run reload && npm run build && typings install",
     
+    "start": "cd ./examples && npm run start",
+    
     "build": "gulp build",
     "serve": "gulp serve",
     "server": "gulp serve",
-    "start": "cd ./examples && npm run start",
     "watch": "gulp watch",
     "debug": "gulp debug",
     "clean": "gulp clean",
@@ -116,7 +117,7 @@
     "gutil": "^1.6.4",
     "lodash": "^3.10.1",
     "nocycle": "^1.1.1",
-    "parse5": "^1.5.0",
+    "parse5": "^2.1.5",
     "q": "^1.4.1",
     "require-dir": "^0.3.0",
     "run-sequence": "^1.1.2",
