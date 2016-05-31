@@ -92,7 +92,7 @@ export function getEventHandler(app: App, appState: AppState, strategy: ListenSt
       let eventObj: PrebootEvent = {
         node: node,
         event: event,
-        appname: appState.appRootName,
+        appName: appState.appRootName,
         name: eventName,
         time: time || (new Date()).getTime()
       };
@@ -116,7 +116,7 @@ export function addEventListeners(app, appState: AppState, nodeEvents: NodeEvent
     node.addEventListener(eventName, handler);
     state.eventListeners.push({
       node: node,
-      appname: appState.appRootName,
+      appName: appState.appRootName,
       name: eventName,
       handler: handler
     });
@@ -183,14 +183,14 @@ export function cleanup(app: App, appState: AppState) {
   // cleanup the event listeners for this app
   // for just this app, not the others...
   for (let listener of state.eventListeners) {
-    if (listener.appname === appState.appRootName || listener.appname === undefined) {
+    if (listener.appName === appState.appRootName || listener.appName === undefined) {
       listener.node.removeEventListener(listener.name, listener.handler);
     }
   }
 
   // finally clear out the events for this app again...
   for (var event of state.events){
-    if (event.appname === appState.appRootName || event.appname === undefined) {
+    if (event.appName === appState.appRootName || event.appName === undefined) {
       state.events.splice(state.events.indexOf(event), 1);
     }
   }

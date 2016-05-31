@@ -10,7 +10,7 @@ export interface PrebootEvent {
   nodeKey?: any;
   event: any;
   name: string;
-  appname: string;
+  appName: string;
   time?: number;
 }
 

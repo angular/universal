@@ -80,7 +80,7 @@ export var getClientCodeStream = getBrowserCodeStream;
  * Generate browser code as a string for preboot
  * based on the input options
  */
-export function getBrowserCode(appname: string, opts?: PrebootOptions, done?: Function): any {
+export function getBrowserCode(appName: string, opts?: PrebootOptions, done?: Function): any {
   let deferred = Q.defer();
   let clientCode = '';
 
@@ -91,7 +91,7 @@ export function getBrowserCode(appname: string, opts?: PrebootOptions, done?: Fu
   }
 
   // get the browser code
-  getBrowserCodeStream(appname, opts)
+  getBrowserCodeStream(appName, opts)
     .pipe(eventStream.map(function(file, cb) {
       clientCode += file.contents;
       cb(null, file);

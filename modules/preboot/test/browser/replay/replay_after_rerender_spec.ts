@@ -26,8 +26,8 @@ describe('replay_after_rerender', function () {
     });
 
     it('should dispatch all events', function () {
-      let node1 = { appname: 'app', name: 'node1', dispatchEvent: function (evt) {} };
-      let node2 = { appname: 'app', name: 'node2', dispatchEvent: function (evt) {} };
+      let node1 = { appName: 'app', name: 'node1', dispatchEvent: function (evt) {} };
+      let node2 = { appName: 'app', name: 'node2', dispatchEvent: function (evt) {} };
       let app = {
           findClientNode: function (app, node, key  ) { return node; },
           log: function () {}
@@ -43,8 +43,8 @@ describe('replay_after_rerender', function () {
        
       let strategy = {};
       let events = [
-        { appname: 'app', name: 'evt1', event: { name: 'evt1' }, node: node1, nodeKey: 'node1' },
-        { appname: 'app', name: 'evt2', event: { name: 'evt2' }, node: node2, nodeKey: 'node2' }
+        { appName: 'app', name: 'evt1', event: { name: 'evt1' }, node: node1, nodeKey: 'node1' },
+        { appName: 'app', name: 'evt2', event: { name: 'evt2' }, node: node2, nodeKey: 'node2' }
       ];
       let expected = [];
 
@@ -64,8 +64,8 @@ describe('replay_after_rerender', function () {
     });
 
     it('should dispatch one event and return the other', function () {
-      let node1 = { appname: 'app', name: 'node1', dispatchEvent: function (evt) {} };
-      let node2 = { appname: 'app', name: 'node2', dispatchEvent: function (evt) {} };
+      let node1 = { appName: 'app', name: 'node1', dispatchEvent: function (evt) {} };
+      let node2 = { appName: 'app', name: 'node2', dispatchEvent: function (evt) {} };
 
       let app = {
           findClientNode: function (app, servernode, nodekey) {
@@ -84,11 +84,11 @@ describe('replay_after_rerender', function () {
        
       let strategy = {};
       let events = [
-        { appname: 'app', name: 'evt1', event: { name: 'evt1' }, node: node1, nodeKey: 'node1' },
-        { appname: 'app', name: 'evt2', event: { name: 'evt2' }, node: node2, nodeKey: 'node2' }
+        { appName: 'app', name: 'evt1', event: { name: 'evt1' }, node: node1, nodeKey: 'node1' },
+        { appName: 'app', name: 'evt2', event: { name: 'evt2' }, node: node2, nodeKey: 'node2' }
       ];
       let expected = [
-        { appname: 'app', name: 'evt2', event: { name: 'evt2' }, node: node2, nodeKey: 'node2' }
+        { appName: 'app', name: 'evt2', event: { name: 'evt2' }, node: node2, nodeKey: 'node2' }
       ];
 
       spyOn(node1, 'dispatchEvent');

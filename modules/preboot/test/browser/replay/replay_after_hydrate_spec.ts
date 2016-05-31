@@ -43,8 +43,8 @@ describe('replay_after_hydrate', function () {
         checkIfExists: false
       };
       let events = [
-        { appname: 'app', name: 'evt1', event: { name: 'evt1' }, node: node1 },
-        { appname: 'app', name: 'evt2', event: { name: 'evt2' }, node: node2 }
+        { appName: 'app', name: 'evt1', event: { name: 'evt1' }, node: node1 },
+        { appName: 'app', name: 'evt2', event: { name: 'evt2' }, node: node2 }
       ];
       let expected = [];
       
@@ -79,11 +79,11 @@ describe('replay_after_hydrate', function () {
         checkIfExists: true
       };
       let events = [
-        { appname: 'app', name: 'evt1', event: { name: 'evt1' }, node: node1 },
-        { appname: 'app', name: 'evt2', event: { name: 'evt2' }, node: node2 }
+        { appName: 'app', name: 'evt1', event: { name: 'evt1' }, node: node1 },
+        { appName: 'app', name: 'evt2', event: { name: 'evt2' }, node: node2 }
       ];
       let expected = [
-        { appname: 'app', name: 'evt2', event: { name: 'evt2' }, node: node2 }
+        { appName: 'app', name: 'evt2', event: { name: 'evt2' }, node: node2 }
       ];
       
       spyOn(node1, 'dispatchEvent');

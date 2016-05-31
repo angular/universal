@@ -9,20 +9,21 @@ let state = PrebootState;
 export let nodeCache = {};
 
 export function initAppRoot(app: AppState, options: any) : any {
-     if (app) {
-         app.window = options.window || app.window || {};
-         app.document = options.document || (app.window && app.window.document) || {};
-         app.body = options.body || (app.document && app.document.body);
-         app.appRoot = options.appRoot || app.body;
-         app.serverRoot = app.clientRoot = app.appRoot;
-     }
+    if (!app) return;
+  
+    app.window = options.window || app.window || {};
+    app.document = options.document || (app.window && app.window.document) || {};
+    app.body = options.body || (app.document && app.document.body);
+    app.appRoot = options.appRoot || app.body;
+    app.serverRoot = app.clientRoot = app.appRoot;
+     
 }
 export function updateAppRoots(app: AppState, appRoot: any, serverRoot?: any, clientRoot?: any) {
-    if (app) {
-        app.appRoot = appRoot;
-        app.clientRoot = clientRoot;
-        app.serverRoot = serverRoot;
-    }
+    if (!app) return;
+    
+    app.appRoot = appRoot;
+    app.clientRoot = clientRoot;
+    app.serverRoot = serverRoot;
 }
 
 export function addApp(appRoot: string, options: PrebootOptions) {
@@ -44,7 +45,11 @@ export function addApp(appRoot: string, options: PrebootOptions) {
 }
 export function getApp(appRoot: string): AppState {
     var retval = undefined;
-    state.apps.forEach(state => {if (state.appRootName === appRoot) { retval = state; } });
+    state.apps.forEach(state => {
+      if (state.appRootName === appRoot) { 
+        retval = state; 
+      } 
+    });
     return retval;
 }
 
@@ -55,7 +60,7 @@ export function onLoad(app: AppState, handler: Function) {
   if (app.document && app.document.readyState === 'interactive') {
     handler(app.appRootName);
   } else {
-    app.document.addEventListener('DOMContentLoaded', () => { handler(app.appRootName); });
+    app.document.addEventListener('DOMContentLoaded', () =>  handler(app.appRootName));
   }
 }
 
@@ -64,7 +69,7 @@ export function onLoad(app: AppState, handler: Function) {
  * we use the document to do this.
  */
 export function on(app: AppState, eventName: string, handler: Function) {
-  app.document.addEventListener(eventName, () => { handler(app.appRootName); });
+  app.document.addEventListener(eventName, () => handler(app.appRootName));
 }
 
 /**
@@ -203,7 +208,7 @@ export function getNodeKey(appstate: AppState, node: Element, rootNode: Element)
     ancestors.push(temp);
   }
 
-  // now go backwards starting from the root, appending the appname to unique identify the node later..
+  // now go backwards starting from the root, appending the appName to unique identify the node later..
   let key = node.nodeName + '_' + appstate.appRootName;
   let len = ancestors.length;
 

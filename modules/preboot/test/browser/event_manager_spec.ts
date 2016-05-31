@@ -126,10 +126,10 @@ describe('event_manager', function () {
     
     it('should add to events', function () {
       let expected_time  = new Date().getTime();
-      let appname = "app";
+      let appName = "app";
       let appState: AppState =  { 
            freeze: null,
-           appRootName: appname, 
+           appRootName: appName, 
            opts: null, 
            canComplete: false, 
            completeCalled: false, 
@@ -153,7 +153,7 @@ describe('event_manager', function () {
       expect(eventManager.state.events).toEqual([{
         node: testnode,
         event: event,
-        appname: appname,
+        appName: appName,
         name: eventName,
         time: expected_time,
         nodeKey: "testnode"
