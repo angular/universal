@@ -15,6 +15,10 @@
     
     "install:all"  : "npm run install-preboot && npm run install-universal && npm run loop-install && npm run loop-build && typings install && npm run install-examples",
 
+    "dev:reload:universal" : "npm run reload:universal && npm run reload:examples",
+    "reload:universal" : "cd ./modules/universal && npm run reload && npm run build",
+    "reload:examples"  : "cd ./examples && npm run reload && npm run build",
+
     "preinstall": "npm run typings",
     "postinstall" : "npm run install:all",
 
