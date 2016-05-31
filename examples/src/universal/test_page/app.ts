@@ -86,14 +86,6 @@ export class MyApp {
   </div>
 
   <ul>
-  <li *ngFor="let item of items">
-      <input
-        type="checkbox"
-        [checked]="item.completed === true ? 'checked' : ''"
-        (change)="item.completed = $event.target.checked">
-      <pre>{{ item | json }}</pre>
-    </li>
-  <!--
     <li *ngFor="let item of items">
       <input
         type="checkbox"
@@ -101,7 +93,6 @@ export class MyApp {
         (change)="item.completed = $event.target.checked">
       <pre>{{ item | json }}</pre>
     </li>
-    -->
   </ul>
 
   <div>
