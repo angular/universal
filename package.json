@@ -25,18 +25,12 @@
     "install-universal" : "cd ./modules/universal && npm install",
     "install-examples"  : "cd ./examples && npm run reload && npm run build && typings install",
     
-<<<<<<< HEAD
     "start": "cd ./examples && npm run start",
     
     "build": "gulp build",
     "serve": "gulp serve",
     "server": "gulp serve",
-=======
-    "build": "gulp build",
-    "serve": "gulp serve",
-    "server": "gulp serve",
-    "start": "cd ./examples && npm run start",
->>>>>>> angular/master
+
     "watch": "gulp watch",
     "debug": "gulp debug",
     "clean": "gulp clean",
