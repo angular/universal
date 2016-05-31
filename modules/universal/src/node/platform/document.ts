@@ -27,22 +27,17 @@ export function parseDocument(documentHtml: string): Object {
     throw new Error('parseDocument needs to be a string to be parsed correctly');
   }
   
-<<<<<<< HEAD
-=======
+
   const doc = parser.parse(documentHtml);
   
   /*
->>>>>>> angular/master
   // Build entire doc <!doctype><html> etc
   if (documentHtml.indexOf('<html>') > -1 && documentHtml.indexOf('</html>') > -1) {
     const doc = parser.parse(documentHtml);
   }
   // ASP.NET case : parse only the fragment - don't build entire <html> doc
   const doc = parser.parseFragment(documentHtml);
-<<<<<<< HEAD
-=======
   */
->>>>>>> angular/master
   
   let rootNode;
   let bodyNode;
