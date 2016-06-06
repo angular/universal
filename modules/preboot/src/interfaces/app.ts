@@ -22,7 +22,7 @@ export interface App {
     setSelection?(node: Element, selection: CursorSelection);
     getNodeKey?(appstate: AppState, node: Element, rootNode: Element): string;
     findClientNode?(app: AppState, serverNode: Element, nodeKey?: any): Element;
-};
+}
 
 export interface AppState {
     opts: PrebootOptions;
@@ -40,8 +40,8 @@ export interface AppState {
     activeNode?: any;               // copied from prebootref for strategies
     selection?: CursorSelection;    // copied from prebootref for strategies
     switched?: boolean;
-};
+}
 
 export interface GlobalState {
   apps: [AppState]; 
-};
+}
