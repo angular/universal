@@ -11,9 +11,16 @@
     "Jeff Whelpley <jeff@gethuman.com>"
   ],
   "scripts": {
-    "clean:all": "rm -rf ./modules/*/dist ./modules/*/node_modules ./modules/*/typings */dist */node_modules */typings ./dist ./node_modules ./typings",
+    "clean:all": "rimraf ./modules/*/dist ./modules/*/node_modules ./modules/*/typings */dist */node_modules */typings ./dist ./node_modules ./typings",
     
-    "install:all"  : "npm run install-preboot && npm run install-universal && npm run loop-install && npm run loop-build && npm install && typings install && npm run install-examples",
+    "install:all"  : "npm run install-preboot && npm run install-universal && npm run loop-install && npm run loop-build && typings install && npm run install-examples",
+
+    "dev:reload:universal" : "npm run reload:universal && npm run reload:examples",
+    "reload:universal" : "cd ./modules/universal && npm run reload && npm run build",
+    "reload:examples"  : "cd ./examples && npm run reload && npm run build",
+
+    "preinstall": "npm run typings",
+    "postinstall" : "npm run install:all",
 
     "loop-install" : "for dir in modules/[a-zA-Z0-9]* ; do printf \"=== Installing %s\\n\" \"$dir\" ; ( cd \"$dir\"; npm install && typings install; ) ;printf \"=== Installation exit code: %s for %s\\n\" $? \"$dir\" ; done",
     "loop-build"   : "for dir in modules/[a-zA-Z0-9]* ; do printf \"=== Building %s\\n\" \"$dir\" ; ( cd \"$dir\"; npm run build; ) ;printf \"=== Building exit code: %s for %s\\n\" $? \"$dir\" ; done",
@@ -22,11 +29,12 @@
     "install-universal" : "cd ./modules/universal && npm install",
     "install-examples"  : "cd ./examples && npm run reload && npm run build && typings install",
     
-    "prestart": "gulp build",
+    "start": "cd ./examples && npm run start",
+    
     "build": "gulp build",
     "serve": "gulp serve",
     "server": "gulp serve",
-    "start": "gulp server",
+
     "watch": "gulp watch",
     "debug": "gulp debug",
     "clean": "gulp clean",
@@ -43,8 +51,7 @@
     "update": "npm run remove-local-modules && npm install",
     "restart": "npm run update && gulp build && gulp server",
     "typings": "typings install",
-    "doc": "gulp doc",
-    "preinstall": "npm run typings"
+    "doc": "gulp doc"
   },
   "repository": {
     "type": "git",
@@ -96,7 +103,7 @@
     "opn": "^3.0.2",
     "phantomjs": "^1.9.17",
     "protractor": "^3.0.0",
-    "rimraf": "^2.4.3",
+    "rimraf": "^2.5.2",
     "selenium-webdriver": "^2.46.1",
     "serve-index": "^1.7.0",
     "serve-static": "^1.10.0",
@@ -115,7 +122,7 @@
     "gutil": "^1.6.4",
     "lodash": "^3.10.1",
     "nocycle": "^1.1.1",
-    "parse5": "^1.5.0",
+    "parse5": "^2.1.5",
     "q": "^1.4.1",
     "require-dir": "^0.3.0",
     "run-sequence": "^1.1.2",

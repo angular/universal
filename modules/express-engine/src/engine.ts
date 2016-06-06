@@ -1,5 +1,4 @@
 import * as fs from 'fs';
-import {DOCUMENT} from '@angular/platform-browser';
 
 import {selectorRegExpFactory, Bootloader, BootloaderConfig} from 'angular2-universal';
 
@@ -17,8 +16,25 @@ export type ExpressEngineConfig = BootloaderConfig & ExpressEngineExtraOptions;
 
 export var EXPRESS_PLATFORM = null;
 
+export var EXPRESS_ANGULAR_APP = {
+  template: null,
+  directives: null,
+  providers: null
+};
+
 export function disposeExpressPlatform() {
+  if (EXPRESS_PLATFORM && EXPRESS_PLATFORM.dispose) {
+    EXPRESS_PLATFORM.dispose();
+  }
   EXPRESS_PLATFORM = null;
+}
+
+export function disposeExpressAngularApp() {
+  EXPRESS_ANGULAR_APP = {
+    template: null,
+    directives: null,
+    providers: null
+  };
 }
 
 export function expressEngine(filePath: string, options?: ExpressEngineConfig, done?: Function) {
@@ -54,24 +70,33 @@ export function expressEngine(filePath: string, options?: ExpressEngineConfig, d
 
       // bootstrap and render component to string
       const _options = options;
-      if (!EXPRESS_PLATFORM) {
-        const _template = clientHtml;
+      const _template = _options.template || clientHtml;
+      const _providers = _options.providers;
+      const _directives = _options.directives;
+
+      if (EXPRESS_ANGULAR_APP.template !== _template) {
+        disposeExpressPlatform();
+
         const _Bootloader = Bootloader;
-        let bootloader = _options.bootloader;
+        let _bootloader = _options.bootloader;
         if (_options.bootloader) {
-          bootloader = _Bootloader.create(_options.bootloader);
+          _bootloader = _Bootloader.create(_options.bootloader);
         } else {
-          let doc = _Bootloader.parseDocument(_template);
-          _options.document = doc;
           _options.template = _options.template || _template;
-          bootloader = _Bootloader.create(_options);
+          _bootloader = _Bootloader.create(_options);
         }
-        EXPRESS_PLATFORM = bootloader;
+        EXPRESS_PLATFORM = _bootloader;
       }
 
-      EXPRESS_PLATFORM.serializeApplication(null, _options.reuseProviders === false ? null : _options.providers)
+      EXPRESS_ANGULAR_APP.directives = _directives;
+      EXPRESS_ANGULAR_APP.providers = _options.reuseProviders !== true ? _providers : EXPRESS_ANGULAR_APP.providers;
+
+      EXPRESS_PLATFORM.serializeApplication(EXPRESS_ANGULAR_APP)
         .then(html => done(null, buildClientScripts(html, options)))
         .catch(e => {
+
+          disposeExpressPlatform();
+
           console.error(e.stack);
           // if server fail then return client html
           done(null, buildClientScripts(clientHtml, options));
@@ -160,8 +185,12 @@ function angularScript(config): string {
   <!-- SystemJS -->
   <script src="${baseUrl}/systemjs/dist/system.js"></script>
   <!-- Angular2: Bundle -->
-  <script src="${baseUrl}/rxjs/bundles/Rx.js"></script>
+  <script src="${baseUrl}/rxjs/bundles/Rx.umd.js"></script>
   <script src="${baseUrl}/@angular/core/core.umd.js"></script>
+  <script src="${baseUrl}/@angular/common/common.umd.js"></script>
+  <script src="${baseUrl}/@angular/compiler/compiler.umd.js"></script>
+  <script src="${baseUrl}/@angular/platform-browser/platform-browser.umd.js"></script>
+  <script src="${baseUrl}/@angular/platform-browser-dynamic/platform-browser-dynamic.umd.js"></script>
   <script src="${baseUrl}/@angular/router-deprecated/router-deprecated.umd.js"></script>
   <script src="${baseUrl}/@angular/http/http.umd.js"></script>
   <script type="text/javascript">

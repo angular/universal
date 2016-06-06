@@ -1,7 +1,7 @@
 {
   "name": "angular2-webpack-prerender",
   "main": "dist/index.js",
-  "version": "0.6.0",
+  "version": "0.7.1",
   "description": "Prerender your Universal (isomorphic) Angular 2 app with Webpack",
   "homepage": "https://github.com/angular/universal",
   "license": "MIT",
@@ -11,9 +11,9 @@
     "Jeff Whelpley <jeff@gethuman.com>"
   ],
   "scripts": {
-    "remove-modules": "rm -rf dist node_modules/preboot node_modules/angular2-universal-preview node_modules/angular2-universal",
+    "remove-modules": "rimraf node_modules/angular2-universal-preview node_modules/angular2-universal node_modules/angular2-express-engine node_modules/preboot node_modules/angular2-hapi-engine node_modules/angular2-universal-polyfills",
     "reload": "npm run remove-modules && npm install",
-    "prebuild": "rm -rf dist",
+    "prebuild": "rimraf dist",
     "build": "tsc || true",
     "prepublish": "npm run build"
   },
@@ -25,16 +25,24 @@
     "url": "https://github.com/angular/universal/issues"
   },
   "devDependencies": {
+    "@angular/common": "2.0.0-rc.1",
+    "@angular/compiler": "2.0.0-rc.1",
+    "@angular/core": "2.0.0-rc.1",
+    "@angular/http": "2.0.0-rc.1",
+    "@angular/platform-browser": "2.0.0-rc.1",
+    "@angular/platform-browser-dynamic": "2.0.0-rc.1",
+    "@angular/platform-server": "2.0.0-rc.1",
+    "@angular/router-deprecated": "2.0.0-rc.1",
     "preboot": "file:../preboot",
-    "angular2-universal-preview": "file:../universal",
+    "angular2-universal": "file:../universal",
     "rimraf": "^2.5.1",
-    "rxjs": "~5.0.0-beta.2",
-    "zone.js": "~0.6.4",
+    "rxjs": "5.0.0-beta.6",
+    "zone.js": "~0.6.12",
     "typescript": "^1.8.9"
   },
   "dependencies": {
   },
   "peerDependencies": {
-    "angular2-universal-preview": ">=0.85.1"
+    "angular2-universal": ">=0.100.3"
   }
 }

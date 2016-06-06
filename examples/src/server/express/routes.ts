@@ -6,6 +6,7 @@ var appPage = require('../../universal/test_page/app');
 var todoApp = require('../../universal/todo/app');
 var routerApp = require('../../universal/test_router/app');
 var htmlApp = require('../../universal/html/html');
+var jsonpApp = require('../../universal/test_jsonp/app');
 var templateUrlApp = require('../../universal/template_url/app');
 
 import {enableProdMode, provide} from '@angular/core';
@@ -17,6 +18,7 @@ enableProdMode();
 import {
   NODE_ROUTER_PROVIDERS,
   NODE_HTTP_PROVIDERS,
+  NODE_JSONP_PROVIDERS,
   NODE_PLATFORM_PIPES,
   ORIGIN_URL,
   REQUEST_URL,
@@ -24,6 +26,54 @@ import {
   queryParamsToBoolean,
   BootloaderConfig
 } from 'angular2-universal';
+
+const PACKAGES = {
+  'angular2-universal/polyfills': {
+    format: 'cjs',
+    main: 'dist/polyfills',
+    defaultExtension: 'js'
+  },
+  'angular2-universal': {
+    format: 'cjs',
+    main: 'dist/browser/index',
+    defaultExtension: 'js'
+  },
+  '@angular/core': {
+    format: 'cjs',
+    main: 'index',
+    defaultExtension: 'js'
+  },
+  '@angular/router-deprecated': {
+    format: 'cjs',
+    main: 'index',
+    defaultExtension: 'js'
+  },
+  '@angular/platform-browser': {
+    format: 'cjs',
+    main: 'index',
+    defaultExtension: 'js'
+  },
+  '@angular/platform-browser-dynamic': {
+    format: 'cjs',
+    main: 'index',
+    defaultExtension: 'js'
+  },
+  '@angular/http': {
+    format: 'cjs',
+    main: 'index',
+    defaultExtension: 'js'
+  },
+  '@angular/common': {
+    format: 'cjs',
+    main: 'index',
+    defaultExtension: 'js'
+  },
+  '@angular/compiler': {
+    format: 'cjs',
+    main: 'index',
+    defaultExtension: 'js'
+  }
+};
 
 module.exports = function(ROOT) {
   var router = Router();
@@ -54,20 +104,10 @@ module.exports = function(ROOT) {
         systemjs: {
           componentUrl: 'examples/src/universal/test_page/browser',
           map: {
-            'angular2-universal': 'node_modules/angular2-universal'
+            'angular2-universal': 'node_modules/angular2-universal',
+            '@angular': 'node_modules/@angular'
           },
-          packages: {
-            'angular2-universal/polyfills': {
-              format: 'cjs',
-              main: 'dist/polyfills',
-              defaultExtension: 'js'
-            },
-            'angular2-universal': {
-              format: 'cjs',
-              main: 'dist/browser/index',
-              defaultExtension: 'js'
-            }
-          }
+          packages: PACKAGES,
         },
 
         async: queryParams.async === false ? false : true,
@@ -107,20 +147,10 @@ module.exports = function(ROOT) {
         systemjs: {
           componentUrl: 'examples/src/universal/todo/browser',
           map: {
-            'angular2-universal': 'node_modules/angular2-universal'
+            'angular2-universal': 'node_modules/angular2-universal',
+            '@angular': 'node_modules/@angular'
           },
-          packages: {
-            'angular2-universal/polyfills': {
-              format: 'cjs',
-              main: 'dist/polyfills',
-              defaultExtension: 'js'
-            },
-            'angular2-universal': {
-              format: 'cjs',
-              main: 'dist/browser/index',
-              defaultExtension: 'js'
-            }
-          }
+          packages: PACKAGES
         },
         directives: [todoApp.TodoApp],
         platformProviders: [
@@ -153,20 +183,10 @@ module.exports = function(ROOT) {
           systemjs: {
             componentUrl: 'examples/src/universal/template_url/browser',
             map: {
-              'angular2-universal': 'node_modules/angular2-universal'
+              'angular2-universal': 'node_modules/angular2-universal',
+              '@angular': 'node_modules/@angular'
             },
-            packages: {
-              'angular2-universal/polyfills': {
-                format: 'cjs',
-                main: 'dist/polyfills',
-                defaultExtension: 'js'
-              },
-              'angular2-universal': {
-                format: 'cjs',
-                main: 'dist/browser/index',
-                defaultExtension: 'js'
-              }
-            }
+            packages: PACKAGES
           },
           // ngOnStable: () => {
           //   return new Promise(resolve => {
@@ -201,29 +221,10 @@ module.exports = function(ROOT) {
         let queryParams: any = queryParamsToBoolean(req.query);
         let options: BootloaderConfig = Object.assign(queryParams , {
           // client url for systemjs
-          buildClientScripts: true,
-          systemjs: {
-            componentUrl: 'examples/src/universal/html/browser',
-            map: {
-              'angular2-universal': 'node_modules/angular2-universal'
-            },
-            packages: {
-              'angular2-universal/polyfills': {
-                format: 'cjs',
-                main: 'dist/polyfills',
-                defaultExtension: 'js'
-              },
-              'angular2-universal': {
-                format: 'cjs',
-                main: 'dist/browser/index',
-                defaultExtension: 'js'
-              }
-            }
-          },
           directives: [htmlApp.Html],
           platformProviders: [
             provide(ORIGIN_URL, {useValue: 'http://localhost:3000'}),
-            provide(BASE_URL, {useValue: '/examples/html'})
+            provide(BASE_URL, {useValue: '/'})
           ],
           providers: [
             provide(REQUEST_URL, {useValue: req.originalUrl}),
@@ -235,13 +236,54 @@ module.exports = function(ROOT) {
           ],
           data: {},
 
-          preboot: queryParams.preboot === false ? null : {debug: true, uglify: false}
+          preboot: false // queryParams.preboot === false ? null : {debug: true, uglify: false}
 
         });
 
         res.render('src/universal/html/index', options);
 
       });
+
+      router
+        .route('/examples/jsonp')
+        .get(function ngJsonp(req, res) {
+          let queryParams: any = queryParamsToBoolean(req.query);
+          let options: BootloaderConfig = Object.assign(queryParams , {
+            // client url for systemjs
+            buildClientScripts: true,
+            systemjs: {
+              componentUrl: 'examples/src/universal/test_jsonp/browser',
+              map: {
+                'angular2-universal': 'node_modules/angular2-universal',
+                '@angular': 'node_modules/@angular'
+              },
+              packages: PACKAGES
+            },
+            directives: [jsonpApp.App],
+            platformProviders: [
+              provide(ORIGIN_URL, {useValue: 'http://localhost:3000'}),
+              provide(BASE_URL, {useValue: '/examples/jsonp'})
+            ],
+            providers: [
+              provide(REQUEST_URL, {useValue: req.originalUrl}),
+
+              NODE_PLATFORM_PIPES,
+              NODE_ROUTER_PROVIDERS,
+              NODE_HTTP_PROVIDERS,
+              NODE_JSONP_PROVIDERS,
+              provide(LocationStrategy, { useClass: HashLocationStrategy })
+            ],
+            data: {},
+
+            preboot: false // queryParams.preboot === false ? null : {debug: true, uglify: false}
+
+          });
+
+          res.render('src/universal/test_jsonp/index', options);
+
+        });
+
+
   router
     .route('/examples/falcor_todo')
     .get(function ngTodo(req, res) {
@@ -252,20 +294,10 @@ module.exports = function(ROOT) {
         systemjs: {
           componentUrl: 'examples/src/universal/falcor_todo/client',
           map: {
-            'angular2-universal': 'node_modules/angular2-universal'
+            'angular2-universal': 'node_modules/angular2-universal',
+            '@angular': 'node_modules/@angular'
           },
-          packages: {
-            'angular2-universal/polyfills': {
-              format: 'cjs',
-              main: 'dist/polyfills',
-              defaultExtension: 'js'
-            },
-            'angular2-universal': {
-              format: 'cjs',
-              main: 'dist/browser/index',
-              defaultExtension: 'js'
-            }
-          }
+          packages: PACKAGES
         },
 
         directives: [todoApp.TodoApp],
@@ -295,34 +327,27 @@ module.exports = function(ROOT) {
       systemjs: {
         componentUrl: 'examples/src/universal/test_router/browser',
         map: {
-          'angular2-universal': 'node_modules/angular2-universal'
+          'angular2-universal': 'node_modules/angular2-universal',
+          '@angular': 'node_modules/@angular'
         },
-        packages: {
-          'angular2-universal/polyfills': {
-            format: 'cjs',
-            main: 'dist/polyfills',
-            defaultExtension: 'js'
-          },
-          'angular2-universal': {
-            format: 'cjs',
-            main: 'dist/browser/index',
-            defaultExtension: 'js'
-          }
-        }
+        packages: PACKAGES
       },
       // ensure that we test only server routes
       client: false,
 
       directives: [routerApp.App],
+      platformProviders: [
+        provide(ORIGIN_URL, {useValue: 'http://localhost:3000'}),
+        provide(BASE_URL, {useValue: '/examples/router'})
+      ],
       providers: [
-        // NODE_HTTP_PROVIDERS,
-        provide(BASE_URL, {useValue: baseUrl}),
+        NODE_HTTP_PROVIDERS,
         provide(REQUEST_URL, {useValue: url}),
         NODE_ROUTER_PROVIDERS,
       ],
       data: {},
 
-      preboot: queryParams.preboot === false ? null : {debug: true, uglify: false}
+      preboot: false // queryParams.preboot === false ? null : {debug: true, uglify: false}
 
     });
 
@@ -339,7 +364,7 @@ module.exports = function(ROOT) {
   // needed for sourcemaps
 
   router.use('/src', serveStatic(`${ROOT}/src`));
-  router.use('/angular2', serveStatic(`${ROOT}/node_modules/angular2`));
+  router.use('/@angular', serveStatic(`${ROOT}/node_modules/@angular`));
   router.use('/rxjs', serveStatic(`${ROOT}/node_modules/rxjs`));
   router.use('/node_modules',  serveStatic(`${ROOT}/node_modules`));
   router.use('/examples/src',  serveStatic(`${ROOT}/dist`));
