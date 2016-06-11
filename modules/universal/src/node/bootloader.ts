@@ -9,7 +9,7 @@ import {
   PlatformRef,
   ApplicationRef
 } from '@angular/core';
-import {Http} from '@angular/http';
+import {Http, Jsonp} from '@angular/http';
 
 
 import {buildReflector, buildNodeProviders, buildNodeAppProviders} from './platform/node';
@@ -45,7 +45,7 @@ export interface BootloaderConfig {
   ngOnInit?: (config?: ConfigRefs, document?: any) => any | Promise<any> | ConfigRefs;
   ngOnStable?: (config?: ConfigRefs, document?: any) => any | Promise<any> | ConfigRefs;
   ngOnRendered?: (rendered?: string) => string | any | Promise<any>;
-  ngDoCheck?: (config: ConfigRef) => boolean;
+  ngDoCheck?: (config: ConfigRef, ngZone: NgZone) => boolean;
 }
 
 export interface AppConfig {
@@ -59,8 +59,11 @@ export class Bootloader {
   private _config: BootloaderConfig = { async: true, preboot: false };
   platformRef: any;
   applicationRef: any;
+  disposed = false;
+  pending = false;
+  pendingDisposed = false;
   constructor(config: BootloaderConfig) {
-    (<any>Object).assign(this._config, config || {});
+    (<any>Object).assign(this._config, this._deprecated(config) || {});
     this.platformRef = this.platform();
     // this.applicationRef = this.application();
   }
@@ -81,6 +84,7 @@ export class Bootloader {
   static parseFragment(document: string) { return parseFragment(document); }
   static parseDocument(document: string) { return parseDocument(document); }
   static serializeDocument(document: Object) { return serializeDocument(document); }
+
 
   document(document: string | Object = null): Object {
     var doc = document || this._config.template;
@@ -127,10 +131,12 @@ export class Bootloader {
     if (config === null && providers) {
       config = { providers, directives: this._config.directives, template: this._config.template };
     }
+    let errorType = null;
+    this.pending = true;
 
     return this._applicationAll(config)
       .then((configRefs: ConfigRefs) => {
-        if ('ngOnInit' in this._config) {
+        if (!this.disposed && 'ngOnInit' in this._config) {
           if (!this._config.ngOnInit) { return configRefs; }
           let document = configRefs[0].applicationRef.injector.get(DOCUMENT);
           return Promise.resolve(this._config.ngOnInit(configRefs, document)).then(() => configRefs);
@@ -138,10 +144,11 @@ export class Bootloader {
         return configRefs;
       })
       .catch(err => {
-        console.log('ngOnInit Error:', err);
+        errorType = errorType || 'ngOnInit Error:';
+        return Promise.reject(err);
       })
       .then((configRefs: ConfigRefs) => {
-        if ('async' in this._config) {
+        if (!this.disposed && 'async' in this._config) {
           if (!this._config.async) {
             return configRefs;
           }
@@ -152,10 +159,11 @@ export class Bootloader {
         }
       })
       .catch(err => {
-        console.log('Async Error:', err);
+        errorType = errorType || 'Async Error:';
+        return Promise.reject(err);
       })
       .then((configRefs: ConfigRefs) => {
-        if ('ngOnStable' in this._config) {
+        if (!this.disposed && 'ngOnStable' in this._config) {
           if (!this._config.ngOnStable) { return configRefs; }
           let document = configRefs[0].applicationRef.injector.get(DOCUMENT);
           return Promise.resolve(this._config.ngOnStable(configRefs, document)).then(() => configRefs);
@@ -163,10 +171,11 @@ export class Bootloader {
         return configRefs;
       })
       .catch(err => {
-        console.log('ngOnStable Error:', err);
+        errorType = errorType || 'ngOnStable Error:';
+        return Promise.reject(err);
       })
       .then((configRefs: ConfigRefs) => {
-        if ('preboot' in this._config && this._config.preboot) {
+        if (!this.disposed && 'preboot' in this._config && this._config.preboot) {
           let promise: any = this._preboot(configRefs);
           return promise;
         } else {
@@ -174,24 +183,28 @@ export class Bootloader {
         }
       })
       .catch(err => {
-        console.log('preboot Error:', err);
+        errorType = errorType || 'preboot Error:';
+        return Promise.reject(err);
       })
       .then((configRefs: ConfigRefs) => {
-        let document = configRefs[0].applicationRef.injector.get(DOCUMENT);
-        let rendered = Bootloader.serializeDocument(document);
-        // dispose;
-        for (let i = 0; i < configRefs.length; i++) {
-          let config = configRefs[i];
-          config.componentRef.destroy();
-          config.applicationRef.dispose();
+        if (!this.disposed && configRefs && configRefs.length) {
+          let document = configRefs[0].applicationRef.injector.get(DOCUMENT);
+          let rendered = Bootloader.serializeDocument(document);
+          // dispose;
+          for (let i = 0; i < configRefs.length; i++) {
+            let config = configRefs[i];
+            config.componentRef.destroy();
+            config.applicationRef.dispose();
+          }
+          return rendered;
         }
-        return rendered;
       })
       .catch(err => {
-        console.log('Rendering Document Error:', err);
+        errorType = errorType || 'Rendering Document Error:';
+        return Promise.reject(err);
       })
       .then((rendered: string) => {
-        if ('beautify' in this._config) {
+        if (!this.disposed && 'beautify' in this._config) {
           if (!this._config.beautify) { return rendered; }
           const beautify: any = require('js-beautify');
           return beautify.html(rendered, {indent_size: 2});
@@ -199,14 +212,18 @@ export class Bootloader {
         return rendered;
       })
       .then((rendered: string) => {
-        if ('ngOnRendered' in this._config) {
+        if (!this.disposed && 'ngOnRendered' in this._config) {
           if (!this._config.ngOnRendered) { return rendered; }
           return Promise.resolve(this._config.ngOnRendered(rendered)).then(() => rendered);
         }
+        this.pending = false;
         return rendered;
       })
       .catch(err => {
-        console.log('ngOnRendered Error:', err);
+        this.pending = false;
+        errorType = errorType || 'ngOnRendered Error:';
+        console.log(errorType, err);
+        throw err;
       });
 
   }
@@ -214,6 +231,9 @@ export class Bootloader {
 
   _bootstrapAll(Components?: Array<any>, componentProviders?: Array<any>): Promise<Array<any>> {
     let components = Components || this._config.directives;
+    if (components.length <= 0) {
+      throw new Error('Error Universal: Please provide a component in the directives: []');
+    }
     let providers = componentProviders || this._config.componentProviders;
     // .then(waitRouter)); // fixed by checkStable()
     let directives = components.map(component => this.application().bootstrap(component));
@@ -225,6 +245,12 @@ export class Bootloader {
     let providers: Array<any> = config.providers || this._config.providers;
     let doc: Object = this.document(config.template || this._config.template);
 
+    if (!Array.isArray(components)) {
+      throw new Error('Error Universal: directives: must be an array with components');
+    }
+    if (components.length <= 0) {
+      throw new Error('Error Universal: Please provide a component in the directives: []');
+    }
     let directives = components.map(component => {
       // var applicationRef = this.application(doc, providers);
       // .then(waitRouter)); // fixed by checkStable()
@@ -252,13 +278,14 @@ export class Bootloader {
       let ngZone = config.applicationRef.injector.get(NgZone);
       // component injector
       let http = config.componentRef.injector.get(Http, Http);
+      let jsonp = config.componentRef.injector.get(Jsonp, Jsonp);
 
       let promise: Promise<ConfigRef> = new Promise(resolve => {
 
         function outsideNg(): void {
           let checkAmount: number = 0;
           let checkCount: number = 0;
-          function checkStable(value: ConfigRef): void {
+          function checkStable(): void {
             // we setTimeout 10 after the first 20 turns
             checkCount++;
             if (checkCount === maxZoneTurns) {
@@ -268,26 +295,27 @@ export class Bootloader {
             if (checkCount === 20) { checkAmount = 10; }
 
             function stable(): void {
-              if (ngZone.hasPendingMicrotasks) { return checkStable(value); }
-              if (ngZone.hasPendingMacrotasks) { return checkStable(value); }
-              if (http && http._async > 0) { return checkStable(value); }
+              if (ngZone.hasPendingMicrotasks) { return checkStable(); }
+              if (ngZone.hasPendingMacrotasks) { return checkStable(); }
+              if (http && http._async > 0) { return checkStable(); }
+              if (jsonp && jsonp._async > 0) { return checkStable(); }
               if (ngZone._isStable && typeof ngDoCheck === 'function') {
-                let isStable = ngDoCheck(value);
+                let isStable = ngDoCheck(config, ngZone);
                 if (isStable === true) {
                   // return resolve(config);
                 } else if (typeof isStable !== 'boolean') {
                   console.warn('\nWARNING: ngDoCheck must return a boolean value of either true or false\n');
                 } else {
-                  return checkStable(value);
+                  return checkStable();
                 }
               }
-              if (ngZone._isStable) { return resolve(value); }
-              return checkStable(value);
+              if (ngZone._isStable) { return resolve(config); }
+              return checkStable();
             }
 
             setTimeout(stable, checkAmount);
           }
-          return checkStable(config);
+          return checkStable();
         }
         ngZone.runOutsideAngular(outsideNg);
       });
@@ -315,13 +343,35 @@ export class Bootloader {
         DOM.insertAfter(el, prebootEl);
 
         return configRefs;
+      })
+      .catch(err => {
+        console.log('preboot Error: ', err);
+        return configRefs;
       });
   }
 
   dispose(): void {
+    this.pendingDisposed = true;
+    if (this.pending === true) { return; }
     this.platformRef.dispose();
     this._config = null;
     this.platformRef = null;
+    this.disposed = true;
+  }
+
+  private _deprecated(config: any) {
+    if (config.document !== undefined) {
+      let text = 'DEPRECATION WARNING: `document` is no longer supported';
+      console.warn(text + ' and will be removed in next release. Please use `template`');
+      config.templtae = config.document;
+    }
+    if (config.App !== undefined) {
+      let text = 'DEPRECATION WARNING: `App` is no longer supported';
+      console.warn(text + ' and will be removed in next release. Please use `directives: [ App ]`');
+      config.directives = [config.App];
+    }
+
+    return config;
   }
 }
 

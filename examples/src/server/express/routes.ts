@@ -6,6 +6,7 @@ var appPage = require('../../universal/test_page/app');
 var todoApp = require('../../universal/todo/app');
 var routerApp = require('../../universal/test_router/app');
 var htmlApp = require('../../universal/html/html');
+var jsonpApp = require('../../universal/test_jsonp/app');
 var templateUrlApp = require('../../universal/template_url/app');
 
 import {enableProdMode, provide} from '@angular/core';
@@ -86,7 +87,7 @@ module.exports = function(ROOT) {
         buildClientScripts: true,
 
         // directives: [appPage.App],
-        directives: [appPage.App, appPage.MyApp],
+        directives: [ appPage.App, appPage.MyApp ],
         platformProviders: [
           provide(ORIGIN_URL, {useValue: 'http://localhost:3000'}),
           provide(BASE_URL, {useValue: '/'}),
@@ -220,19 +221,10 @@ module.exports = function(ROOT) {
         let queryParams: any = queryParamsToBoolean(req.query);
         let options: BootloaderConfig = Object.assign(queryParams , {
           // client url for systemjs
-          buildClientScripts: true,
-          systemjs: {
-            componentUrl: 'examples/src/universal/html/browser',
-            map: {
-              'angular2-universal': 'node_modules/angular2-universal',
-              '@angular': 'node_modules/@angular'
-            },
-            packages: PACKAGES
-          },
           directives: [htmlApp.Html],
           platformProviders: [
             provide(ORIGIN_URL, {useValue: 'http://localhost:3000'}),
-            provide(BASE_URL, {useValue: '/examples/html'})
+            provide(BASE_URL, {useValue: '/'})
           ],
           providers: [
             provide(REQUEST_URL, {useValue: req.originalUrl}),
@@ -244,7 +236,7 @@ module.exports = function(ROOT) {
           ],
           data: {},
 
-          preboot: queryParams.preboot === false ? null : {debug: true, uglify: false}
+          preboot: false // queryParams.preboot === false ? null : {debug: true, uglify: false}
 
         });
 
@@ -267,7 +259,7 @@ module.exports = function(ROOT) {
               },
               packages: PACKAGES
             },
-            directives: [htmlApp.Html],
+            directives: [jsonpApp.App],
             platformProviders: [
               provide(ORIGIN_URL, {useValue: 'http://localhost:3000'}),
               provide(BASE_URL, {useValue: '/examples/jsonp'})
@@ -277,12 +269,13 @@ module.exports = function(ROOT) {
 
               NODE_PLATFORM_PIPES,
               NODE_ROUTER_PROVIDERS,
+              NODE_HTTP_PROVIDERS,
               NODE_JSONP_PROVIDERS,
               provide(LocationStrategy, { useClass: HashLocationStrategy })
             ],
             data: {},
 
-            preboot: queryParams.preboot === false ? null : {debug: true, uglify: false}
+            preboot: false // queryParams.preboot === false ? null : {debug: true, uglify: false}
 
           });
 
@@ -343,15 +336,18 @@ module.exports = function(ROOT) {
       client: false,
 
       directives: [routerApp.App],
+      platformProviders: [
+        provide(ORIGIN_URL, {useValue: 'http://localhost:3000'}),
+        provide(BASE_URL, {useValue: '/examples/router'})
+      ],
       providers: [
-        // NODE_HTTP_PROVIDERS,
-        provide(BASE_URL, {useValue: baseUrl}),
+        NODE_HTTP_PROVIDERS,
         provide(REQUEST_URL, {useValue: url}),
         NODE_ROUTER_PROVIDERS,
       ],
       data: {},
 
-      preboot: queryParams.preboot === false ? null : {debug: true, uglify: false}
+      preboot: false // queryParams.preboot === false ? null : {debug: true, uglify: false}
 
     });
 
