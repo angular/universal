@@ -34,6 +34,7 @@
     "remove-modules": "rimraf node_modules/angular2-universal-preview node_modules/angular2-universal node_modules/angular2-express-engine node_modules/preboot node_modules/angular2-hapi-engine node_modules/angular2-universal-polyfills",
     "reload": "npm run remove-modules && npm install && npm install",
     "prebuild": "rimraf dist",
+    "postinstall": "typings install",
     "build": "tsc || true",
     "prepublish": "npm run build"
   },
@@ -52,8 +53,8 @@
     "angular2-hapi-engine": "file:../hapi-engine",
     "preboot": "file:../preboot",
     "zone.js": "0.6.12",
-    "es6-shim": "^0.35.0",
-    "es6-promise": "^3.0.2",
+    "es6-shim": "^0.35.1",
+    "es6-promise": "^3.2.1",
     "reflect-metadata": "0.1.2",
     "typescript": "~1.8.10",
     "rxjs": "5.0.0-beta.6",
@@ -77,8 +78,7 @@
     "angular2-hapi-engine": "^0.13.1",
     "rxjs": "~5.0.0-beta.6",
     "zone.js": "^0.6.12",
-    "css": "^2.2.1",
-    "parse5": "^2.1.5"
+    "css": "^2.2.1"
   },
   "repository": {
     "type": "git",

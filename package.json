@@ -13,7 +13,7 @@
   "scripts": {
     "clean:all": "rimraf ./modules/*/dist ./modules/*/node_modules ./modules/*/typings */dist */node_modules */typings ./dist ./node_modules ./typings",
     
-    "install:all"  : "npm run install-preboot && npm run install-universal && npm run loop-install && npm run loop-build && typings install && npm run install-examples",
+    "install:all"  : "npm run install-preboot && npm run install-universal && npm run install-broccoli-pre && npm run install-engine && npm run install-grunt-pre && npm run install-gulp-pre && npm run install-hapi-engine && npm run install-polyfills && npm run install-webpack-pre && typings install && npm run install-examples",
 
     "dev:reload:universal" : "npm run reload:universal && npm run reload:examples",
     "reload:universal" : "cd ./modules/universal && npm run reload && npm run build",
@@ -25,9 +25,6 @@
     "loop-install" : "for dir in modules/[a-zA-Z0-9]* ; do printf \"=== Installing %s\\n\" \"$dir\" ; ( cd \"$dir\"; npm install && typings install; ) ;printf \"=== Installation exit code: %s for %s\\n\" $? \"$dir\" ; done",
     "loop-build"   : "for dir in modules/[a-zA-Z0-9]* ; do printf \"=== Building %s\\n\" \"$dir\" ; ( cd \"$dir\"; npm run build; ) ;printf \"=== Building exit code: %s for %s\\n\" $? \"$dir\" ; done",
 
-    "install-preboot"   : "cd ./modules/preboot && npm install",
-    "install-universal" : "cd ./modules/universal && npm install",
-    "install-examples"  : "cd ./examples && npm run reload && npm run build && typings install",
     
     "start": "cd ./examples && npm run start",
     
