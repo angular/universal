@@ -15,7 +15,6 @@
     "reload": "npm run remove-modules && npm install",
     "prebuild": "rimraf dist",
     "build": "tsc || true",
-    "postinstall": "typings install",
     "prepublish": "npm run build"
   },
   "repository": {
