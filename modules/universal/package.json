@@ -78,12 +78,8 @@
     "angular2-hapi-engine": "^0.14.0",
     "rxjs": "~5.0.0-beta.6",
     "zone.js": "^0.6.12",
-<<<<<<< HEAD
     "css": "^2.2.1",
     "parse5": "^1.5.0"
-=======
-    "css": "^2.2.1"
->>>>>>> c3118a1... bug(windows): Windows build fixes
   },
   "repository": {
     "type": "git",
