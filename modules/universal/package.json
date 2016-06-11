@@ -34,7 +34,6 @@
     "remove-modules": "rimraf node_modules/angular2-universal-preview node_modules/angular2-universal node_modules/angular2-express-engine node_modules/preboot node_modules/angular2-hapi-engine node_modules/angular2-universal-polyfills",
     "reload": "npm run remove-modules && npm install && npm install",
     "prebuild": "rimraf dist",
-    "postinstall": "typings install",
     "build": "tsc || true",
     "prepublish": "npm run build"
   },
