@@ -32,7 +32,6 @@
   "scripts": {
     "prebuild": "rimraf dist",
     "build": "tsc || true",
-    "postinstall": "typings install",
     "prepublish": "npm run build"
   },
   "devDependencies": {
