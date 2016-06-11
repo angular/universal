@@ -16,12 +16,7 @@
     "./typings/main.d.ts",
     "./src/prerender.ts",
     "./index.ts"
-  ],/*
-  "exclude": [
-    "node_modules",
-    "./tasks/*.*"
-
-  ],*/
+  ],
   "formatCodeOptions": {
     "indentSize": 2,
     "tabSize": 2,
