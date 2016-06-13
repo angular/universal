@@ -13,8 +13,7 @@
   	"outDir": "dist"
   },
   "exclude": [
-    "typings/browser.d.ts",
-    "typings/browser",
+    "typings/index.d.ts",
     "node_modules"
   ],
   "formatCodeOptions": {
