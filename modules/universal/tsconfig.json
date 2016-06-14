@@ -15,7 +15,6 @@
   },
   "exclude": [
     "dist/*",
-    "typings/globals/*.*",
     "typings/index",
     "typings/index.d.ts",
     "typings/globals/jasmine",
