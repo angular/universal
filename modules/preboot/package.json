@@ -7,7 +7,12 @@
   "typings": "dist/src/node/preboot_node.d.ts",
   "scripts": {
     "prebuild": "rimraf dist",
+<<<<<<< HEAD
+    "build": "tsc || true",
+    "postinstall": "typings install",
+=======
     "build": "tsc && echo tsc-passed || echo tsc-errors",
+>>>>>>> angular/master
     "prepublish": "npm run build"
   },
   "files": [

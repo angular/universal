@@ -2,7 +2,11 @@
   "name": "angular2-universal-polyfills",
   "version": false,
   "dependencies": {},
+<<<<<<< HEAD
+  "ambientDependencies": {
+=======
   "globalDependencies": {
+>>>>>>> angular/master
     "core-js": "registry:dt/core-js#0.0.0+20160317120654",
     "zone.js": "github:gdi2290/typed-zone.js#66ea8a3451542bb7798369306840e46be1d6ec89",
     "jasmine": "registry:dt/jasmine#2.2.0+20160412134438",
