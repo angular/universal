@@ -2,7 +2,7 @@
   "name": "angular2-hapi-engine",
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
-  "version": "0.13.1",
+  "version": "0.14.0",
   "description": "Universal (isomorphic) javascript support for Angular2",
   "homepage": "https://github.com/angular/universal",
   "license": "MIT",
@@ -15,8 +15,12 @@
     "remove-modules": "rimraf node_modules/angular2-universal-preview node_modules/angular2-universal node_modules/angular2-express-engine node_modules/preboot node_modules/angular2-hapi-engine node_modules/angular2-universal-polyfills",
     "reload": "npm run remove-modules && npm install",
     "prebuild": "rimraf dist",
+<<<<<<< HEAD
     "build": "tsc",
     "postinstall": "typings install",
+=======
+    "build": "tsc && echo tsc-passed || echo tsc-errors",
+>>>>>>> angular/master
     "postbuild": "typings install",
     "prepublish": "npm run build"
   },
@@ -45,6 +49,6 @@
   "dependencies": {
   },
   "peerDependencies": {
-    "angular2-universal": "^0.101.4"
+    "angular2-universal": "^0.102.0"
   }
 }

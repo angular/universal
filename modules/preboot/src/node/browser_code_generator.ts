@@ -38,7 +38,7 @@ export function ignoreUnusedStrategies(
 /**
  * Generate browser code as a readable stream for preboot based on the input options
  */
-export function getBrowserCodeStream(opts?: PrebootOptions): any {
+export function getBrowserCodeStream(appName: string, opts?: PrebootOptions): any {
   opts = normalize(opts);
 
   let bOpts = {
@@ -65,7 +65,8 @@ export function getBrowserCodeStream(opts?: PrebootOptions): any {
   let outputStream = b.bundle()
     .pipe(source('src/browser/preboot_browser.js'))
     .pipe(buffer())
-    .pipe(insert.append('\n\n;preboot.init(' + stringifyWithFunctions(opts) + ');\n\n'))
+    .pipe(insert.append('\n\n;preboot.init("' + appName + '",' + stringifyWithFunctions(opts) + ');\n\n'))
+    .pipe(insert.append('\n\n;preboot.init("' + appName + '2",' + stringifyWithFunctions(opts) + ');\n\n'))
     .pipe(rename('preboot.js'));
 
   // uglify if the option is passed in
@@ -79,18 +80,19 @@ export var getClientCodeStream = getBrowserCodeStream;
  * Generate browser code as a string for preboot
  * based on the input options
  */
-export function getBrowserCode(opts?: PrebootOptions, done?: Function): any {
+export function getBrowserCode(appName: string, opts?: PrebootOptions, done?: Function): any {
   let deferred = Q.defer();
   let clientCode = '';
 
   // check cache first (as long as it wasn't disabled)
   let cacheKey = JSON.stringify(opts);
-  if (!opts.disableCodeCache && browserCodeCache[cacheKey]) {
+  // opts can be undefined
+  if (opts && !opts.disableCodeCache && browserCodeCache[cacheKey]) {
     return Q.when(browserCodeCache[cacheKey]);
   }
 
   // get the browser code
-  getBrowserCodeStream(opts)
+  getBrowserCodeStream(appName, opts)
     .pipe(eventStream.map(function(file, cb) {
       clientCode += file.contents;
       cb(null, file);

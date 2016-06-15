@@ -2,7 +2,11 @@
   "name": "angular2-webpack-prerender",
   "version": false,
   "dependencies": {},
+<<<<<<< HEAD
   "ambientDependencies": {
+=======
+  "globalDependencies": {
+>>>>>>> angular/master
     "core-js": "registry:dt/core-js#0.0.0+20160317120654",
     "node": "registry:dt/node#4.0.0+20160319033040",
     "through2": "registry:dt/through2#2.0.0+20160317120654"

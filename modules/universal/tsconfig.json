@@ -15,16 +15,24 @@
   },
   "exclude": [
     "dist/*",
+<<<<<<< HEAD
     "typings/browser/ambient/*.*",
     "typings/main",
     "typings/main.d.ts",
     "typings/browser/amient/jasmine",
     "typings/main/amient/jasmine",
+=======
+    "typings/globals/jasmine",
+>>>>>>> angular/master
     "node_modules",
     "preboot",
     "node_modules/preboot/test",
     "node_modules/preboot/src",
+<<<<<<< HEAD
     "node_modules/angular2-universal",
+=======
+    "node_modules/angular2-universal/*.*",
+>>>>>>> angular/master
     "node_modules/typescript/lib/lib.es6.d.ts",
     "browser/test",
     "node/test",

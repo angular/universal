@@ -1,6 +1,6 @@
 {
   "name": "angular2-universal",
-  "version": "0.101.8",
+  "version": "0.102.1",
   "description": "Universal (isomorphic) javascript support for Angular2",
   "homepage": "https://github.com/angular/universal",
   "license": "MIT",
@@ -34,8 +34,12 @@
     "remove-modules": "rimraf node_modules/angular2-universal-preview node_modules/angular2-universal node_modules/angular2-express-engine node_modules/preboot node_modules/angular2-hapi-engine node_modules/angular2-universal-polyfills",
     "reload": "npm run remove-modules && npm install && npm install",
     "prebuild": "rimraf dist",
+<<<<<<< HEAD
     "postinstall": "typings install",
     "build": "tsc || true",
+=======
+    "build": "tsc && echo tsc-passed || echo tsc-errors",
+>>>>>>> angular/master
     "prepublish": "npm run build"
   },
   "devDependencies": {
@@ -51,7 +55,7 @@
     "angular2-universal-polyfills": "file:../polyfills",
     "angular2-express-engine": "file:../express-engine",
     "angular2-hapi-engine": "file:../hapi-engine",
-    "preboot": "file:../preboot",
+    "preboot": "^2.1.2",
     "zone.js": "0.6.12",
     "es6-shim": "^0.35.1",
     "es6-promise": "^3.2.1",
@@ -63,8 +67,8 @@
     "parse5": "^2.1.5"
   },
   "dependencies": {
-    "angular2-express-engine": "^0.13.1",
-    "angular2-hapi-engine": "^0.13.1",
+    "angular2-express-engine": "^0.14.0",
+    "angular2-hapi-engine": "^0.14.0",
     "angular2-universal-polyfills": "^0.4.1",
     "css": "^2.2.1",
     "js-beautify": "^1.6.2",
@@ -74,8 +78,8 @@
   "peerDependencies": {
     "preboot": ">=2.0.10",
     "angular2-universal-polyfills": "^0.4.1",
-    "angular2-express-engine": "^0.13.1",
-    "angular2-hapi-engine": "^0.13.1",
+    "angular2-express-engine": "^0.14.0",
+    "angular2-hapi-engine": "^0.14.0",
     "rxjs": "~5.0.0-beta.6",
     "zone.js": "^0.6.12",
     "css": "^2.2.1"
