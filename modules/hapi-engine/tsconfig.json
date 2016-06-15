@@ -13,7 +13,6 @@
   	"outDir": "dist"
   },
   "exclude": [
-    "typings/index.d.ts",
     "node_modules"
   ],
   "formatCodeOptions": {

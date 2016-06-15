@@ -23,7 +23,7 @@
     "postinstall" : "npm run install:all",
 
     "install-preboot"     : "cd ./modules/preboot && typings install && npm install --ignore-scripts && npm run build",
-    "install-universal"   : "cd ./modules/universal && typings install && npm install --ignore-scripts && npm install && npm run build",
+    "install-universal"   : "cd ./modules/universal && typings install && npm install --ignore-scripts && npm run build",
     "install-broccoli-pre": "cd ./modules/broccoli-prerender && typings install && npm install --ignore-scripts && npm run build",
     "install-engine"      : "cd ./modules/express-engine && typings install && npm install --ignore-scripts && npm run build",
     "install-grunt-pre"   : "cd ./modules/grunt-prerender && typings install && npm install --ignore-scripts && npm run build",

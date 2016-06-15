@@ -15,8 +15,6 @@
   },
   "exclude": [
     "dist/*",
-    "typings/index",
-    "typings/index.d.ts",
     "typings/globals/jasmine",
     "node_modules",
     "preboot",
