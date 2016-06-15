@@ -60,7 +60,9 @@ import {NodeTemplateParserRc0} from './node_template_parser-rc.0';
 import {NODE_PLATFORM_DIRECTIVES} from '../directives';
 
 var CONST_EXPR = v => v;
-import {Parse5DomAdapter} from '@angular/platform-server';
+// from angular
+// import {Parse5DomAdapter} from '@angular/platform-server';
+import {Parse5DomAdapter} from './dom/parse5_adapter';
 Parse5DomAdapter.makeCurrent(); // ensure Parse5DomAdapter is used
 import {getDOM} from '@angular/platform-browser/src/dom/dom_adapter';
 var DOM: any = getDOM();

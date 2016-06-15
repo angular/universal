@@ -33,7 +33,7 @@
     "morgan": "^1.7.0",
     "preboot": "^2.1.2",
     "ts-node": "^0.6.1",
-    "typings": "^0.8.1",
+    "typings": "^1.0.5",
     "vinyl-buffer": "^1.0.0",
     "vinyl-source-stream": "^1.1.0"
   },

@@ -1,22 +1,35 @@
 import {OpaqueToken} from '@angular/core';
-import {Parser, Serializer, TreeAdapters} from 'parse5';
-import {Parse5DomAdapter} from '@angular/platform-server';
+
+import * as parse5 from 'parse5';
+// from angular
+// import {Parse5DomAdapter} from '@angular/platform-server';
+import {Parse5DomAdapter} from './dom/parse5_adapter';
+
 Parse5DomAdapter.makeCurrent(); // ensure Parse5DomAdapter is used
 import {getDOM} from '@angular/platform-browser/src/dom/dom_adapter';
 var DOM: any = getDOM();
 
+// var document = parse5.parse('<div></div>', { treeAdapter: parse5.treeAdapters.default });
 
-const parser = new Parser(TreeAdapters.htmlparser2);
+// parse5 2.0 : Remove (breaking): 
+// ^ decodeHtmlEntities and encodeHtmlEntities options. (GH #75).
+
 // TODO(gdi2290): fix encodeHtmlEntities: true
-const serializer = new Serializer(TreeAdapters.htmlparser2, { encodeHtmlEntities: false });
-const treeAdapter = parser.treeAdapter;
+// const serializer = parse5.serialize(TreeAdapters.htmlparser2, { encodeHtmlEntities: false });
+
+/*
+const parser = parse5.parse;
+const serializer = parse5.serialize;
+*/
+
+const treeAdapter = parse5.treeAdapters.htmlparser2;
 
 export function isTag(tagName, node): boolean {
   return node.type === 'tag' && node.name === tagName;
 }
 
 export function parseFragment(el: string): Object {
-  return parser.parseFragment(el);
+  return parse5.parseFragment(el, { treeAdapter : parse5.treeAdapters.htmlparser2 });
 }
 
 export function parseDocument(documentHtml: string): Object {
@@ -27,7 +40,8 @@ export function parseDocument(documentHtml: string): Object {
     throw new Error('parseDocument needs to be a string to be parsed correctly');
   }
   
-  const doc = parser.parse(documentHtml);
+
+  const doc = parse5.parse(documentHtml, { treeAdapter : parse5.treeAdapters.htmlparser2 });
   
   /*
   // Build entire doc <!doctype><html> etc
@@ -43,8 +57,8 @@ export function parseDocument(documentHtml: string): Object {
   let headNode;
   let titleNode;
 
-  for (let i = 0; i < doc.children.length; ++i) {
-    const child = doc.children[i];
+  for (let i = 0; i < doc.childNodes.length; ++i) {
+    const child = doc.childNodes[i];
 
     if (isTag('html', child)) {
       rootNode = child;
@@ -56,8 +70,8 @@ export function parseDocument(documentHtml: string): Object {
     rootNode = doc;
   }
 
-  for (let i = 0; i < rootNode.children.length; ++i) {
-    const child = rootNode.children[i];
+  for (let i = 0; i < rootNode.childNodes.length; ++i) {
+    const child = rootNode.childNodes[i];
 
     if (isTag('head', child)) {
       headNode = child;
@@ -78,9 +92,9 @@ export function parseDocument(documentHtml: string): Object {
     DOM.appendChild(doc, bodyNode);
   }
 
-  for (let i = 0; i < headNode.children.length; ++i) {
-    if (isTag('title', headNode.children[i])) {
-      titleNode = headNode.children[i];
+  for (let i = 0; i < headNode.childNodes.length; ++i) {
+    if (isTag('title', headNode.childNodes[i])) {
+      titleNode = headNode.childNodes[i];
       break;
     }
   }
@@ -94,7 +108,7 @@ export function parseDocument(documentHtml: string): Object {
   doc.head = headNode;
   doc.body = bodyNode;
 
-  const titleNodeText = titleNode.children[0];
+  const titleNodeText = titleNode.childNodes[0];
 
   Object.defineProperty(doc, 'title', {
     get: () => titleNodeText.data,
@@ -105,5 +119,5 @@ export function parseDocument(documentHtml: string): Object {
 }
 
 export function serializeDocument(document: Object): string {
-  return serializer.serialize(document);
+  return parse5.serialize(document, { treeAdapter : parse5.treeAdapters.htmlparser2 });
 }
