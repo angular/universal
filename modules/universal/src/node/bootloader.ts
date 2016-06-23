@@ -267,7 +267,10 @@ export class Bootloader {
       // var applicationRef = this.application(doc, providers);
       // .then(waitRouter)); // fixed by checkStable()
       let appInjector = this.application(doc, providers);
-      let compRef = coreLoadAndBootstrap(appInjector, component);
+
+      buildReflector();
+
+      let compRef = coreLoadAndBootstrap(component, appInjector);
       // let compRef = Promise.resolve(applicationRef.bootstrap(component));
       return compRef.then(componentRef => {
         let configRef: ConfigRef = {
