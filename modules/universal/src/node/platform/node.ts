@@ -61,7 +61,7 @@ import {WebAnimationsDriver} from '@angular/platform-browser/src/dom/web_animati
 import {reflector} from '@angular/core/src/reflection/reflection';
 import {AnimationDriver, NoOpAnimationDriver} from '@angular/core/src/animation/animation_driver';
 var CONST_EXPR = v => v;
-import {Parse5DomAdapter} from '@angular/platform-server';
+import {Parse5DomAdapter} from '@angular/platform-server/src/parse5_adapter';
 import {getDOM} from '@angular/platform-browser/src/dom/dom_adapter';
 import {isPresent} from '../../common';
 Parse5DomAdapter.makeCurrent(); // ensure Parse5DomAdapter is used
