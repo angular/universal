@@ -1,12 +1,6 @@
 // dom closure
 
-import {ListWrapper, MapWrapper} from '@angular/core/src/facade/collection';
-import {isPresent, isString, StringWrapper} from '@angular/core/src/facade/lang';
-
-// from angular
-// import {Parse5DomAdapter} from '@angular/platform-server/src/parse5_adapter';
 import {Parse5DomAdapter} from './platform/dom/parse5_adapter';
-
 Parse5DomAdapter.makeCurrent(); // ensure Parse5DomAdapter is used
 import {getDOM} from '@angular/platform-browser/src/dom/dom_adapter';
 import {isPresent, listContains} from '../common';
