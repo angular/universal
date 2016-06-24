@@ -1,10 +1,4 @@
 import {
-  isPresent,
-  isBlank,
-  stringify
-} from '@angular/core/src/facade/lang';
-import {ListWrapper} from '@angular/core/src/facade/collection';
-import {
   provide,
   Inject,
   Injectable,
@@ -15,7 +9,7 @@ import {
 import {DOCUMENT} from '@angular/platform-browser';
 import {DomRenderer, DomRootRenderer, DomRootRenderer_} from '@angular/platform-browser/src/dom/dom_renderer';
 
-import {AnimationBuilder} from '@angular/platform-browser/src/animate/animation_builder';
+import {WebAnimationsDriver} from '@angular/platform-browser/src/dom/web_animations_driver';
 import {EventManager} from '@angular/platform-browser/src/dom/events/event_manager';
 import {DomSharedStylesHost} from '@angular/platform-browser/src/dom/shared_styles_host';
 import {ViewEncapsulation} from '@angular/core';
@@ -23,8 +17,15 @@ import {ViewEncapsulation} from '@angular/core';
 import {cssHyphenate} from '../../helper';
 
 // from angular
-// import {Parse5DomAdapter} from '@angular/platform-server';
+// import {Parse5DomAdapter} from '@angular/platform-server/src/parse5_adapter';
 import {Parse5DomAdapter} from './parse5_adapter';
+
+import {
+  isPresent,
+  isBlank,
+  listContains
+} from '../../../common';
+
 Parse5DomAdapter.makeCurrent(); // ensure Parse5DomAdapter is used
 import {getDOM} from '@angular/platform-browser/src/dom/dom_adapter';
 var DOM: any = getDOM();
@@ -33,15 +34,15 @@ var DOM: any = getDOM();
 @Injectable()
 export class NodeDomRootRenderer_ extends DomRootRenderer {
   constructor(@Inject(DOCUMENT) _document: any, _eventManager: EventManager,
-              sharedStylesHost: DomSharedStylesHost, animate: AnimationBuilder) {
+              sharedStylesHost: DomSharedStylesHost, animate: WebAnimationsDriver) {
     super(_document, _eventManager, sharedStylesHost, animate);
   }
   renderComponent(componentProto: RenderComponentType): Renderer {
     // TODO(gdi2290): see PR https://github.com/angular/angular/pull/6584
-    var renderer = (<any>this)._registeredComponents.get(componentProto.id);
+    var renderer = (<any>this).registeredComponents.get(componentProto.id);
     if (isBlank(renderer)) {
       renderer = new NodeDomRenderer(this, componentProto);
-      (<any>this)._registeredComponents.set(componentProto.id, renderer);
+      (<any>this).registeredComponents.set(componentProto.id, renderer);
     }
     return renderer;
   }
@@ -224,7 +225,7 @@ export class NodeDomRenderer extends DomRenderer {
     let el = DOM.nodeName(renderElement);
     let attrList = ATTRIBUTES[el];
     if (attrList) {
-      let booleanAttr = ListWrapper.contains(attrList, propertyName);
+      let booleanAttr = listContains(attrList, propertyName);
       if (booleanAttr) {
         if (propertyName === 'autocomplete') {
           return this._setOnOffAttribute(renderElement, propertyName, propertyValue);
@@ -253,7 +254,7 @@ export class NodeDomRenderer extends DomRenderer {
     }
     return super.invokeElementMethod(location, methodName, args);
   }
-  
+
   _setCheckedAttribute(renderElement, propertyName, propertyValue) {
     if (isPresent(propertyValue)) {
       if (propertyValue === true) {

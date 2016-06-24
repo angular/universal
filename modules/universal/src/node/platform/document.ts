@@ -2,10 +2,11 @@ import {OpaqueToken} from '@angular/core';
 
 import * as parse5 from 'parse5';
 // from angular
-// import {Parse5DomAdapter} from '@angular/platform-server';
+// import {Parse5DomAdapter} from '@angular/platform-server/src/parse5_adapter';
+//import {Parser, Serializer, TreeAdapters} from 'parse5';
 import {Parse5DomAdapter} from './dom/parse5_adapter';
-
 Parse5DomAdapter.makeCurrent(); // ensure Parse5DomAdapter is used
+
 import {getDOM} from '@angular/platform-browser/src/dom/dom_adapter';
 var DOM: any = getDOM();
 
@@ -39,10 +40,11 @@ export function parseDocument(documentHtml: string): Object {
   if (typeof documentHtml !== 'string') {
     throw new Error('parseDocument needs to be a string to be parsed correctly');
   }
-  
 
   const doc = parse5.parse(documentHtml, { treeAdapter : parse5.treeAdapters.htmlparser2 });
-  
+
+  // const doc = parser.parse(documentHtml);
+
   /*
   // Build entire doc <!doctype><html> etc
   if (documentHtml.indexOf('<html>') > -1 && documentHtml.indexOf('</html>') > -1) {
@@ -51,7 +53,7 @@ export function parseDocument(documentHtml: string): Object {
   // ASP.NET case : parse only the fragment - don't build entire <html> doc
   const doc = parser.parseFragment(documentHtml);
   */
-  
+
   let rootNode;
   let bodyNode;
   let headNode;

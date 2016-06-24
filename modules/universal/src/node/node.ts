@@ -1,6 +1,7 @@
 // dom closure
+
 // from angular
-// import {Parse5DomAdapter} from '@angular/platform-server';
+// import {Parse5DomAdapter} from '@angular/platform-server/src/parse5_adapter';
 import {Parse5DomAdapter} from './platform/dom/parse5_adapter';
 Parse5DomAdapter.makeCurrent();
 

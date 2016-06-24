@@ -194,7 +194,7 @@ export class Parse5DomAdapter extends DomAdapter {
     return isPresent(evt.returnValue) && !evt.returnValue;
   }
   getInnerHTML(el: any /** TODO #9100 */): string {
-    return serializer.serialize(this.templateAwareRoot(el), treeAdapter);
+    return serializer.serialize(this.templateAwareRoot(el), parse5.treeAdapters.htmlparse2);
   }
   getTemplateContent(el: any /** TODO #9100 */): Node {
     return null;  // no <template> support in parse5.
