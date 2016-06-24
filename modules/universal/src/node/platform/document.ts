@@ -41,13 +41,10 @@ export function parseDocument(documentHtml: string): Object {
     throw new Error('parseDocument needs to be a string to be parsed correctly');
   }
 
-<<<<<<< HEAD
   const doc = parse5.parse(documentHtml, { treeAdapter : parse5.treeAdapters.htmlparser2 });
 
   // const doc = parser.parse(documentHtml);
-=======
-  const doc = parser.parse(documentHtml);
->>>>>>> angular/master
+
 
   /*
   // Build entire doc <!doctype><html> etc
