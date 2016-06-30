@@ -16,8 +16,8 @@
     "install:all"  : "npm run install-preboot && npm run install-universal && npm run install-broccoli-pre && npm run install-engine && npm run install-grunt-pre && npm run install-gulp-pre && npm run install-hapi-engine && npm run install-polyfills && npm run install-webpack-pre && typings install && npm run install-examples",
 
     "dev:reload:universal" : "npm run reload:universal && npm run reload:examples",
-    "reload:universal" : "cd ./modules/universal && npm run reload && npm run build",
-    "reload:examples"  : "cd ./examples && npm run reload && npm run build",
+    "reload:universal" : "cd ./modules/universal && npm run quick-reload",
+    "reload:examples"  : "cd ./examples && npm run reload",
 
     "preinstall": "npm run typings",
     "postinstall" : "npm run install:all",
@@ -129,7 +129,7 @@
     "gutil": "^1.6.4",
     "lodash": "^3.10.1",
     "nocycle": "^1.1.1",
-    "parse5": "^1.5.0",
+    "parse5": "^2.1.5",
     "q": "^1.4.1",
     "require-dir": "^0.3.0",
     "run-sequence": "^1.1.2",

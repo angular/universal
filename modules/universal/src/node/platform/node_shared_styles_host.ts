@@ -1,8 +1,11 @@
 import {Inject, Injectable} from '@angular/core';
 import {SharedStylesHost} from '@angular/platform-browser/src/dom/shared_styles_host';
 
-import {Parse5DomAdapter} from '@angular/platform-server/src/parse5_adapter';
+// from angular
+// import {Parse5DomAdapter} from '@angular/platform-server/src/parse5_adapter';
+import {Parse5DomAdapter} from './dom/parse5_adapter';
 Parse5DomAdapter.makeCurrent(); // ensure Parse5DomAdapter is used
+
 import {getDOM} from '@angular/platform-browser/src/dom/dom_adapter';
 var DOM: any = getDOM();
 

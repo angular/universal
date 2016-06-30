@@ -17,7 +17,12 @@ import {parseDocument, parseFragment, serializeDocument} from './platform/docume
 import {createPrebootCode} from './ng_preboot';
 import {arrayFlattenTree} from './helper';
 
-import {Parse5DomAdapter} from '@angular/platform-server/src/parse5_adapter';
+// from angular
+// import {Parse5DomAdapter} from '@angular/platform-server';
+import {Parse5DomAdapter} from './platform/dom/parse5_adapter';
+
+// import {Parse5DomAdapter} from '@angular/platform-server/src/parse5_adapter';
+
 Parse5DomAdapter.makeCurrent(); // ensure Parse5DomAdapter is used
 import {getDOM} from '@angular/platform-browser/src/dom/dom_adapter';
 var DOM: any = getDOM();

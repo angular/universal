@@ -61,7 +61,12 @@ import {WebAnimationsDriver} from '@angular/platform-browser/src/dom/web_animati
 import {reflector} from '@angular/core/src/reflection/reflection';
 import {AnimationDriver, NoOpAnimationDriver} from '@angular/core/src/animation/animation_driver';
 var CONST_EXPR = v => v;
-import {Parse5DomAdapter} from '@angular/platform-server/src/parse5_adapter';
+
+// from angular
+// import {Parse5DomAdapter} from '@angular/platform-server/src/parse5_adapter';
+import {Parse5DomAdapter} from './dom/parse5_adapter';
+Parse5DomAdapter.makeCurrent(); // ensure Parse5DomAdapter is used
+
 import {getDOM} from '@angular/platform-browser/src/dom/dom_adapter';
 import {isPresent} from '../../common';
 Parse5DomAdapter.makeCurrent(); // ensure Parse5DomAdapter is used
