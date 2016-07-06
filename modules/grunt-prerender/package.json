@@ -1,5 +1,5 @@
 {
-  "name": "angular2-grunt-prerender",
+  "name": "@angular/grunt-prerender",
   "main": "tasks/index.js",
   "typings": "tasks/index.d.js",
   "version": "0.10.1",
@@ -12,7 +12,7 @@
     "Jeff Whelpley <jeff@gethuman.com>"
   ],
   "scripts": {
-    "remove-modules": "rimraf node_modules/angular2-universal-preview node_modules/angular2-universal node_modules/angular2-express-engine node_modules/preboot node_modules/angular2-hapi-engine node_modules/angular2-universal-polyfills node_modules/zone.js",
+    "remove-modules": "rimraf node_modules/@angular/universal-preview node_modules/@angular/universal node_modules/@angular/express-engine node_modules/preboot node_modules/@angular/hapi-engine node_modules/@angular/universal-polyfills node_modules/zone.js",
     "reload": "npm run remove-modules && npm install",
     "prebuild": "rimraf tasks",
     "build": "tsc && echo tsc-passed || echo tsc-errors",
@@ -36,7 +36,7 @@
   ],
   "devDependencies": {
     "preboot": "file:../preboot",
-    "angular2-universal": "file:../universal",
+    "@angular/universal": "file:../universal",
     "@angular/common": "2.0.0-rc.1",
     "@angular/compiler": "2.0.0-rc.1",
     "@angular/core": "2.0.0-rc.1",
@@ -54,6 +54,6 @@
   "dependencies": {
   },
   "peerDependencies": {
-    "angular2-universal": ">=0.90.0"
+    "@angular/universal": ">=0.90.0"
   }
 }

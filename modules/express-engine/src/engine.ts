@@ -1,6 +1,6 @@
 const fs = require('graceful-fs');
 
-import {selectorRegExpFactory, Bootloader, BootloaderConfig} from 'angular2-universal';
+import {selectorRegExpFactory, Bootloader, BootloaderConfig} from '@angular/universal';
 
 
 export interface ExpressEngineExtraOptions {

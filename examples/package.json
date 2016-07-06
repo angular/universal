@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "prebuild": "rimraf dist",
-    "remove-modules": "rimraf node_modules/angular2-universal node_modules/angular2-universal-polyfills node_modules/preboot node_modules/angular2-universal-preview node_modules/angular2-express-engine node_modules/angular2-hapi-engine node_modules/zone.js",
+    "remove-modules": "rimraf node_modules/@angular/universal node_modules/@angular/universal-polyfills node_modules/preboot node_modules/@angular/universal-preview node_modules/@angular/express-engine node_modules/@angular/hapi-engine node_modules/zone.js",
     "reload": "npm run remove-modules && npm install",
     "build": "tsc && echo tsc-passed || echo tsc-errors",
     "server": "node dist/index.js",
@@ -17,10 +17,10 @@
   "author": "PatrickJS",
   "license": "MIT",
   "devDependencies": {
-    "angular2-express-engine": "file:../modules/express-engine",
-    "angular2-hapi-engine": "file:../modules/hapi-engine",
-    "angular2-universal": "file:../modules/universal",
-    "angular2-universal-polyfills": "file:../modules/polyfills",
+    "@angular/express-engine": "file:../modules/express-engine",
+    "@angular/hapi-engine": "file:../modules/hapi-engine",
+    "@angular/universal": "file:../modules/universal",
+    "@angular/universal-polyfills": "file:../modules/polyfills",
     "connect-history-api-fallback": "^1.1.0",
     "express": "^4.13.4",
     "falcor": "^0.1.16",

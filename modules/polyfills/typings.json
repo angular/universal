@@ -1,5 +1,5 @@
 {
-  "name": "angular2-universal-polyfills",
+  "name": "@angular/universal-polyfills",
   "version": false,
   "dependencies": {},
   "globalDependencies": {

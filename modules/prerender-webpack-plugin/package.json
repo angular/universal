@@ -1,5 +1,5 @@
 {
-  "name": "angular2-webpack-prerender",
+  "name": "@angular/prerender-webpack-plugin",
   "main": "dist/index.js",
   "version": "0.10.0",
   "description": "Prerender your Universal (isomorphic) Angular 2 app with Webpack",
@@ -11,7 +11,7 @@
     "Jeff Whelpley <jeff@gethuman.com>"
   ],
   "scripts": {
-    "remove-modules": "rimraf node_modules/angular2-universal-preview node_modules/angular2-universal node_modules/angular2-express-engine node_modules/preboot node_modules/angular2-hapi-engine node_modules/angular2-universal-polyfills",
+    "remove-modules": "rimraf node_modules/@angular/universal-preview node_modules/@angular/universal node_modules/@angular/express-engine node_modules/preboot node_modules/@angular/hapi-engine node_modules/@angular/universal-polyfills",
     "reload": "npm run remove-modules && npm install",
     "prebuild": "rimraf dist",
     "build": "tsc && echo tsc-passed || echo tsc-errors",
@@ -34,7 +34,7 @@
     "@angular/platform-server": "2.0.0-rc.3",
     "@angular/router-deprecated": "2.0.0-rc.2",
     "preboot": ">=2.1.2",
-    "angular2-universal": "file:../universal",
+    "@angular/universal": "file:../universal",
     "rimraf": "^2.5.1",
     "rxjs": "5.0.0-beta.6",
     "zone.js": "~0.6.12",
@@ -43,6 +43,6 @@
   "dependencies": {
   },
   "peerDependencies": {
-    "angular2-universal": "^0.104.2"
+    "@angular/universal": "^0.104.2"
   }
 }

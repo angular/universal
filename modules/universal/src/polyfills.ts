@@ -1,2 +1,2 @@
 // polyfills
-import 'angular2-universal-polyfills';
+import '@angular/universal-polyfills';
