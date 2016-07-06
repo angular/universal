@@ -1,5 +1,5 @@
 {
-  "name": "angular2-gulp-prerender",
+  "name": "@angular/gulp-prerender",
   "version": false,
   "dependencies": {},
   "globalDependencies": {

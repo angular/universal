@@ -1,5 +1,5 @@
 {
-  "name": "angular2-express-engine",
+  "name": "@angular/express-engine",
   "version": false,
   "dependencies": {},
   "globalDependencies": {

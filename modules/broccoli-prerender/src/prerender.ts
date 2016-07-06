@@ -1,5 +1,5 @@
-import 'angular2-universal-polyfills';
-import {Bootloader} from 'angular2-universal';
+import '@angular/universal-polyfills';
+import {Bootloader} from '@angular/universal';
 import { disposePlatform } from '@angular/core';
 
 const fs = require('fs');

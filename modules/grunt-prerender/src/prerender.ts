@@ -1,4 +1,4 @@
-import {Bootloader, BootloaderConfig} from 'angular2-universal';
+import {Bootloader, BootloaderConfig} from '@angular/universal';
 
 export interface GulpUniversalConfig {
   server?: boolean;

@@ -5,7 +5,7 @@ import {
   selectorRegExpFactory,
   Bootloader,
   BootloaderConfig
-} from 'angular2-universal';
+} from '@angular/universal';
 
 export interface HapiEngineExtraOptions {
   server?: boolean;

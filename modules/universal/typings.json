@@ -1,5 +1,5 @@
 {
-  "name": "angular2-universal-preview",
+  "name": "@angular/universal-preview",
   "dependencies": {
     "xhr2": "github:gdi2290/typed-xhr2#86ebfa644796b3a6553d22e62bb5e77fcae1eb8d"
   },

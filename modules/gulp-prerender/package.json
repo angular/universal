@@ -1,5 +1,5 @@
 {
-  "name": "angular2-gulp-prerender",
+  "name": "@angular/gulp-prerender",
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
   "version": "0.10.1",
@@ -12,7 +12,7 @@
     "Jeff Whelpley <jeff@gethuman.com>"
   ],
   "scripts": {
-    "remove-modules": "rimraf dist node_modules/preboot node_modules/angular2-universal-preview node_modules/angular2-universal",
+    "remove-modules": "rimraf dist node_modules/preboot node_modules/@angular/universal-preview node_modules/@angular/universal",
     "reload": "npm run remove-modules && npm install",
     "prebuild": "rimraf dist",
     "build": "tsc && echo tsc-passed || echo tsc-errors",
@@ -27,7 +27,7 @@
   },
   "devDependencies": {
     "preboot": "file:../preboot",
-    "angular2-universal": "file:../universal",
+    "@angular/universal": "file:../universal",
     "rimraf": "^2.5.2",
     "@angular/common": "2.0.0-rc.1",
     "@angular/compiler": "2.0.0-rc.1",
@@ -46,6 +46,6 @@
     "through2": "^2.0.0"
   },
   "peerDependencies": {
-    "angular2-universal": ">=0.90.0"
+    "@angular/universal": ">=0.90.0"
   }
 }

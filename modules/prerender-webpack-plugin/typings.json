@@ -1,5 +1,5 @@
 {
-  "name": "angular2-webpack-prerender",
+  "name": "@angular/prerender-webpack-plugin",
   "version": false,
   "dependencies": {},
   "globalDependencies": {

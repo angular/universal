@@ -1,5 +1,5 @@
 {
-  "name": "angular2-universal",
+  "name": "@angular/universal",
   "main": "index.js",
   "version": "0.0.1",
   "description": "Universal (isomorphic) javascript support for Angular2",
@@ -12,8 +12,8 @@
   ],
   "scripts": {
     "clean:all": "rimraf ./modules/*/dist ./modules/*/node_modules ./modules/*/typings */dist */node_modules */typings ./dist ./node_modules ./typings",
-    
-    "install:all"  : "npm run install-preboot && npm run install-universal && npm run install-broccoli-pre && npm run install-engine && npm run install-grunt-pre && npm run install-gulp-pre && npm run install-hapi-engine && npm run install-polyfills && npm run install-webpack-pre && typings install && npm run install-examples",
+
+    "install:all": "npm run install-preboot && npm run install-universal && npm run install-broccoli-pre && npm run install-engine && npm run install-grunt-pre && npm run install-gulp-pre && npm run install-hapi-engine && npm run install-polyfills && npm run install-webpack-pre && typings install && npm run install-examples",
 
     "dev:reload:universal" : "npm run reload:universal && npm run reload:examples",
     "reload:universal" : "cd ./modules/universal && npm run reload && npm run build",
@@ -32,9 +32,9 @@
     "install-polyfills"   : "cd ./modules/polyfills && typings install && npm install --ignore-scripts && npm run build",
     "install-webpack-pre" : "cd ./modules/webpack-prerender && typings install && npm install --ignore-scripts && npm run build",
     "install-examples"    : "cd ./examples && typings install && npm run reload && npm run build",
-    
+
     "start": "cd ./examples && npm run start",
-    
+
     "build": "gulp build",
     "serve": "gulp serve",
     "server": "gulp serve",
@@ -50,7 +50,7 @@
     "preprotractor": "gulp protractor.update",
     "protractor": "gulp protractor",
     "remove-dist": "rimraf dist modules/**/dist !node_modules/**/*",
-    "remove-local-modules": "rimraf node_modules/angular2-universal-polyfills node_modules/angular2-universal node_modules/preboot node_modules/angular2-universal-preview node_modules/angular2-universal node_modules/angular2-express-engine node_modules/angular2-hapi-engine",
+    "remove-local-modules": "rimraf node_modules/@angular/universal-polyfills node_modules/@angular/universal node_modules/preboot node_modules/@angular/universal-preview node_modules/@angular/universal node_modules/@angular/express-engine node_modules/@angular/hapi-engine",
     "update": "npm run remove-local-modules && npm install",
     "restart": "npm run update && gulp build && gulp server",
     "typings": "typings install",
