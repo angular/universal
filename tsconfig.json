@@ -23,7 +23,16 @@
       "angular2-hapi-engine": [
         "./modules/hapi-engine/src/index.ts"
       ]
-    }
+    },
+    "types": [
+      "browserify",
+      "core-js",
+      "es6-promise",
+      "jasmine",
+      "node",
+      "through2",
+      "zone.js"
+    ]
   },
 
   "files": [
@@ -52,14 +61,5 @@
   ],
   "compileOnSave": false,
   "buildOnSave": false,
-  "atom": { "rewriteTsconfig": false },
-  "types": [
-    "browserify",
-    "core-js",
-    "es6-promise",
-    "jasmine",
-    "node",
-    "through2",
-    "zone.js"
-  ]
+  "atom": { "rewriteTsconfig": false }
 }
