@@ -27,8 +27,7 @@
   },
 
   "files": [
-    "custom_typings/**",
-    "types.d.ts",
+    "custom_typings/xhr2.d.ts",
     "modules/broccoli-prerender/src/index.ts",
     "modules/broccoli-prerender/src/child_proc.ts",
     "modules/express-engine/src/index.ts",
