@@ -1,5 +1,3 @@
-/// <reference path="node_modules/@types/node/index.d.ts" />
-/// <reference path="node_modules/@types/core-js/index.d.ts" />
 
 /**
  * Some of the gulp tasks can accept command line arguments.
