@@ -111,14 +111,5 @@
     "@types/node": "^4.0.28-alpha",
     "@types/through2": "0.0.26-alpha",
     "@types/zone.js": "0.0.25-alpha"
-  },
-  "types": [
-    "browserify",
-    "core-js",
-    "es6-promise",
-    "jasmine",
-    "node",
-    "through2",
-    "zone.js"
-  ]
+  }
 }
