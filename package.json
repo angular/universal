@@ -73,7 +73,6 @@
     "@types/jasmine": "^2.2.28-alpha",
     "@types/browserify": "^12.0.28-alpha",
     "@types/core-js": "^0.9.27-alpha",
-    "@types/es6-promise": "0.0.27-alpha",
     "@types/node": "^4.0.28-alpha",
     "@types/through2": "0.0.26-alpha",
     "@types/zone.js": "0.0.25-alpha",
