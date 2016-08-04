@@ -253,6 +253,11 @@ export class NodeDomRenderer extends DomRenderer {
         }
       }
     }
+
+    if (typeof propertyValue !== 'string') {
+        propertyValue = propertyValue.toString() || '';
+    }
+    
     return super.setElementAttribute(renderElement, propertyName, propertyValue);
   }
 
