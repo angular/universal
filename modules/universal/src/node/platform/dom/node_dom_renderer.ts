@@ -27,13 +27,13 @@ import '../../make_parse5_current'; // ensure Parse5DomAdapter is used
 import {getDOM} from '@angular/platform-browser/src/dom/dom_adapter';
 var DOM: any = getDOM();
 
-
 @Injectable()
 export class NodeDomRootRenderer_ extends DomRootRenderer {
   constructor(@Inject(DOCUMENT) _document: any, _eventManager: EventManager,
               sharedStylesHost: DomSharedStylesHost, private _animate: WebAnimationsDriver) {
     super(_document, _eventManager, sharedStylesHost, _animate);
   }
+
   renderComponent(componentProto: RenderComponentType): Renderer {
     // TODO(gdi2290): see PR https://github.com/angular/angular/pull/6584
     var renderer = (<any>this).registeredComponents.get(componentProto.id);
@@ -211,7 +211,7 @@ export const ATTRIBUTES = {
 // TODO(gdi2290): provide better whitelist above to alias setting props as attrs
 export const IGNORE_ATTRIBUTES = {
   'innerHTML': true,
-  'hidden' : true
+  'hidden': true
 };
 
 export class NodeDomRenderer extends DomRenderer {
@@ -222,14 +222,25 @@ export class NodeDomRenderer extends DomRenderer {
     super(_rootRenderer, _componentProto, _animate);
   }
 
+  isObject(val) {
+    if (val === null) {
+      return false;
+    }
+    return ( (typeof val === 'function') || (typeof val === 'object') );
+  }
+
   setElementProperty(renderElement: any, propertyName: string, propertyValue: any) {
 
     // Fix for issues caused by null passed in
     if (propertyValue === null || propertyValue === undefined) {
-        propertyValue = false;
-        if (propertyName === 'innerHTML') {
-            propertyValue = '';
-        }
+      propertyValue = false;
+      if (propertyName === 'innerHTML') {
+        propertyValue = '';
+      }
+    }
+
+    if (this.isObject(propertyValue)) {
+      propertyValue = JSON.stringify(propertyValue);
     }
 
     let setProp = super.setElementProperty(renderElement, propertyName, propertyValue);
@@ -255,7 +266,6 @@ export class NodeDomRenderer extends DomRenderer {
     }
     return super.setElementAttribute(renderElement, propertyName, propertyValue);
   }
-
 
   setElementStyle(renderElement: any, styleName: string, styleValue: string): void {
     let styleNameCased = cssHyphenate(styleName);
@@ -301,6 +311,7 @@ export class NodeDomRenderer extends DomRenderer {
     return super.setElementAttribute(renderElement, propertyName, propertyValue);
 
   }
+
   _setBooleanAttribute(renderElement, propertyName, propertyValue) {
     if (isPresent(propertyValue) && propertyValue !== false) {
       if (propertyValue === true) {
