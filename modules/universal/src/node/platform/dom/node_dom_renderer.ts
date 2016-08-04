@@ -234,6 +234,8 @@ export class NodeDomRenderer extends DomRenderer {
     // Fix for passing in custom Object
     if (this.isObject(propertyValue)) {
       propertyValue = JSON.stringify(propertyValue);
+    }else if(typeof propertyValue === 'number'){
+      propertyValue.toString()
     }
 
     // Fix for issues caused by null passed in
