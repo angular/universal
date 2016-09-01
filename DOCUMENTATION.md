@@ -35,16 +35,14 @@ This creates your **Root** `NgModule`
 
 ### `main.browser.ts`
 
-    // normally "app.module.ts" - this is where our Root "NgModule" is located
-    main.browser.ts
+> normally "app.module.ts" - We just renamed it, so it's easier to realize this is for the Browser and not Node.
 
-We just renamed it, so it's easier to realize this is for the Browser and not Node.
+This is where our Root "NgModule" (for the Browser) is located
 
 ### `client.ts` 
 
-    // normally "main.ts" - this is where you "bootstrap" to the BrowserPlatform 
-    // (ie: platformBrowserDynamic().bootstrapModule(AppModule);)
-    client.ts
+> normally "main.ts" - this is where you "bootstrap" to the BrowserPlatform 
+> (ie: platformBrowserDynamic().bootstrapModule(AppModule);)
 
 We also renamed this, nice and obvious between client & server here :)
 
@@ -104,14 +102,22 @@ Let's dive into more detail about each of these files!
     bootstrap    : [ AppComponent ],
     declarations : [ AppComponent, /* etc etc */],
     imports : [
+
       // Standard imports
-      BrowserModule,
-      HttpModule,
+
+      BrowserModule, // <-- Notice that here of course we use BrowserModule
+                     // On the Node side we'll be using `NodeModule({})` and passing in a Configuration object
+      
+      // On the Node side we'll also be passing in different modules from Universal
+      // NodeHttpModule & NodeJsonpModule
+      HttpModule,    
       JsonpModule,
-      /* etc etc */
 
       // Our routing import 
       routing
+
+      /* etc etc */
+
     ],
     providers: [
       appRoutingProviders,
