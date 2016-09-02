@@ -2,6 +2,9 @@
 
 > Note this documentation is a living document (work in progress).
 
+  - [How does Universal work?](#howdoesitwork)
+    - [What is Preboot?](#preboot)
+    - [The benefits of Universal](#universalbenefits)
   - [Setting up Universal](#setup)
     - [with NodeJS & Express](#express)
     - with NodeJS & Hapi (coming soon)
@@ -9,6 +12,62 @@
   - [** Migration Guide **  (for Universal apps using Angular RC4 < or lower)](#coc)
 
 
+---
+---
+---
+
+
+# <a name="howdoesitwork"></a> How does Universal work?
+
+**The elevator pitch:**
+
+- Serialize your Angular2 application on the server-side to a String and pass it onto the browser.
+
+The entire process is basically:
+
+    [SERVER runs] 
+
+      -> Universal gets passed an NgModule Root application 
+      -> Universal is aware of Http calls / etc, let's the application fully "bootstrap" itself
+      -> ... magic happens *shazam* ...
+      -> We "Serialize" the application to an html String and pass it with the server response
+           to the browser
+        
+    [BROWSER loads]
+
+    ▼   -> Instantly gets the String as Html, and you get an Instantaneous PAINT of your Application
+         (no need for seconds wasted with a ...Loading spinner...)
+    G
+    A   -> ... behind the scenes Angular is "really" bootstrapping itself (but to the Browser)
+    P        (this is a Single Page Application after all)
+        
+    ▲   -> Angular finishes bootstrapping
+           [ The user didn't notice a thing, but look how faster everything seemed]
+
+Notice the GAP on the left side of the Browser section above. There's a period of time between that immediate Paint 
+of our application to the browser and when it *truly* **bootstraps** itself. After all, Universal is in action when we either 
+Refresh the browser, or that initial paint. (Or if you have JS disabled, and each link essentially causes a server-side hit to 
+render that section).
+
+**So during GAP events, what if the user starts typing in a textbox? Or clicks a link?**
+
+Preboot to the rescue!
+
+# <a name="preboot"></a> What is Preboot?
+
+This is where Preboot comes in, it's an integral part of Universal in that it tracks & records all of the users events, 
+and then *replays* them, once the Angular client has finished bootstrapping itself onto the browser.
+
+** TODO: More info / links etc **
+
+# <a name="universalbenefits"></a> What are the benefits of Universal?
+
+** TODO: Benefits of universal **
+
+
+---
+---
+---
 
 # <a name="setup"></a> Setting up Universal
 
