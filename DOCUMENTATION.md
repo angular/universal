@@ -27,24 +27,30 @@ This creates your **Root** `NgModule`
 ### `main.ts` 
 "bootstraps" your module to the Browser Platform, via `platformBrowserDynamic().bootstrapModule(YourNgModuleHere)`. 
 
+> Let's clean-up the naming for the above files so it makes a little more sense for us!
+
+Since these files both deal with the Browser, let's rename them:
+
+    app.module.ts   =>  main.browser.ts
+          main.ts   =>  client.ts
+
 ----
 
 #### With Universal we're going to have 4 main files:
 
-> Let's clean-up the naming for the above files so it makes a little more sense for us!
-
 ### `main.browser.ts`
 
-> normally "app.module.ts" - We just renamed it, so it's easier to realize this is for the Browser and not Node.
+> Previously "app.module.ts" - renamed.
 
-This is where our Root "NgModule" (for the Browser) is located
+This is where our Root "NgModule" (for the Browser) is located.
 
 ### `client.ts` 
 
-> normally "main.ts" - this is where you "bootstrap" to the BrowserPlatform 
-> (ie: platformBrowserDynamic().bootstrapModule(AppModule);)
+> Previously "main.ts" - renamed.
 
-We also renamed this, nice and obvious between client & server here :)
+This is where we "bootstrap" to the BrowserPlatform via:
+
+    platformBrowserDynamic().bootstrapModule( RootModule );
 
 ### `main.node.ts`     
 
@@ -54,14 +60,24 @@ These will get passed in as Modules themselves, we'll get to that shortly.
 
 ### `server.ts`        
 
-This is similar to `client.ts`, except here we use the Node platform to "serialize" (as opposed to bootstrapping)
+This is similar to `client.ts`, except here we use the Node platform to "serialize" (as opposed to bootstrapping). 
+We'll do this with Universals "**platformNodeDynamic()**" (similarity to *platformBrowserDynamic()*) 
+and the **serializeModule()** method, which also accepts - your `NgModule` specific to the server
+
+    platformNodeDynamic().serializeModule( RootModule );
 
 
 
 To summarize what we just did, notice we renamed the normal files from above, so that we can easily spot the difference 
-between them and the *similar* **server** files.
+between them and the *similar* **server** files. Notice how each "main" file essentially deals with your Root "Module" (NgModule), 
+and that both the `client.ts` & `server.ts` essentially "bootstrap || serializeModule" your application. 
 
-#### Our main files now:
+> Extra credit: Both bootstrapModule & serializeModule return a Promise so you know when they're finished. 
+> serializeModule also returns the serialized html string with it.
+
+#### Let's dive into more detail about each of these files!
+
+Our files so far:
 
   - [main.browser.ts](#mainbrowser-ts)
   - [client.ts](#client-ts)
@@ -71,7 +87,7 @@ between them and the *similar* **server** files.
 > Note: Of course you can merge main.browser & client if you'd like, as well as the server files. We're separating them to stick 
 > to Angular's general separation of concerns.
 
-Let's dive into more detail about each of these files!
+
 
 ---
 
@@ -81,7 +97,18 @@ Let's dive into more detail about each of these files!
 
 > Notice this is how you'd normally create this file. **There isn't anything "Universal" here**.
 
+One thing we need to notice here is all of these imported "modules" we're adding. Keep these in mind, 
+because as even the first one suggests (**BrowserModule**), these are dependency injected modules that 
+the "Browser" needs. Later, we're going to be doing a very similar thing for the server, except 
+we'll be injected **different** modules for some of these things.
+
+    BrowserModule, HttpModule, JsonpModule
+    // ^ These are all modules related to the Browser
+
+So here is an example browser NgModule file:
+
 ```
+  // This is just an example
 
   // Angular Core Modules
   import { NgModule }                 from '@angular/core';
@@ -133,18 +160,22 @@ Let's dive into more detail about each of these files!
   }
 ```
 
+To summarize: We created an NgModule, passed in our Browser related dependencies, and exported a `main()` function that returns a Promise from 
+`platformBrowserDynamic().bootstrapModule(MainModule);`. Piece of cake right.
+
+---
+
 ### <a name="client-ts"></a> `client.ts`
 
-> Notice here we're also not doing anything special, we're just firing off that `main` function 
-> from main.browser.ts which bootstraps the applications root NgModule. 
-> (Like we were saying, you could just combine these 2 files if you really wanted. 
-> We're separating them to follow typical Angular separation of concerns here)
-
-**Note the import '@angular/universal-polyfills/browser'; we're importing here**
+Notice the **import '@angular/universal-polyfills/browser';** we're importing here. This is the only "Universal" 
+thing we need on the browser-end. It's just a lot of imports Universal requires to do its job.
 
 ```
   // Important - We need to polyfill the browser with a few things Universal needs
   import '@angular/universal-polyfills/browser';
+
+  // Business as usual now...
+  // ...
 
   import { enableProdMode } from '@angular/core';
   enableProdMode();
@@ -159,6 +190,10 @@ Let's dive into more detail about each of these files!
   });
 
 ```
+Notice here we're also not doing anything special, we're just firing off that `main` function 
+from main.browser.ts which bootstraps the applications root NgModule. 
+(Like we were saying, you could just combine these 2 files if you really wanted. 
+We're separating them to follow typical Angular separation of concerns here)
 
 ---
 
@@ -166,30 +201,26 @@ Let's dive into more detail about each of these files!
 
 ### <a name="mainnode-ts"></a> `main.node.ts`
 
-> Notice this looks very similar to the `main.browser.ts` we're used to.
-> We're just creating an NgModule and in this case "serializing" it (not boostrapping it)
+*TODO: Showcase express-engine method.*
 
-**Important:** 
-
-Within our NgModule's `imports : []` here, we pass in our Universals 
-**Configuration** within 
-
-```
-imports : [
-  ... other stuff ...
-  NodeModule.withConfig({ 
-    /* Universal options/configuration here */
-  }),
-
-  // Other important Modules for Universal
-  NodeHttpModule, // Universal Http 
-  NodeJsonpModule // Universal JSONP (only if you need JSONP support)
-]
-```
+Notice this looks very similar to the `main.browser.ts` we're used to.
+We're just creating an NgModule and in this case "serializing" it (not boostrapping it)
 
 In this example we're going to manually pass our "document" or index.html as a String from `server.ts` (shown below).
 
-*TODO: Showcase express-engine method.*
+
+Notice these DIFFERENT modules we're importing now, we talked about this earlier. Instead of: 
+
+    BrowserModule,  HttpModule,      JsonpModule
+    // We now import from @angular/universal:
+    NodeModule,     NodeHttpModule,  NodeJsonpModule
+    
+NodeModule is passed a configuration inside of `NodeModule.withConfig({ /* here */ })` 
+
+> NodeHttpModule & NodeJsonpModule patch Nodes (you guessed it) Http&Jsonp so that we are aware of 
+> what's happening there on the Universal-side.
+
+#### So let's take a look at the complete file:
 
 ```
   // Angular Core Modules
@@ -269,6 +300,24 @@ In this example we're going to manually pass our "document" or index.html as a S
     // (just like bootstrapModule on the browser does)
     
   };
+```
+
+**Important:** 
+
+Within our NgModule's `imports : []` here, we pass in our Universals 
+**Configuration** within 
+
+```
+imports : [
+  ... other stuff ...
+  NodeModule.withConfig({ 
+    /* Universal options/configuration here */
+  }),
+
+  // Other important Modules for Universal
+  NodeHttpModule, // Universal Http 
+  NodeJsonpModule // Universal JSONP (only if you need JSONP support)
+]
 ```
 
 ------
@@ -388,7 +437,7 @@ serialize string Application that we can now serve to the browser.
 > Note: expressEngine is still in the works
 
 Prior to rc5, there were no `NgModule`'s. You also passed a config object of type `ExpressEngineConfig` 
-to `res.render('index', config);` 
+to `res.render('index', config /* <-- ExpressEngineConfig object */);` 
 
 #### - OLD - `main.node.ts`
 
@@ -423,6 +472,9 @@ As you may of seen [above](#express), we now can create our `NgModule({})` like 
 server, but we have a new object we pass into the `imports: []` Array.
 
 #### - NEW - `main.node.ts`
+
+It might help to think of `withConfig({})` as the Object you used to pass for ExpressEngineConfig. These things have changed 
+because of NgModule's and withConfig is a standardized way of passing a configuration object to an angular import/provider.
 
 ```
 
