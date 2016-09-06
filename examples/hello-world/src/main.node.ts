@@ -3,7 +3,7 @@ import {
   NodeModule,
   NodeHttpModule,
   NodeJsonpModule,
-  platformDynamicNode
+  platformNodeDynamic
 } from '@angular/universal';
 
 import { App, Wat } from './app';
@@ -22,16 +22,15 @@ import { App, Wat } from './app';
 })
 class AnotherComponent {}
 
-export const platform = platformDynamicNode();
+export const platform = platformNodeDynamic();
 
 function s4() {
-  return Math.floor((1 + Math.random()) * 0x10000)
-    .toString(16)
-    .substring(1);
+  return Math.floor((1 + Math.random()) * 0x10000).toString(16).substring(1);
 }
+
 export function main(document, config?: any) {
   var id = s4();
-  console.time('ngApp '+ id)
+  console.time('id: ' + id + ' ngApp: ');
 
   @NgModule({
     bootstrap: [ App, AnotherComponent ],
@@ -69,7 +68,7 @@ export function main(document, config?: any) {
   return platform
     .serializeModule(MainModule, config)
     .then((html) => {
-      console.timeEnd('ngApp ' + id)
+      console.timeEnd('id: ' + id + ' ngApp: ')
       console.log('\n -- serializeModule FINISHED --');
       return html;
     });

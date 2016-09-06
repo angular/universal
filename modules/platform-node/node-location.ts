@@ -5,8 +5,6 @@ import { REQUEST_URL, BASE_URL, ORIGIN_URL } from './tokens';
 
 import * as nodeUrl from 'url';
 
-
-
 export interface LocationConfig {
   pathname?: string;
   search?: string;
@@ -109,14 +107,18 @@ export class NodePlatformLocation extends PlatformLocation {
   private _originUrl: string;
 
   constructor(
-    @Inject(ORIGIN_URL) originUrl: string,
-    @Inject(REQUEST_URL) requestUrl: string,
+    @Optional() @Inject(ORIGIN_URL) originUrl: string,
+    @Optional() @Inject(REQUEST_URL) requestUrl: string,
     @Optional() @Inject(APP_BASE_HREF) baseUrl?: string) {
     super();
     this._originUrl = originUrl;
     this._baseUrl = baseUrl || '/';
     // this.pushState(null, null, joinWithSlash(this._baseUrl, requestUrl));
     this.pushState(null, null, requestUrl);
+  }
+  updateUrl(originUrl, baseUrl = '/') {
+    this._originUrl = originUrl;
+    this._baseUrl = baseUrl || '/';
   }
 
   get search(): string { return this._loc.search; }
@@ -207,7 +209,7 @@ export class NodePlatformLocation extends PlatformLocation {
   }
 }
 
-
+// @internal
 export function joinWithSlash(start: string, end: string): string {
   if (start.length === 0) {
     return end;

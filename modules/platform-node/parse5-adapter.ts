@@ -28,7 +28,6 @@ var _attrToPropMap: {[key: string]: string} = {
   'tabindex': 'tabIndex',
 };
 var defDoc: any = null;
-var __parse5 = null;
 
 var mapProps = ['attribs', 'x-attribsNamespace', 'x-attribsPrefix'];
 
@@ -505,6 +504,7 @@ export class Parse5DomAdapter extends DomAdapter {
     return this.isTemplateElement(el) ? this.content(el) : el;
   }
   createHtmlDocument(): any { /* Document */
+    // TODO(gdi2290): move node-document to here
     var newDoc = treeAdapter.createDocument();
     newDoc.title = 'fake title';
     var head = treeAdapter.createElement('head', null, []);
@@ -516,17 +516,31 @@ export class Parse5DomAdapter extends DomAdapter {
     newDoc['_window'] = StringMapWrapper.create();
     return newDoc;
   }
+  // UNIVERSAL FIX
   defaultDoc(): any { /* Document */
-    if (defDoc === null) {
-      defDoc = this.createHtmlDocument();
-    }
-    return defDoc;
+    // if (defDoc === null) {
+    //   defDoc = this.createHtmlDocument();
+    // }
+    // TODO()
+    return {documentMode: false};
   }
+  // UNIVERSAL FIX
   getBoundingClientRect(el: any): any {
     return {left: 0, top: 0, width: 0, height: 0};
   }
-  getTitle(): string { return this.defaultDoc().title || ''; }
-  setTitle(newTitle: string) { this.defaultDoc().title = newTitle; }
+  // UNIVERSAL FIX
+  getTitle(): string {
+    throw _notImplemented('getTitle');
+    // return this.defaultDoc().title || '';
+  }
+  // UNIVERSAL FIX
+
+  // UNIVERSAL FIX
+  setTitle(newTitle: string) {
+    throw _notImplemented('setTitle');
+    // this.defaultDoc().title = newTitle;
+  }
+  // UNIVERSAL FIX
   isTemplateElement(el: any): boolean {
     return this.isElementNode(el) && this.tagName(el) === 'template';
   }
@@ -585,17 +599,16 @@ export class Parse5DomAdapter extends DomAdapter {
   }
   supportsDOMEvents(): boolean { return false; }
   supportsNativeShadowDOM(): boolean { return false; }
+  // UNIVERSAL FIX
   getGlobalEventTarget(target: string): any {
-    if (target == 'window') {
-      return (<any>this.defaultDoc())._window;
-    } else if (target == 'document') {
-      return this.defaultDoc();
-    } else if (target == 'body') {
-      return this.defaultDoc().body;
-    }
+    throw _notImplemented('getGlobalEventTarget');
   }
-  getBaseHref(): string { throw 'not implemented'; }
-  resetBaseElement(): void { throw 'not implemented'; }
+  getBaseHref(): string {
+    throw _notImplemented('getBaseHref');
+  }
+  resetBaseElement(): void {
+    throw _notImplemented('resetBaseElement');
+  }
   getHistory(): any {  /* History */
     throw _notImplemented('getHistory');
   }
@@ -630,6 +643,7 @@ export class Parse5DomAdapter extends DomAdapter {
   replaceChild(el: any, newNode: any, oldNode: any) {
     throw _notImplemented('replaceChild');
   }
+  // TODO(gdi2290): move node-document to here
   parse(templateHtml: string) {
     throw _notImplemented('Parse5DomAdapter#parse');
   }
