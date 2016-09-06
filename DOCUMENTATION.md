@@ -290,7 +290,7 @@ NodeModule is passed a configuration inside of `NodeModule.withConfig({ /* here 
     NodeModule,         // Our Universal Configuration : NodeModule.withConfig({ /*here*/ })
     NodeHttpModule,     // Add to imports:[] of @NgModule if you want to patch Nodes http
     NodeJsonpModule,    // Add to imports : [] of @NgModule if you want to patch Nodes jsonp
-    platformDynamicNode // Node "platform" for serializing (think "platformBrowserDynamic")
+    platformNodeDynamic // Node "platform" for serializing (think "platformBrowserDynamic")
   } from '@angular/universal';
 
   // Our Root Component
@@ -354,7 +354,7 @@ NodeModule is passed a configuration inside of `NodeModule.withConfig({ /* here 
     // platformBrowserDynamic().bootstrapModule(MainModule);
     // But in Node, we don't "bootstrap" our application, we want to Serialize it!
 
-    return platformDynamicNode().serializeModule(MainModule, config);
+    return platformNodeDynamic().serializeModule(MainModule, config);
     // serializeModule returns a promise 
     // (just like bootstrapModule on the browser does)
     
