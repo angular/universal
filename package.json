@@ -92,6 +92,7 @@
     "graceful-fs": "^4.1.4",
     "gulp": "^3.9.0",
     "gulp-conventional-changelog": "1.1.0",
+    "gulp-istanbul": "^1.1.1",
     "gulp-jasmine": "^2.4.0",
     "gulp-json-transform": "^0.4.1",
     "gulp-rename": "^1.2.2",
