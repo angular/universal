@@ -1,5 +1,3 @@
-
-
 /**
  * Some of the gulp tasks can accept command line arguments.
  * For example, `build` and `test` can accept --module=universal,grunt-prerender
@@ -8,9 +6,12 @@
 import * as child_process from 'child_process';
 import * as buildUtils from './build-utils';
 import * as ts from 'typescript';
+import * as gulpTs from 'gulp-typescript';
 
 const gulp = require('gulp');
 const gulpChangelog = require('gulp-conventional-changelog');
+const gulpJasmine = require('gulp-jasmine');
+const istanbul = require('gulp-istanbul');
 const jsonTransform = require('gulp-json-transform');
 const rimraf = require('rimraf');
 const args = require('minimist')(process.argv);
@@ -21,7 +22,14 @@ const replace = require('gulp-replace');
 const rename = require('gulp-rename');
 
 // For any task that contains "test" or if --test arg is passed, include spec files
-const isTest = process.argv[2] && process.argv[2].indexOf('test') > -1 || args['test'] ? true : false;
+let isTest = false;
+
+process.argv.forEach((arg)=> {
+  if (arg.indexOf('test') > -1) {
+    isTest = true;
+  }
+});
+
 const files = buildUtils.getTargetFiles(isTest, args['module'], tsConfig);
 const compilerOptions = buildUtils.getCompilerOptions(tsConfig);
 const host = ts.createCompilerHost(compilerOptions);
@@ -34,20 +42,33 @@ gulp.task('watch', () => {
 
 gulp.task('test:watch', ['test'], () => {
   gulp.watch(sourceFiles, () => {
-    runSequence('build', '_test');
+    buildTest(sourceFiles)
+      .then(() => {
+        runSequence(['pre-test', 'test']);
+      });
   });
 });
 
-gulp.task('test', ['build'], (done) => {
-  runSequence('_test', done);
+gulp.task('pre-test', ['build:test'], function () {
+  return gulp.src(['./dist/**/!(*.spec).js'])
+    .pipe(istanbul({ includeUntested: true }))
+    .pipe(istanbul.hookRequire());
 });
 
-gulp.task('_test', () => {
-  // Gulp Jasmine had weird behavior where it would run 0 specs on subsequent runs
-  child_process.spawnSync(`./node_modules/.bin/jasmine`, [], {stdio: 'inherit'});
+gulp.task('test', ['pre-test'], () => {
+  return gulp.src(['./dist/**/*.spec.js', './build-utils.spec.js'])
+    .pipe(gulpJasmine({
+      includeStackTrace: true
+    }))
+    .pipe(istanbul.writeReports({
+      dir: './coverage',
+      reporters: ['html'],
+      reportOpts: { dir: './coverage' }
+    }));
 });
 
 gulp.task('build', ['clean'], build);
+gulp.task('build:test', ['clean'], () => buildTest(sourceFiles));
 gulp.task('default', ['build']);
 
 // This is handy when using npm link from dist/modules to test universal
@@ -78,17 +99,51 @@ function build() {
 
       resolve();
     });
-  }).then(() => {
-    return new Promise((resolve, reject) => {
-      gulp
-        .src('compiled/ngc/modules/**/*')
-        .pipe(rename(buildUtils.stripSrcFromPath))
-        .pipe(replace(/\.\/src\//g, './'))
-        .pipe(gulp.dest('dist'))
-        .on('error', reject)
-        .on('end', resolve);
+  })
+    .then(() => {
+      return new Promise((resolve, reject) => {
+        gulp
+          .src('compiled/ngc/modules/**/*')
+          .pipe(rename(buildUtils.stripSrcFromPath))
+          .pipe(replace(/\.\/src\//g, './'))
+          .pipe(gulp.dest('dist'))
+          .on('error', reject)
+          .on('end', resolve);
+      });
     });
+}
+
+function buildTest(path: string[]): Promise<any> {
+  // TODO: remove this if it every works in watch mode without needing to re-create.
+  let project = gulpTs.createProject('tsconfig.json', {
+    typescript: require('typescript'),
+    rootDir: 'modules'
   });
+  let output = gulp.src(path)
+    .pipe(gulpTs(project));
+  // Using a promise instead of merging streams since end
+  // event on streams seems not to be propagated when merged.
+  return new Promise((resolve) => {
+    var doneCount = 0;
+    output.js
+      .pipe(rename(buildUtils.stripSrcFromPath))
+      .pipe(replace(/\.\/src\//g, './'))
+      .pipe(gulp.dest('dist'))
+      .on('end', maybeDone);
+    output.dts
+      .pipe(rename(buildUtils.stripSrcFromPath))
+      .pipe(replace(/\.\/src\//g, './'))
+      .pipe(gulp.dest('dist'))
+      .on('end', maybeDone);
+
+    function maybeDone() {
+      doneCount++;
+      if (doneCount === 2) {
+        resolve();
+      }
+    }
+  });
+
 }
 
 gulp.task('rewrite_packages', () => {
@@ -117,6 +172,8 @@ gulp.task('rewrite_packages', () => {
 
 gulp.task('clean', () => {
   rimraf.sync('dist');
+  rimraf.sync('coverage');
+  rimraf.sync('compiled');
 });
 
 gulp.task('pre-publish', ['build', 'rewrite_packages', 'changelog', 'copy_license', 'copy_files']);
