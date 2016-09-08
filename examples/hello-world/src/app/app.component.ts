@@ -3,9 +3,11 @@ import {APP_PROVIDERS as GITHUB_APP_PROVIDERS, Github} from './github';
 
 @Component({
   selector: 'wat',
-  directives: [
-    Github
-  ],
+  styles: [`
+  div {
+    background-color: green;
+  }
+  `],
   template: `
     <div>
       Hello World
@@ -21,7 +23,6 @@ export class Wat {
 
 @Component({
   selector: 'app',
-  directives: [Wat],
   styles: [`
   div {
     background-color: red;
@@ -32,20 +33,26 @@ export class Wat {
       <input id="myInput">
       Hello World
       {{ wat }}
-      <wat>
-      </wat>
+      <div *ngIf="toggle">
+        <wat></wat>
+      </div>
+      <button (click)="onWat($event)">Wat</button>
     </div>
   `
 })
 export class App {
   wat = '';
+  toggle = false;
   constructor () {
 
+  }
+  onWat() {
+    this.toggle = !this.toggle;
   }
   ngOnInit() {
     setTimeout(() => {
       this.wat = 'yolo' + Math.random();
-    })
+    });
   }
 
 }
