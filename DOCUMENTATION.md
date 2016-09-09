@@ -170,13 +170,12 @@ So here is an example browser NgModule file:
   // This is just an example
 
   // Angular Core Modules
-  import { NgModule }                 from '@angular/core';
-  import { BrowserModule }            from '@angular/platform-browser';
-  import { HttpModule, JsonpModule }  from '@angular/http';
-  import { FormsModule }              from '@angular/forms';
-
-  // Browser Bootstrap Module
-  import { platformBrowserDynamic }   from '@angular/platform-browser-dynamic';
+  import { NgModule } from '@angular/core';
+  import {
+    UniversalModule,
+    platformUniversalDynamic
+  } from 'angular2-universal';
+  import { FormsModule } from '@angular/forms';
 
   // Our Root Component
   import { AppComponent }             from './app';
@@ -191,13 +190,7 @@ So here is an example browser NgModule file:
 
       // Standard imports
 
-      BrowserModule, // <-- Notice that here of course we use BrowserModule
-                     // On the Node side we'll be using `NodeModule({})` and passing in a Configuration object
-      
-      // On the Node side we'll also be passing in different modules from Universal
-      // NodeHttpModule & NodeJsonpModule
-      HttpModule,    
-      JsonpModule,
+      UniversalModule,
 
       // Our routing import 
       routing
@@ -215,23 +208,23 @@ So here is an example browser NgModule file:
   export function main() {
     // Create our browser "platform"
     // & Bootstrap our NgModule/Container to it
-    return platformBrowserDynamic().bootstrapModule(MainModule);
+    return platformUniversalDynamic().bootstrapModule(MainModule);
   }
 ```
 
 To summarize: We created an NgModule, passed in our Browser related dependencies, and exported a `main()` function that returns a Promise from 
-`platformBrowserDynamic().bootstrapModule(MainModule);`. Piece of cake right.
+`platformUniversalDynamic().bootstrapModule(MainModule);`. Piece of cake right.
 
 ---
 
 ### <a name="client-ts"></a> `client.ts`
 
-Notice the **import '@angular/universal-polyfills/browser';** we're importing here. This is the only "Universal" 
+Notice the **import 'angular2-universal-polyfills/browser';** we're importing here. This is the only "Universal" 
 thing we need on the browser-end. It's just a lot of imports Universal requires to do its job.
 
 ```
   // Important - We need to polyfill the browser with a few things Universal needs
-  import '@angular/universal-polyfills/browser';
+  import 'angular2-universal-polyfills/browser';
 
   // Business as usual now...
   // ...
@@ -271,12 +264,15 @@ In this example we're going to manually pass our "document" or index.html as a S
 Notice these DIFFERENT modules we're importing now, we talked about this earlier. Instead of: 
 
     BrowserModule,  HttpModule,      JsonpModule
-    // We now import from @angular/universal:
-    NodeModule,     NodeHttpModule,  NodeJsonpModule
+    // We now import from angular2-universal:
+    UniversalModule
     
-NodeModule is passed a configuration inside of `NodeModule.withConfig({ /* here */ })` 
+UniversalModule is passed a configuration inside of `UniversalModule.withConfig({ /* here */ })` 
 
-> NodeHttpModule & NodeJsonpModule patch Nodes (you guessed it) Http&Jsonp so that we are aware of 
+UniversalModule in Node includes `NodeModule`, `NodeHttpModule`, `NodeJsonpModule`
+UniversalModule in the Browser includes `BrowserModule`, `HttpModule`, `JsonpModule`
+
+> NodeHttpModule & NodeJsonpModule patch Nodes (you guessed it) Http & Jsonp so that we are aware of 
 > what's happening there on the Universal-side.
 
 #### So let's take a look at the complete file:
@@ -287,11 +283,9 @@ NodeModule is passed a configuration inside of `NodeModule.withConfig({ /* here 
 
   // *** Universal imports ***
   import {
-    NodeModule,         // Our Universal Configuration : NodeModule.withConfig({ /*here*/ })
-    NodeHttpModule,     // Add to imports:[] of @NgModule if you want to patch Nodes http
-    NodeJsonpModule,    // Add to imports : [] of @NgModule if you want to patch Nodes jsonp
-    platformNodeDynamic // Node "platform" for serializing (think "platformBrowserDynamic")
-  } from '@angular/universal';
+    UniversalModule,         // Our Universal Configuration : NodeModule.withConfig({ /*here*/ })
+    platformUniversalDynamic // Node "platform" for serializing (think "platformBrowserDynamic")
+  } from 'angular2-universal';
 
   // Our Root Component
   import { AppComponent } from './app';
@@ -312,10 +306,10 @@ NodeModule is passed a configuration inside of `NodeModule.withConfig({ /* here 
 
         /* Normal modules etc that you have from main.browser.ts */
 
-        // NodeModule from "@angular/universal" allows us to provide
+        // UniversalModule from "angular2-universal" allows us to provide
         // a config object
 
-        NodeModule.withConfig({
+        UniversalModule.withConfig({
 
           // Our "document" which we need to pass in from Node 
           // (first param of this main function)
@@ -335,10 +329,7 @@ NodeModule is passed a configuration inside of `NodeModule.withConfig({ /* here 
 
         }),
 
-        // Other important Modules for Universal
-        NodeHttpModule, // Universal Http 
-        NodeJsonpModule // Universal JSONP 
-
+        // Other important Modules for Universal 
         /* etc etc */
 
       ],
@@ -351,10 +342,10 @@ NodeModule is passed a configuration inside of `NodeModule.withConfig({ /* here 
 
     // -----------------------
     // On the browser:
-    // platformBrowserDynamic().bootstrapModule(MainModule);
+    // platformUniversalDynamic().bootstrapModule(MainModule);
     // But in Node, we don't "bootstrap" our application, we want to Serialize it!
 
-    return platformNodeDynamic().serializeModule(MainModule, config);
+    return platformUniversalDynamic().serializeModule(MainModule);
     // serializeModule returns a promise 
     // (just like bootstrapModule on the browser does)
     
@@ -369,13 +360,10 @@ Within our NgModule's `imports : []` here, we pass in our Universals
 ```
 imports : [
   ... other stuff ...
-  NodeModule.withConfig({ 
+  UniversalModule.withConfig({ 
     /* Universal options/configuration here */
   }),
 
-  // Other important Modules for Universal
-  NodeHttpModule, // Universal Http 
-  NodeJsonpModule // Universal JSONP (only if you need JSONP support)
 ]
 ```
 
@@ -387,14 +375,14 @@ imports : [
 
 This is a very basic example/implementation of an express server file for Node. 
 In this case we're creating the "document" or index.html here, which we in turn pass to the function above 
-that ends up adding it to `document : document` within our `NodeModule.withConfig({ document : document })` Universal config 
+that ends up adding it to `document : document` within our `UniversalModule.withConfig({ document : document })` Universal config 
 imports.
 
 *TODO: Add exppress-engine implementation details*
 
 ```
   // Universal polyfills required
-  import '@angular/universal-polyfills/node';
+  import 'angular2-universal-polyfills/node';
 
   // -----------
   // ** USUAL Express stuff** 
@@ -547,10 +535,10 @@ because of NgModule's and withConfig is a standardized way of passing a configur
       /* Normal modules etc that you have from main.browser.ts */
       /* .... etc etc ..... */
 
-      // NodeModule from "@angular/universal" allows us to provide
+      // UniversalModule from "angular2-universal" allows us to provide
       // the config object
 
-      NodeModule.withConfig({
+      UniversalModule.withConfig({
 
         // Our "document" (index.html file) which we need to pass in from Node 
         document  : document,
@@ -576,7 +564,7 @@ because of NgModule's and withConfig is a standardized way of passing a configur
       NodeJsonpModule // Universal JSONP 
 
       // ^^ These normally were just passed into `providers: []` Array
-      // in the ExpressEngineConfig object previously
+      // in the ExpressEngineConfig object previously but are now included
 
     ]
 })
