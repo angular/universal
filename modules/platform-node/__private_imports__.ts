@@ -31,7 +31,7 @@ const {
 
 
 
-
+// @internal
 export {
   // platform-browser
   BROWSER_SANITIZATION_PROVIDERS,
@@ -58,3 +58,7 @@ export {
   RenderDebugInfo,
 
 }
+
+var __empty = null;
+
+export default __empty;

@@ -27,12 +27,11 @@ import {
   stringify,
   listContains,
   camelCaseToDashCase,
-  _appIdRandomProviderFactory
 } from './helper';
 
 import {
   NodeSharedStylesHost
-} from './node-shared-styles-host'
+} from './node-shared-styles-host';
 
 const NAMESPACE_URIS = {
   'xlink': 'http://www.w3.org/1999/xlink',
@@ -232,6 +231,7 @@ export const IGNORE_ATTRIBUTES = {
   'hidden' : true
 };
 
+// TODO(gdi2290): combine both renderers
 export class DomRenderer implements Renderer {
   private _contentAttr: string;
   private _hostAttr: string;
@@ -316,7 +316,7 @@ export class DomRenderer implements Renderer {
   }
 
   projectNodes(parentElement: any, nodes: any[]) {
-    if (isBlank(parentElement)) return;
+    if (isBlank(parentElement)) { return; }
     appendNodes(parentElement, nodes);
   }
 
@@ -495,9 +495,10 @@ export class NodeDomRenderer extends DomRenderer {
         }
       }
     }
-    return super.setElementAttribute(renderElement, propertyName, propertyValue);
+    if (typeof propertyValue === 'string') {
+        return super.setElementAttribute(renderElement, propertyName, propertyValue);
+    }
   }
-
 
   setElementStyle(renderElement: any, styleName: string, styleValue: string): void {
     let styleNameCased = cssHyphenate(styleName);
@@ -588,8 +589,11 @@ function decoratePreventDefault(eventHandler: Function): Function {
 }
 
 var COMPONENT_REGEX = /%COMP%/g;
+// @internal
 export const COMPONENT_VARIABLE = '%COMP%';
+// @internal
 export const HOST_ATTR = `_nghost-${COMPONENT_VARIABLE}`;
+// @internal
 export const CONTENT_ATTR = `_ngcontent-${COMPONENT_VARIABLE}`;
 
 function _shimContentAttribute(componentShortId: string): string {
@@ -618,7 +622,7 @@ function _flattenStyles(compId: string, styles: Array<any|any[]>, target: string
 const NS_PREFIX_RE = /^:([^:]+):(.+)$/;
 
 function splitNamespace(name: string): string[] {
-  if (name[0] != ':') {
+  if (name[0] !== ':') {
     return [null, name];
   }
   const match = name.match(NS_PREFIX_RE);
