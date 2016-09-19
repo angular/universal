@@ -42,7 +42,6 @@ export {
   DomAdapter,
   setRootDomAdapter,
   KeyEventsPlugin,
-  getDOM,
   HammerGesturesPlugin,
 
   // compiler

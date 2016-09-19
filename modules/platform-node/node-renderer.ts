@@ -1,5 +1,5 @@
 // PRIVATE
-import { getDOM } from './__private_imports__';
+import { getDOM } from './get-dom';
 // PRIVATE
 
 import {
@@ -472,6 +472,10 @@ export class NodeDomRenderer extends DomRenderer {
       if (propertyName === 'innerHTML') {
         propertyValue = '';
       }
+    }
+    // ignore boolean prop values for parse5 serialize
+    if ((propertyName === 'autofocus' || propertyName === 'spellcheck') && propertyValue === false) {
+        return;
     }
 
     let setProp = super.setElementProperty(renderElement, propertyName, propertyValue);

@@ -1,3 +1,4 @@
+import { getDOM } from './get-dom';
 // PRIVATE
 import {
   BROWSER_SANITIZATION_PROVIDERS,
@@ -6,7 +7,6 @@ import {
   DomRootRenderer,
   DomEventsPlugin,
   KeyEventsPlugin,
-  getDOM,
   HammerGesturesPlugin,
   ViewUtils
 } from './__private_imports__';
@@ -42,6 +42,7 @@ import {
   PlatformRef,
   NgModuleRef,
   NgZone,
+  CompilerFactory
 } from '@angular/core';
 
 import { CommonModule, PlatformLocation, APP_BASE_HREF } from '@angular/common';
@@ -79,13 +80,15 @@ declare var Zone: any;
 // @internal
 const _documentDeps = [ NodeSharedStylesHost, NgZone ];
 export function _document(domSharedStylesHost: NodeSharedStylesHost, zone: any): any {
-  let document = Zone.current.get('document');
+  let document: any = Zone.current.get('document');
   if (!document) {
     throw new Error('Please provide a document in the universal config');
   }
-  var doc: any = parseDocument(document);
-  domSharedStylesHost.addHost(doc.head);
-  return doc;
+  if (typeof document === 'string') {
+    document = parseDocument(document);
+  }
+  domSharedStylesHost.addHost(document.head);
+  return document;
 }
 
 // @internal
@@ -124,13 +127,35 @@ export class NodePlatform  {
   }
   constructor(private _platformRef: PlatformRef) {
   }
+  cacheModuleFactory<T>(moduleType, compilerOptions?: any): Promise<NgModuleRef<T>> {
+    if (NodePlatform._cache.has(moduleType)) {
+      return Promise.resolve(NodePlatform._cache.get(moduleType));
+    }
+    const compilerFactory: CompilerFactory = this._platformRef.injector.get(CompilerFactory);
+    var compiler;
+    if (compilerOptions) {
+      compiler = compilerFactory.createCompiler(
+      compilerOptions instanceof Array ? compilerOptions : [compilerOptions]);
+    } else {
+      compiler = compilerFactory.createCompiler();
+    }
+    return compiler.compileModuleAsync(moduleType)
+        .then((moduleFactory) => {
+          NodePlatform._cache.set(moduleType, moduleFactory)
+          return moduleFactory;
+        });
+  }
 
   // TODO(gdi2290): refactor into bootloader
   serializeModule<T>(ModuleType: any, config: any = {}): Promise<T> {
     if (config && !config.id) { config.id = s4(); }
     config.time && console.time('id: ' + config.id + ' bootstrapModule: ');
     config.time && console.time('id: ' + config.id + ' ngApp: ');
-    return this.platformRef.bootstrapModule<T>(ModuleType, config.compilerOptions)
+    return (config.compilerOptions ?
+      this.bootstrapModule<T>(ModuleType, config.compilerOptions)
+      :
+      this.bootstrapModule<T>(ModuleType)
+    )
       .then((moduleRef: NgModuleRef<T>) => {
         config.time && console.timeEnd('id: ' + config.id + ' bootstrapModule: ');
         return this.serialize<T>(moduleRef, config);
@@ -146,7 +171,7 @@ export class NodePlatform  {
     if (config && !config.id) { config.id = s4(); }
     config.time && console.time('id: ' + config.id + ' bootstrapModuleFactory: ');
     config.time && console.time('id: ' + config.id + ' ngApp: ');
-    return this.platformRef.bootstrapModuleFactory<T>(ModuleType)
+    return this.bootstrapModuleFactory<T>(ModuleType)
       .then((moduleRef: NgModuleRef<T>) => {
         config.time && console.timeEnd('id: ' + config.id + ' bootstrapModuleFactory: ');
         return this.serialize<T>(moduleRef, config);
@@ -204,6 +229,7 @@ export class NodePlatform  {
         store.set('NgZone', modInjector.get(NgZone));
         store.set('preboot', config.preboot, false);
         store.set('APP_ID', modInjector.get(APP_ID, null));
+        store.set('NODE_APP_ID', s4());
         store.set('DOCUMENT', modInjector.get(DOCUMENT));
         store.set('DOM', getDOM());
         store.set('UNIVERSAL_CACHE', {});
@@ -243,7 +269,7 @@ export class NodePlatform  {
                 }
                 if (ngZone.isStable === true) { return done(ref); }
                 return checkStable(done, ref);
-              }, 1);
+              }, 0);
             });
           }
           return ngZone.runOutsideAngular(() => {
@@ -275,8 +301,12 @@ export class NodePlatform  {
       // Inject preboot
       function injectPreboot(store: any, moduleRef: NgModuleRef<T>) {
         let preboot = store.get('preboot');
-        if (typeof preboot === 'boolean' && !preboot) {
-          return moduleRef;
+        if (typeof preboot === 'boolean') {
+          if (!preboot) {
+            return moduleRef;
+          } else {
+            preboot = {};
+          }
         }
         config.time && console.time('id: ' + config.id + ' preboot: ');
         // parseFragment used
@@ -348,7 +378,7 @@ export class NodePlatform  {
       // Dehydrate Cache
       function dehydrateCache(store: any, moduleRef: NgModuleRef<T>) {
         config.time && console.time('id: ' + config.id + ' universal cache: ');
-        let appId = store.get('APP_ID', null);
+        let appId = store.get('NODE_APP_ID', null);
         let UNIVERSAL_CACHE = store.get('UNIVERSAL_CACHE');
         let universalDoDehydrate = store.get('universalDoDehydrate');
         let cache = {};
@@ -407,12 +437,13 @@ export class NodePlatform  {
         // serializeDocument used
         let universalOnRendered = store.get('universalOnRendered');
         let document = store.get('DOCUMENT');
+        let appId = store.get('NODE_APP_ID');
         let appRef = store.get('ApplicationRef');
         let html = null;
         let destroyApp = null;
         let destroyModule = null;
 
-        html = serializeDocument(document);
+        html = serializeDocument(document).replace(/%cmp%/g, appId);
         universalOnRendered(html);
 
         document = null;
@@ -450,12 +481,28 @@ export class NodePlatform  {
   get injector(): Injector {
     return this.platformRef.injector;
   }
-  bootstrapModule<T>(moduleType, compilerOptions): Promise<NgModuleRef<T>> {
-    return this.platformRef.bootstrapModule(moduleType, compilerOptions);
+  bootstrapModule<T>(moduleType, compilerOptions?: any): Promise<NgModuleRef<T>> {
+    if (NodePlatform._cache.has(moduleType)) {
+      return this.platformRef.bootstrapModuleFactory(NodePlatform._cache.get(moduleType));
+    }
+    const compilerFactory: CompilerFactory = this._platformRef.injector.get(CompilerFactory);
+    var compiler;
+    if (compilerOptions) {
+      compiler = compilerFactory.createCompiler(
+      compilerOptions instanceof Array ? compilerOptions : [compilerOptions]);
+    } else {
+      compiler = compilerFactory.createCompiler();
+    }
+    return compiler.compileModuleAsync(moduleType)
+        .then((moduleFactory) => {
+          NodePlatform._cache.set(moduleType, moduleFactory)
+          return this.platformRef.bootstrapModuleFactory(moduleFactory)
+        });
   }
   bootstrapModuleFactory<T>(moduleFactory): Promise<NgModuleRef<T>> {
     return this.platformRef.bootstrapModuleFactory(moduleFactory);
   }
+
   /**
    * @deprecated
    */
@@ -505,7 +552,7 @@ function asyncPromiseSeries(store, modRef, errorHandler, cancelHandler, config, 
           } catch (e) {
             reject(e);
           }
-        }, timer);
+        }, 0);
       });
     }).catch(err => {
       errorCalled = true;
@@ -655,8 +702,9 @@ export function _ORIGIN_URL(zone) {
 
     { provide: APP_BASE_HREF, useFactory: _APP_BASE_HREF, deps: [ NgZone ] },
     { provide: REQUEST_URL, useFactory: _REQUEST_URL, deps: [ NgZone ] },
-    { provide: ORIGIN_URL, useFactory: _ORIGIN_URL, deps: [ NgZone ] }
+    { provide: ORIGIN_URL, useFactory: _ORIGIN_URL, deps: [ NgZone ] },
 
+    { provide: APP_ID, useValue: '%cmp%' },
   ],
   exports: [  CommonModule, ApplicationModule  ]
 })

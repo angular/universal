@@ -1,6 +1,6 @@
 const fs = require('graceful-fs');
 
-import { platformUniversalDynamic, NodePlatformRef } from 'angular2-universal';
+import { platformUniversalDynamic, NodePlatformRef, parseDocument } from 'angular2-universal';
 declare var Zone: any;
 // @internal
 function s4() {
@@ -9,17 +9,29 @@ function s4() {
 
 export interface ExpressEngineConfig {
   document?: string;
+  DOCUMENT?: string;
   cancelHandler?: () => boolean;
+  CANCEL_HANDLER?: () => boolean;
   req?: any;
+  REQ?: any;
   res?: any;
+  RES?: any;
   time?: boolean;
+  TIME?: boolean;
   id?: string;
+  ID?: string;
   ngModule?: any;
   precompile?: boolean;
   cancel?: boolean;
+  CANCEL?: boolean;
   requestUrl?: string;
+  REQUEST_URL?: string;
   originUrl?: string;
+  ORIGIN_URL?: string;
   baseUrl?: string;
+  BASE_URL?: string;
+  cookie?: string;
+  COOKIE?: string;
 }
 
 export function createEngine(options?: any) {
@@ -40,12 +52,16 @@ export function createEngine(options?: any) {
   _options.asyncDestroy = ('asyncDestroy' in options) ?  options.asyncDestroy : _options.asyncDestroy;
   _options.id = options.id || _options.id;
   _options.ngModule =  options.ngModule || _options.ngModule;
-  var __platform = options.platform || _options.platform
+  var __platform = options.platform || _options.platform;
   var __providers = options.providers || _options.providers;
   delete _options.providers;
   delete _options.platform;
 
   const platformRef: any = __platform(__providers);
+  var prom;
+  if (_options.ngModule) {
+    prom = platformRef.cacheModuleFactory(_options.ngModule)
+  }
 
   return function expressEngine(filePath: string, data: ExpressEngineConfig = {ngModule: _options.ngModule}, done?: Function) {
     const ngModule = data.ngModule || _options.ngModule;
@@ -55,29 +71,42 @@ export function createEngine(options?: any) {
     if (!data.req || !data.res) {
       throw new Error('Please provide the req, res arguments (request and response objects from express) in res.render("index", { req, res })');
     }
-    // defaults
     var cancel = false;
+    if (data.req) {
+      data.req.on('close', () => cancel = true);
+    }
+    // defaults
     const _data = Object.assign({
-      get cancel() { return cancel; }
+      get cancel() { return cancel; },
+      set cancel(val) { cancel = val; },
+
+      get requestUrl() { return data.requestUrl || data.req.originalUrl },
+      set requestUrl(val) {  },
+
+      get originUrl() { return data.originUrl || data.req.hostname },
+      set originUrl(val) {  },
+
+      get baseUrl() { return data.baseUrl || '/' },
+      set baseUrl(val) {  },
+
+      get cookie() { return data.cookie || data.req.headers.cookie },
+      set cookie(val) {  },
     }, data);
 
     function readContent(content) {
-      const document: string = content.toString();
-      _data.document = document;
-      _data.cancelHandler = () => Zone.current.get('cancel')
+      const DOCUMENT: string = content.toString();
+      // TODO(gdi2290): breaking change for context globals
+      // _data.document = parseDocument(document);
+      _data.document = DOCUMENT;
+      _data.DOCUMENT = DOCUMENT;
+      _data.cancelHandler = () => Zone.current.get('cancel');
 
       const zone = Zone.current.fork({
         name: 'UNIVERSAL request',
         properties: _data
       });
 
-      var req: any = _data.req && _data.req.on && _data.req;
-      if (req) {
-        req.on('close', () => cancel = true);
-        _data.requestUrl = _data.requestUrl || req.originalUrl;
-        _data.originUrl = _data.originUrl || req.hostname;
-        _data.baseUrl = _data.baseUrl || '/';
-      }
+
 
       // convert to string
       return zone.run(() => (_options.precompile ?
@@ -85,12 +114,15 @@ export function createEngine(options?: any) {
         platformRef.serializeModuleFactory(ngModule, _data)
       )
         .then(html => {
+          if (typeof html !== 'string' || cancel) {
+            return done(null, DOCUMENT);
+          }
           done(null, html);
         })
         .catch(e => {
-          console.error(e.stack);
+          console.log(e.stack);
           // if server fail then return client html
-          done(null, document);
+          done(null, DOCUMENT);
         }));
     }
 
@@ -115,5 +147,3 @@ export function createEngine(options?: any) {
     }
   };
 }
-
-

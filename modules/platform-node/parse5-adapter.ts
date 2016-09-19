@@ -1,5 +1,5 @@
+import { getDOM } from './get-dom';
 import {
-  getDOM,
   DomAdapter,
   setRootDomAdapter,
   SelectorMatcher,
@@ -14,6 +14,8 @@ import {
   isBlank,
   setValueOnPath,
 } from './helper';
+
+declare var Zone: any;
 
 // **** ^ All replaced ****
 
@@ -526,6 +528,10 @@ export class Parse5DomAdapter extends DomAdapter {
     //   defDoc = this.createHtmlDocument();
     // }
     // TODO(gdi2290): needed for BROWSER_SANITIZATION_PROVIDERS
+    const document = Zone.current.get('document');
+    if (document) {
+      return document;
+    }
     return {documentMode: false};
   }
   // UNIVERSAL FIX
@@ -534,6 +540,11 @@ export class Parse5DomAdapter extends DomAdapter {
   }
   // UNIVERSAL FIX
   getTitle(): string {
+    const document = Zone.current.get('document');
+    if (document && document.title) {
+      return document.title;
+    }
+
     throw _notImplemented('getTitle');
     // return this.defaultDoc().title || '';
   }
@@ -541,6 +552,11 @@ export class Parse5DomAdapter extends DomAdapter {
 
   // UNIVERSAL FIX
   setTitle(newTitle: string) {
+    const document = Zone.current.get('document');
+    if (document && document.title) {
+      return document.title = newTitle;
+    }
+
     throw _notImplemented('setTitle');
     // this.defaultDoc().title = newTitle;
   }
@@ -659,9 +675,17 @@ export class Parse5DomAdapter extends DomAdapter {
   }
   supportsCookies(): boolean { return false; }
   getCookie(name: string): string {
+    const document = Zone.current.get('document');
+    if (document && document.cookie) {
+      return document.cookie;
+    }
     throw _notImplemented('Parse5DomAdapter#getCookie');
   }
   setCookie(name: string, value: string) {
+    const document = Zone.current.get('document');
+    if (document && document.cookie) {
+      return document.cookie[name] = value;
+    }
     throw _notImplemented('Parse5DomAdapter#setCookie');
   }
   animate(element: any, keyframes: any[], options: any): any {
