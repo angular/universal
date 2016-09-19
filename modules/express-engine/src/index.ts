@@ -1,6 +1,8 @@
 const fs = require('graceful-fs');
 
 import { platformUniversalDynamic, NodePlatformRef, parseDocument } from 'angular2-universal';
+import { PrebootOptions } from 'preboot';
+
 declare var Zone: any;
 // @internal
 function s4() {
@@ -22,6 +24,7 @@ export interface ExpressEngineConfig {
   ID?: string;
   ngModule?: any;
   precompile?: boolean;
+  preboot?: PrebootOptions;
   cancel?: boolean;
   CANCEL?: boolean;
   requestUrl?: string;
