@@ -137,10 +137,8 @@ app.engine('.html', createEngine({}));
 // 2. get the top level NgModule for the app and pass in important values to Angular Universal 
 app.get('/*', (req, res) => {
 
-  // NOTE: everything passed in here will be set as properties to the top level Zone
-  // access these values in your code like this: Zone.current.get('req');
-  // this is temporary; we will have a non-Zone way of getting these soon
-  res.render('index', {
+  // Our Universal - express configuration object
+  const expressConfig : ExpressEngineConfig = {
     req,
     res,
     ngModule: MainModule,
@@ -148,7 +146,12 @@ app.get('/*', (req, res) => {
     baseUrl: '/',
     requestUrl: req.originalUrl,
     originUrl: 'http://localhost:3000'
-  });
+  };
+
+  // NOTE: everything passed in here will be set as properties to the top level Zone
+  // access these values in your code like this: Zone.current.get('req');
+  // this is temporary; we will have a non-Zone way of getting these soon
+  res.render('index', expressConfig);
 });
 
 ``` 
