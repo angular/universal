@@ -1,3 +1,5 @@
+
+
 // @internal
 export function cssHyphenate(propertyName: string): string {
   return propertyName.replace(/([A-Z])/g, '-$1')
@@ -14,7 +16,7 @@ export function isPresent(obj: any): boolean {
 
 // @internal
 export function isString(str: any): boolean {
-  return typeof str ==='string';
+  return typeof str === 'string';
 }
 
 // @internal
@@ -109,7 +111,7 @@ export class StringMapWrapper {
   static equals<V>(m1: {[key: string]: V}, m2: {[key: string]: V}): boolean {
     var k1 = Object.keys(m1);
     var k2 = Object.keys(m2);
-    if (k1.length != k2.length) {
+    if (k1.length !== k2.length) {
       return false;
     }
     var key: any /** TODO #???? */;
@@ -206,3 +208,6 @@ export function arrayFlattenTree(children: any[], arr: any[]): any[] {
   }
   return arr;
 }
+
+var __empty = null;
+export default __empty;

@@ -42,7 +42,6 @@ export {
   DomAdapter,
   setRootDomAdapter,
   KeyEventsPlugin,
-  getDOM,
   HammerGesturesPlugin,
 
   // compiler
@@ -58,3 +57,7 @@ export {
   RenderDebugInfo,
 
 }
+
+var __empty = null;
+
+export default __empty;

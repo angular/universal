@@ -15,6 +15,7 @@
 
 # Table of Contents
 * [Getting Started with Universal](#getting-started)
+    * Universal Documentation & Migration Guide (Angular <= rc4)
     * w/ NodeJS Server
     * w/ ASP.NET Core Server
 * [Modules](#modules)
@@ -25,7 +26,9 @@
 
 # Getting Started
 
-[* NodeJS :: Universal Starter repo](https://github.com/angular/universal-starter)
+[* Universal Documentation & Migration Guide](https://github.com/angular/universal/blob/master/DOCUMENTATION.md)
+
+[* **NodeJS** :: **Universal Starter** repo](https://github.com/angular/universal-starter)
 
 [* ASP.NET Core :: Universal Starter repo](https://github.com/aspnet/JavaScriptServices/tree/master/templates/Angular2Spa)
 

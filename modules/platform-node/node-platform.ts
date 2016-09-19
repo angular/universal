@@ -1,3 +1,4 @@
+import { getDOM } from './get-dom';
 // PRIVATE
 import {
   BROWSER_SANITIZATION_PROVIDERS,
@@ -6,7 +7,6 @@ import {
   DomRootRenderer,
   DomEventsPlugin,
   KeyEventsPlugin,
-  getDOM,
   HammerGesturesPlugin,
   ViewUtils
 } from './__private_imports__';
@@ -17,6 +17,8 @@ import {
   EVENT_MANAGER_PLUGINS,
   AnimationDriver,
   EventManager,
+  HAMMER_GESTURE_CONFIG,
+  HammerGestureConfig
 } from '@angular/platform-browser';
 
 import {
@@ -40,6 +42,7 @@ import {
   PlatformRef,
   NgModuleRef,
   NgZone,
+  CompilerFactory
 } from '@angular/core';
 
 import { CommonModule, PlatformLocation, APP_BASE_HREF } from '@angular/common';
@@ -58,18 +61,34 @@ import { Parse5DomAdapter } from './parse5-adapter';
 
 import {
   NODE_APP_ID,
-  UNIVERSAL_CONFIG,
 
   ORIGIN_URL,
   REQUEST_URL,
-  BASE_URL,
 
+  getUrlConfig,
   createUrlProviders,
 } from './tokens';
 
 // @internal
+
 export function _errorHandler(): ErrorHandler {
   return new ErrorHandler();
+}
+
+declare var Zone: any;
+
+// @internal
+const _documentDeps = [ NodeSharedStylesHost, NgZone ];
+export function _document(domSharedStylesHost: NodeSharedStylesHost, zone: any): any {
+  let document: any = Zone.current.get('document');
+  if (!document) {
+    throw new Error('Please provide a document in the universal config');
+  }
+  if (typeof document === 'string') {
+    document = parseDocument(document);
+  }
+  domSharedStylesHost.addHost(document.head);
+  return document;
 }
 
 // @internal
@@ -108,33 +127,73 @@ export class NodePlatform  {
   }
   constructor(private _platformRef: PlatformRef) {
   }
+  cacheModuleFactory<T>(moduleType, compilerOptions?: any): Promise<NgModuleRef<T>> {
+    if (NodePlatform._cache.has(moduleType)) {
+      return Promise.resolve(NodePlatform._cache.get(moduleType));
+    }
+    const compilerFactory: CompilerFactory = this._platformRef.injector.get(CompilerFactory);
+    var compiler;
+    if (compilerOptions) {
+      compiler = compilerFactory.createCompiler(
+      compilerOptions instanceof Array ? compilerOptions : [compilerOptions]);
+    } else {
+      compiler = compilerFactory.createCompiler();
+    }
+    return compiler.compileModuleAsync(moduleType)
+        .then((moduleFactory) => {
+          NodePlatform._cache.set(moduleType, moduleFactory)
+          return moduleFactory;
+        });
+  }
 
+  // TODO(gdi2290): refactor into bootloader
   serializeModule<T>(ModuleType: any, config: any = {}): Promise<T> {
     if (config && !config.id) { config.id = s4(); }
     config.time && console.time('id: ' + config.id + ' bootstrapModule: ');
-    return this.platformRef.bootstrapModule<T>(ModuleType, config.compilerOptions)
+    config.time && console.time('id: ' + config.id + ' ngApp: ');
+    return (config.compilerOptions ?
+      this.bootstrapModule<T>(ModuleType, config.compilerOptions)
+      :
+      this.bootstrapModule<T>(ModuleType)
+    )
       .then((moduleRef: NgModuleRef<T>) => {
         config.time && console.timeEnd('id: ' + config.id + ' bootstrapModule: ');
         return this.serialize<T>(moduleRef, config);
+      })
+      .then(html => {
+        config.time && console.timeEnd('id: ' + config.id + ' ngApp: ');
+        return html;
       });
+
   }
+  // TODO(gdi2290): refactor into bootloader
   serializeModuleFactory<T>(ModuleType: any, config: any = {}): Promise<T> | T {
     if (config && !config.id) { config.id = s4(); }
     config.time && console.time('id: ' + config.id + ' bootstrapModuleFactory: ');
-    return this.platformRef.bootstrapModuleFactory<T>(ModuleType)
+    config.time && console.time('id: ' + config.id + ' ngApp: ');
+    return this.bootstrapModuleFactory<T>(ModuleType)
       .then((moduleRef: NgModuleRef<T>) => {
         config.time && console.timeEnd('id: ' + config.id + ' bootstrapModuleFactory: ');
         return this.serialize<T>(moduleRef, config);
+      })
+      .then(html => {
+        config.time && console.timeEnd('id: ' + config.id + ' ngApp: ');
+        return html;
       });
   }
 
+  // TODO(gdi2290): refactor into bootloader
   serialize<T>(moduleRef: NgModuleRef<T>, config: any = {}): Promise<T> {
+    var cancelHandler = () => false;
+    if (config && ('cancelHandler' in config)) {
+      cancelHandler = config.cancelHandler;
+    }
     // TODO(gdi2290): make stateless. allow for many instances of modules
     // TODO(gdi2290): refactor to ZoneLocalStore
     var _map = new Map<any, any>();
     var _store = {
       set(key, value, defaultValue?: any) {
-        _map.set(key, value || defaultValue);
+        _map.set(key, (value !== undefined) ? value : defaultValue);
       },
       get(key, defaultValue?: any) {
         return _map.has(key) ? _map.get(key) : defaultValue;
@@ -146,9 +205,16 @@ export class NodePlatform  {
       }
     };
 
-    return asyncPromiseSeries(_store, moduleRef, [
+    function errorHandler(err, store, modRef, currentIndex, currentArray) {
+      const document = store.get('DOCUMENT');
+      _store && _store.clear();
+      // console.log('\n\nError in', currentArray[currentIndex].name, '\n\n', document);
+      return document;
+    }
+
+    return asyncPromiseSeries(_store, moduleRef, errorHandler, cancelHandler, config,  [
       // create di store
-      (store: any, moduleRef: NgModuleRef<T>) => {
+      function createDiStore(store: any, moduleRef: NgModuleRef<T>) {
         let modInjector = moduleRef.injector;
         let instance: any = moduleRef.instance;
         // lifecycle hooks
@@ -161,17 +227,17 @@ export class NodePlatform  {
         // global config
         store.set('ApplicationRef', modInjector.get(ApplicationRef));
         store.set('NgZone', modInjector.get(NgZone));
-        store.set('UNIVERSAL_CONFIG', modInjector.get(UNIVERSAL_CONFIG, {}));
+        store.set('preboot', config.preboot, false);
         store.set('APP_ID', modInjector.get(APP_ID, null));
+        store.set('NODE_APP_ID', s4());
         store.set('DOCUMENT', modInjector.get(DOCUMENT));
         store.set('DOM', getDOM());
         store.set('UNIVERSAL_CACHE', {});
         return moduleRef;
       },
       // Check Stable
-      (store: any, moduleRef: NgModuleRef<T>) => {
+      function checkStable(store: any, moduleRef: NgModuleRef<T>) {
         config.time && console.time('id: ' + config.id + ' stable: ');
-        let UNIVERSAL_CONFIG = store.get('UNIVERSAL_CONFIG');
         let universalDoCheck = store.get('universalDoCheck');
         let universalOnInit = store.get('universalOnInit');
         let rootNgZone: NgZone = store.get('NgZone');
@@ -181,17 +247,18 @@ export class NodePlatform  {
         universalOnInit();
 
         // lifecycle hooks
-        function outsideNg(compRef, ngZone, config, http, jsonp) {
+        function outsideNg(compRef, ngZone, http, jsonp) {
           function checkStable(done, ref) {
             ngZone.runOutsideAngular(() => {
               setTimeout(function stable() {
+                if (cancelHandler()) { return done(ref); }
                 // hot code path
                 if (ngZone.hasPendingMicrotasks === true) { return checkStable(done, ref); }
                 if (ngZone.hasPendingMacrotasks === true) { return checkStable(done, ref); }
                 if (http && http._async > 0) { return checkStable(done, ref); }
                 if (jsonp && jsonp._async > 0) { return checkStable(done, ref); }
                 if (ngZone.isStable === true) {
-                  let isStable = universalDoCheck(ref, ngZone, config);
+                  let isStable = universalDoCheck(ref, ngZone);
                   if (universalDoCheck !== NodePlatform._noop) {
                     if (typeof isStable !== 'boolean') {
                       console.warn('\nWARNING: universalDoCheck must return a boolean value of either true or false\n');
@@ -215,13 +282,12 @@ export class NodePlatform  {
         // check if all components are stable
 
         let stableComponents = components.map((compRef, i) => {
-          // UNIVERSAL_CONFIG used
           let cmpInjector = compRef.injector;
           let ngZone: NgZone = cmpInjector.get(NgZone);
           // TODO(gdi2290): remove when zone.js tracks http and https
           let http = cmpInjector.get(Http, null);
           let jsonp = cmpInjector.get(Jsonp, null);
-          return rootNgZone.runOutsideAngular(outsideNg.bind(null, compRef, ngZone, UNIVERSAL_CONFIG, http, jsonp));
+          return rootNgZone.runOutsideAngular(outsideNg.bind(null, compRef, ngZone, http, jsonp));
         });
 
         return rootNgZone.runOutsideAngular(() => {
@@ -233,20 +299,28 @@ export class NodePlatform  {
           });
       },
       // Inject preboot
-      (store: any, moduleRef: NgModuleRef<T>) => {
-        let UNIVERSAL_CONFIG = store.get('UNIVERSAL_CONFIG');
-        if (typeof UNIVERSAL_CONFIG.preboot === 'boolean' && !UNIVERSAL_CONFIG.preboot) {
-          return moduleRef;
+      function injectPreboot(store: any, moduleRef: NgModuleRef<T>) {
+        let preboot = store.get('preboot');
+        if (typeof preboot === 'boolean') {
+          if (!preboot) {
+            return moduleRef;
+          } else {
+            preboot = {};
+          }
         }
         config.time && console.time('id: ' + config.id + ' preboot: ');
         // parseFragment used
         // getInlineCode used
         let DOM = store.get('DOM');
+        let DOCUMENT = store.get('DOCUMENT');
         let appRef: ApplicationRef = store.get('ApplicationRef');
+        let selectorsList = (<any>moduleRef).bootstrapFactories.map((factory) => factory.selector);
+        let bodyList = DOCUMENT.body.children.filter(el => Boolean(el.tagName)).map(el => el.tagName.toLowerCase()).join(',');
         let components = appRef.components;
         let prebootCode = null;
         // TODO(gdi2290): hide cache in (ngPreboot|UniversalPreboot)
-        let key = (typeof UNIVERSAL_CONFIG.preboot === 'object') && JSON.stringify(UNIVERSAL_CONFIG.preboot) || null;
+        let prebootConfig = null;
+        let key = (typeof preboot === 'object') && JSON.stringify(preboot) || null;
         let prebootEl = null;
         let el = null;
         let lastRef = null;
@@ -255,25 +329,40 @@ export class NodePlatform  {
             prebootEl = NodePlatform._cache.get(key).prebootEl;
             // prebootCode = NodePlatform._cache.get(key);
           } else if (key && !prebootEl) {
-            config.time && console.time('id: ' + config.id + ' preboot insert: ');
+            try {
+              prebootConfig = JSON.parse(key);
+            } catch (e) {
+              prebootConfig = preboot;
+            }
+            if (!prebootConfig.appRoot) {
+              // TODO(gdi2290): missing public NgModuleInjector type
+              prebootConfig.appRoot = selectorsList;
+            }
+            if (!selectorsList) {
+              selectorsList = (<any>moduleRef).bootstrapFactories.map((factory) => factory.selector);
+            }
+            config.time && console.time('id: ' + config.id + ' preboot insert dom: ');
             prebootCode = parseFragment('' +
               '<script>\n' +
-              getInlineCode(UNIVERSAL_CONFIG.preboot) +
-              ';\nvar preboot = preboot || prebootstrap();' +
+              ' ' + getInlineCode(prebootConfig) +
               '</script>' +
             '');
             prebootEl = DOM.createElement('div');
             DOM.appendChild(prebootEl, prebootCode.childNodes[0]);
             NodePlatform._cache.set(key, {prebootCode, prebootEl});
-            config.time && console.timeEnd('id: ' + config.id + ' preboot insert: ');
+            config.time && console.timeEnd('id: ' + config.id + ' preboot insert dom: ');
           }
-          //  else {
-          //   prebootCode = getInlineCode(_config.preboot);
-          // }
-          // assume last component is the last component selector
-          // TODO(gdi2290): provide a better way to determine last component position
-          lastRef = components[components.length - 1];
-          el = lastRef.location.nativeElement;
+
+          lastRef = {cmp: null, strIndex: -1, index: -1};
+          selectorsList.forEach((select, i) => {
+            let lastValue = bodyList.indexOf(select);
+             if (lastValue >= lastRef.strIndex) {
+               lastRef.strIndex = lastValue;
+               lastRef.cmp = components[i];
+             }
+          });
+          el = lastRef.cmp.location.nativeElement;
+          lastRef = null;
           DOM.insertAfter(el, prebootEl);
           // let script = parseFragment(prebootCode);
         } catch (e) {
@@ -287,8 +376,9 @@ export class NodePlatform  {
         return moduleRef;
       },
       // Dehydrate Cache
-      (store: any, moduleRef: NgModuleRef<T>) => {
-        let appId = store.get('APP_ID', null);
+      function dehydrateCache(store: any, moduleRef: NgModuleRef<T>) {
+        config.time && console.time('id: ' + config.id + ' universal cache: ');
+        let appId = store.get('NODE_APP_ID', null);
         let UNIVERSAL_CACHE = store.get('UNIVERSAL_CACHE');
         let universalDoDehydrate = store.get('universalDoDehydrate');
         let cache = {};
@@ -299,10 +389,12 @@ export class NodePlatform  {
         Object.assign(UNIVERSAL_CACHE, cache);
         cache = null;
 
+        config.time && console.timeEnd('id: ' + config.id + ' universal cache: ');
         return moduleRef;
       },
       // Inject Cache in Document
-      (store: any, moduleRef: NgModuleRef<T>) => {
+      function injectCacheInDocument(store: any, moduleRef: NgModuleRef<T>) {
+        config.time && console.time('id: ' + config.id + ' dehydrate: ');
         // parseFragment used
         let universalAfterDehydrate = store.get('universalAfterDehydrate');
         let DOM = store.get('DOM');
@@ -313,42 +405,45 @@ export class NodePlatform  {
 
         // TODO(gdi2290): move and find a better way to inject script
         try {
-          config.time && console.time('id: ' + config.id + ' dehydrate: ');
+          config.time && console.time('id: ' + config.id + ' dehydrate insert dom: ');
           el = DOM.createElement('universal-script');
 
-          script = parseFragment(''+
-          '<script>\n'+
-          ' try {'+
+          script = parseFragment('' +
+          '<script>\n' +
+          ' try {' +
             'window.UNIVERSAL_CACHE = (' + JSON.stringify(UNIVERSAL_CACHE) + ') || {};' +
-          '} catch(e) {'+
+          '} catch(e) {' +
           '  console.warn("Angular Universal: There was a problem parsing data from the server")' +
           '}\n' +
-          '</script>'+
+          '</script>' +
           '');
           DOM.appendChild(el, script.childNodes[0]);
           DOM.appendChild(document, el);
           el = null;
 
           universalAfterDehydrate();
+          config.time && console.timeEnd('id: ' + config.id + ' dehydrate insert dom: ');
 
-          config.time && console.timeEnd('id: ' + config.id + ' dehydrate: ');
         } catch (e) {
+          config.time && console.timeEnd('id: ' + config.id + ' dehydrate: ');
           return moduleRef;
         }
+        config.time && console.timeEnd('id: ' + config.id + ' dehydrate: ');
         return moduleRef;
       },
       // Destroy
-      (store: any, moduleRef: NgModuleRef<T>) => {
+      function destroyAppAndSerializeDocument(store: any, moduleRef: NgModuleRef<T>) {
         config.time && console.time('id: ' + config.id + ' serialize: ');
         // serializeDocument used
         let universalOnRendered = store.get('universalOnRendered');
         let document = store.get('DOCUMENT');
+        let appId = store.get('NODE_APP_ID');
         let appRef = store.get('ApplicationRef');
         let html = null;
         let destroyApp = null;
         let destroyModule = null;
 
-        html = serializeDocument(document);
+        html = serializeDocument(document).replace(/%cmp%/g, appId);
         universalOnRendered(html);
 
         document = null;
@@ -357,12 +452,12 @@ export class NodePlatform  {
           appRef.ngOnDestroy();
           appRef = null;
           destroyApp = null;
-        }
+        };
         destroyModule = () => {
           moduleRef.destroy();
           moduleRef = null;
           destroyModule = null;
-        }
+        };
         if (config.asyncDestroy) {
           setTimeout(() => destroyApp() && setTimeout(destroyModule, 1), 1);
         } else {
@@ -375,7 +470,7 @@ export class NodePlatform  {
         return html;
       },
 
-    ]) // end asyncPromiseSeries
+    ]); // end asyncPromiseSeries
   }
 
 
@@ -386,12 +481,28 @@ export class NodePlatform  {
   get injector(): Injector {
     return this.platformRef.injector;
   }
-  bootstrapModule<T>(moduleType, compilerOptions): Promise<NgModuleRef<T>> {
-    return this.platformRef.bootstrapModule(moduleType, compilerOptions);
+  bootstrapModule<T>(moduleType, compilerOptions?: any): Promise<NgModuleRef<T>> {
+    if (NodePlatform._cache.has(moduleType)) {
+      return this.platformRef.bootstrapModuleFactory(NodePlatform._cache.get(moduleType));
+    }
+    const compilerFactory: CompilerFactory = this._platformRef.injector.get(CompilerFactory);
+    var compiler;
+    if (compilerOptions) {
+      compiler = compilerFactory.createCompiler(
+      compilerOptions instanceof Array ? compilerOptions : [compilerOptions]);
+    } else {
+      compiler = compilerFactory.createCompiler();
+    }
+    return compiler.compileModuleAsync(moduleType)
+        .then((moduleFactory) => {
+          NodePlatform._cache.set(moduleType, moduleFactory)
+          return this.platformRef.bootstrapModuleFactory(moduleFactory)
+        });
   }
   bootstrapModuleFactory<T>(moduleFactory): Promise<NgModuleRef<T>> {
     return this.platformRef.bootstrapModuleFactory(moduleFactory);
   }
+
   /**
    * @deprecated
    */
@@ -418,16 +529,41 @@ export class NodePlatform  {
 
 }
 
+/*
+ * Ensure async resolve of promises that resolve in series. This is mostly to prevent blocking
+ * the event loop and better management of refernces in task. This also allows for ZoneLocalStore.
+ * We can also introduce sagas or serverless
+ */
 // @internal
-function asyncPromiseSeries(store, modRef, middleware, timer = 1) {
-  return middleware.reduce((promise, cb) => {
-    return promise.then((ref) => {
-      return new Promise(resolve => setTimeout(() => resolve(cb(store, ref)), timer));
-    })
-  }, Promise.resolve(modRef))
+function asyncPromiseSeries(store, modRef, errorHandler, cancelHandler, config, middleware, timer = 1) {
+  let errorCalled = false;
+  config.time && console.time('id: ' + config.id + ' asyncPromiseSeries: ');
+  return middleware.reduce(function reduceAsyncPromiseSeries (promise, cb, currentIndex, currentArray) {
+    // skip the rest of the promise middleware
+    if (errorCalled || cancelHandler()) { return promise; }
+    return promise.then(function reduceAsyncPromiseSeriesChain (ref) {
+      // skip the rest of the promise middleware
+      if (errorCalled || cancelHandler()) { return ref; }
+      return new Promise(function reduceAsyncPromiseSeriesPromiseChain(resolve, reject) {
+        setTimeout(() => {
+          if (errorCalled || cancelHandler()) { return resolve(ref); }
+          try {
+            resolve(cb(store, ref));
+          } catch (e) {
+            reject(e);
+          }
+        }, 0);
+      });
+    }).catch(err => {
+      errorCalled = true;
+      return errorHandler(err, store, modRef, currentIndex, currentArray);
+    });
+  }, Promise.resolve(modRef)).then((val) => {
+    config.time && console.timeEnd('id: ' + config.id + ' asyncPromiseSeries: ');
+    return val;
+  });
 }
 
-// @internal
 export interface EventManagerPlugin {
   manager: EventManager | NodeEventManager;
   supports(eventName: string): boolean;
@@ -487,16 +623,17 @@ export class NodeDomEventsPlugin {
     var zone = this.manager.getZone();
     var outsideHandler = (event: any) => zone.runGuarded(() => handler(event));
     return this.manager.getZone().runOutsideAngular(() => {
-      return getDOM().onAndCancel(element, eventName, outsideHandler)
+      return getDOM().onAndCancel(element, eventName, outsideHandler);
     });
   }
 
   addGlobalEventListener(target: string, eventName: string, handler: Function): Function {
+    // we need to ensure that events are created in the fake document created for the current app
     var window = this.manager.getWindow();
     var document = this.manager.getDocument();
     var zone = this.manager.getZone();
     var element; // = getDOM().getGlobalEventTargetWithDocument(target, window, document, document.body);
-    switch(target) {
+    switch (target) {
       case 'window':
         element = document._window;
         break;
@@ -509,32 +646,50 @@ export class NodeDomEventsPlugin {
     }
     var outsideHandler = (event: any) => zone.runGuarded(() => handler(event));
     return this.manager.getZone().runOutsideAngular(() => {
-      return getDOM().onAndCancel(element, eventName, outsideHandler)
+      return getDOM().onAndCancel(element, eventName, outsideHandler);
     });
   }
 }
 
+
+export function _APP_BASE_HREF(zone) {
+  return Zone.current.get('baseUrl');
+}
+
+export function _REQUEST_URL(zone) {
+  return Zone.current.get('requestUrl');
+}
+
+export function _ORIGIN_URL(zone) {
+  return Zone.current.get('originUrl');
+}
+
+
 @NgModule({
   providers: [
+    // default config value
     // normally in platform provides but there is url state in NodePlatformLocation
     { provide: PlatformLocation, useClass: NodePlatformLocation },
 
     BROWSER_SANITIZATION_PROVIDERS,
     { provide: ErrorHandler, useFactory: _errorHandler, deps: [] },
-    // { provide: DOCUMENT, useFactory: _document, deps: [] },
+
+    { provide: DOCUMENT, useFactory: _document, deps: _documentDeps },
+
     NodeDomEventsPlugin,
     { provide: DomEventsPlugin, useExisting: NodeDomEventsPlugin, multi: true },
     { provide: EVENT_MANAGER_PLUGINS, useExisting: NodeDomEventsPlugin, multi: true },
     { provide: EVENT_MANAGER_PLUGINS, useClass: KeyEventsPlugin, multi: true },
-    // { provide: EVENT_MANAGER_PLUGINS, useClass: HammerGesturesPlugin, multi: true },
-    // { provide: HAMMER_GESTURE_CONFIG, useClass: HammerGestureConfig },
+    { provide: EVENT_MANAGER_PLUGINS, useClass: HammerGesturesPlugin, multi: true },
+    { provide: HAMMER_GESTURE_CONFIG, useClass: HammerGestureConfig },
 
     NodeEventManager,
     { provide: EventManager, useExisting: NodeEventManager },
 
 
-    { provide: AnimationDriver, useFactory: _resolveDefaultAnimationDriver },
+    { provide: AnimationDriver, useFactory: _resolveDefaultAnimationDriver, deps: [] },
     Testability,
+    // TODO(gdi2290): provide concurrent NodeDebugDomRender
     // ELEMENT_PROBE_PROVIDERS,
 
     NodeDomRootRenderer,
@@ -544,6 +699,12 @@ export class NodeDomEventsPlugin {
     NodeSharedStylesHost,
     { provide: SharedStylesHost, useExisting: NodeSharedStylesHost },
     { provide: DomSharedStylesHost, useExisting: NodeSharedStylesHost },
+
+    { provide: APP_BASE_HREF, useFactory: _APP_BASE_HREF, deps: [ NgZone ] },
+    { provide: REQUEST_URL, useFactory: _REQUEST_URL, deps: [ NgZone ] },
+    { provide: ORIGIN_URL, useFactory: _ORIGIN_URL, deps: [ NgZone ] },
+
+    { provide: APP_ID, useValue: '%cmp%' },
   ],
   exports: [  CommonModule, ApplicationModule  ]
 })
@@ -557,16 +718,6 @@ export class NodeModule {
     return {
       ngModule: NodeModule,
       providers: [
-        { provide: UNIVERSAL_CONFIG, useValue: config },
-        {
-          provide: DOCUMENT,
-          useFactory: (domSharedStylesHost: NodeSharedStylesHost, config: any) => {
-            var doc: any = parseDocument(config.document);
-            domSharedStylesHost.addHost(doc.head);
-            return doc;
-          },
-          deps: [ NodeSharedStylesHost, UNIVERSAL_CONFIG ]
-        },
         ...providers,
       ]
     };
@@ -608,5 +759,3 @@ export const platformNodeDynamic = (extraProviders?: any[], platform?: any) => {
   }
   return new NodePlatform(platform);
 };
-
-

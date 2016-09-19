@@ -3,21 +3,10 @@ import './polyfills.node';
 import * as path from 'path';
 import * as express from 'express';
 
-// import * as bodyParser from 'body-parser';
-// import * as preboot from 'preboot';
-// console.log(preboot);
-
-// Angular 2
-import { enableProdMode, ApplicationRef, PlatformRef, NgZone, APP_ID } from '@angular/core';
+import { enableProdMode } from '@angular/core';
+// Angular 2 Universal
 enableProdMode();
 
-// Angular 2 Universal
-// import { expressEngine } from '@angular/express-engine';
-// import { replaceUniversalAppIf, transformDocument, UNIVERSAL_APP_ID, nodePlatform } from '@angular/universal';
-// nodePlatform();
-
-import {getDOM} from '@angular/platform-browser/src/dom/dom_adapter';
-// enable prod for faster renders
 
 const app = express();
 const ROOT = path.join(path.resolve(__dirname, '..'));
@@ -33,9 +22,18 @@ app.use(express.static(ROOT, { index: false }));
 
 import { main as ngApp } from './main.node';
 // Routes with html5pushstate
+function s4() {
+  return Math.floor((1 + Math.random()) * 0x10000).toString(16).substring(1);
+}
 
 app.get('/', function (req, res, next) {
-
+  var id = s4();
+  var cancel = false;
+  req.on('close', function() {
+    console.log('Client closed the connection ', id);
+    cancel = true;
+  });
+  if (cancel) { return next(); }
   var documentHtml = `
     <!doctype>
     <html lang="en">
@@ -51,8 +49,10 @@ app.get('/', function (req, res, next) {
       <base href="/">
     <body>
 
-      <button onclick="bootstrap()">Bootstrap Client</button>
-      <button onclick="location.reload()">Reload Client</button>
+      <div style="position: absolute;z-index: 1000000;bottom: 9px">
+        <button onclick="bootstrap()">Bootstrap Client</button>
+        <button onclick="location.reload()">Reload Client</button>
+      </div>
 
       <app>
         Loading...
@@ -64,10 +64,17 @@ app.get('/', function (req, res, next) {
     </html>
   `;
 
-  return ngApp(documentHtml, { time: true, asyncDestroy: true }).then(html => {
+
+  return ngApp(documentHtml, { id, time: true, asyncDestroy: true, cancelHandler: () => cancel }).then(html => {
+    // console.log('\nexpress route\n');
     res.status(200).send(html);
     next();
     return html;
+  }).catch(err => {
+    // console.log('\nexpress route error\n');
+    res.status(200).send(documentHtml);
+    next();
+    return documentHtml;
   });
 
 });
