@@ -1,7 +1,7 @@
 {
   "name": "angular2-universal",
   "main": "index.js",
-  "version": "2.0.5",
+  "version": "2.0.10",
   "description": "Universal (isomorphic) javascript support for Angular2",
   "homepage": "https://github.com/angular/universal",
   "license": "MIT",
@@ -56,6 +56,9 @@
   "engines": {
     "node": ">= 5.4.1 <= 7",
     "npm": ">= 3"
+  },
+  "scripts": {
+    "test": "gulp test"
   },
   "devDependencies": {
     "@angular/common": "2.0.0",

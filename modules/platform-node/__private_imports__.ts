@@ -12,7 +12,6 @@ const {
   KeyEventsPlugin,
   DomAdapter,
   setRootDomAdapter,
-  getDOM,
   HammerGesturesPlugin
 } = __platform_browser_private__;
 
@@ -42,7 +41,6 @@ export {
   DomAdapter,
   setRootDomAdapter,
   KeyEventsPlugin,
-  getDOM,
   HammerGesturesPlugin,
 
   // compiler
