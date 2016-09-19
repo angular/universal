@@ -128,7 +128,7 @@ but there are really just two key parts to be aware of:
 
 // polyfills have to be first
 import 'angular2-universal-polyfills';
-import { createEngine } from 'angular2-express-engine';
+import { createEngine, ExpressEngineConfig } from 'angular2-express-engine';
 import { MainModule } from './main.node';  // will change depending on your app
 
 // 1. set up Angular Universal to be the rendering engine for Express
