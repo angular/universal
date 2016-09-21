@@ -160,6 +160,9 @@ export class NodePlatform  {
       .then(html => {
         config.time && console.timeEnd('id: ' + config.id + ' ngApp: ');
         return html;
+      })
+      .catch(e => {
+        throw e;
       });
 
   }
@@ -176,6 +179,9 @@ export class NodePlatform  {
       .then(html => {
         config.time && console.timeEnd('id: ' + config.id + ' ngApp: ');
         return html;
+      })
+      .catch(e => {
+        throw e;
       });
   }
 
