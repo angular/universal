@@ -41,7 +41,8 @@ import {
   PlatformRef,
   NgModuleRef,
   NgZone,
-  CompilerFactory
+  CompilerFactory,
+  TestabilityRegistry
 } from '@angular/core';
 
 import { CommonModule, PlatformLocation, APP_BASE_HREF } from '@angular/common';
@@ -201,10 +202,25 @@ export class NodePlatform  {
       }
     };
 
-    function errorHandler(_err, store, _modRef, _currentIndex, _currentArray) {
-      const document = store.get('DOCUMENT');
-      _store && _store.clear();
-      // console.log('\n\nError in', currentArray[currentIndex].name, '\n\n', document);
+    function errorHandler(_err, store, modRef, _currentIndex, _currentArray) {
+      var document = '';
+      try {
+        document = store.get('DOCUMENT');
+        if (typeof document !== 'string') {
+          document = Zone.current.get('document')
+        }
+        if (typeof document !== 'string') {
+          document = Zone.current.get('DOCUMENT')
+        }
+        let appRef = store.get('ApplicationRef');
+        if (appRef && appRef.ngOnDestroy) {
+          appRef.ngOnDestroy();
+        }
+        if (modRef && modRef.destroy) {
+          modRef.destroy();
+        }
+        _store && _store.clear();
+      } catch (e) {}
       return document;
     }
 
@@ -556,6 +572,9 @@ function asyncPromiseSeries(store, modRef, errorHandler, cancelHandler, config, 
     });
   }, Promise.resolve(modRef)).then((val) => {
     config.time && console.timeEnd('id: ' + config.id + ' asyncPromiseSeries: ');
+    if (cancelHandler()) {
+      return errorHandler(null, store, modRef, null, null);
+    }
     return val;
   });
 }
@@ -700,6 +719,7 @@ export function _ORIGIN_URL(_zone) {
     { provide: ORIGIN_URL, useFactory: _ORIGIN_URL, deps: [ NgZone ] },
 
     { provide: APP_ID, useValue: '%cmp%' },
+    { provide: TestabilityRegistry, useValue: {registerApplication: () => null} }
   ],
   exports: [  CommonModule, ApplicationModule  ]
 })
