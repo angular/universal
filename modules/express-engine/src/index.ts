@@ -1,6 +1,6 @@
 const fs = require('graceful-fs');
 
-import { platformUniversalDynamic, NodePlatformRef, parseDocument } from 'angular2-universal';
+import { platformUniversalDynamic } from 'angular2-universal';
 import { PrebootOptions } from 'preboot';
 
 declare var Zone: any;
@@ -84,16 +84,16 @@ export function createEngine(options?: any) {
       set cancel(val) { cancel = val; },
 
       get requestUrl() { return data.requestUrl || data.req.originalUrl },
-      set requestUrl(val) {  },
+      set requestUrl(_val) {  },
 
       get originUrl() { return data.originUrl || data.req.hostname },
-      set originUrl(val) {  },
+      set originUrl(_val) {  },
 
       get baseUrl() { return data.baseUrl || '/' },
-      set baseUrl(val) {  },
+      set baseUrl(_val) {  },
 
       get cookie() { return data.cookie || data.req.headers.cookie },
-      set cookie(val) {  },
+      set cookie(_val) {  },
     }, data);
 
     function readContent(content) {
