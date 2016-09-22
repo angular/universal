@@ -1,5 +1,4 @@
 import {
-  getDOM,
   DomAdapter,
   setRootDomAdapter,
   SelectorMatcher,
@@ -15,6 +14,8 @@ import {
   setValueOnPath,
 } from './helper';
 
+declare var Zone: any;
+
 // **** ^ All replaced ****
 
 var parser: any = null;
@@ -27,7 +28,6 @@ var _attrToPropMap: {[key: string]: string} = {
   'readonly': 'readOnly',
   'tabindex': 'tabIndex',
 };
-var defDoc: any = null;
 
 var mapProps = ['attribs', 'x-attribsNamespace', 'x-attribsPrefix'];
 
@@ -41,11 +41,13 @@ export class Parse5DomAdapter extends DomAdapter {
     parser = parse5;
     serializer = parse5.serialize;
     treeAdapter = parse5.treeAdapters.htmlparser2;
-    setRootDomAdapter(new Parse5DomAdapter())
+    setRootDomAdapter(new Parse5DomAdapter());
   }
 
-  hasProperty(element: any, name: string): boolean {
+  hasProperty(_element: any, name: string): boolean {
+    /* tslint:disable */
     return _HTMLElementPropertyList.indexOf(name) > -1;
+    /* tslint:enable */
   }
   // TODO(tbosch): don't even call this method when we run the tests on server side
   // by not using the DomRenderer in tests. Keeping this for now to make tests happy...
@@ -72,7 +74,7 @@ export class Parse5DomAdapter extends DomAdapter {
 
   get attrToPropMap() { return _attrToPropMap; }
 
-  query(selector: any) { throw _notImplemented('query'); }
+  query(_selector: any) { throw _notImplemented('query'); }
   querySelector(el: any, selector: string): any {
     return this.querySelectorAll(el, selector)[0];
   }
@@ -101,8 +103,8 @@ export class Parse5DomAdapter extends DomAdapter {
       return true;
     }
     var result = false;
-    if (selector && selector.charAt(0) == '#') {
-      result = this.getAttribute(node, 'id') == selector.substring(1);
+    if (selector && selector.charAt(0) === '#') {
+      result = this.getAttribute(node, 'id') === selector.substring(1);
     } else if (selector) {
       var result = false;
       if (matcher == null) {
@@ -113,9 +115,9 @@ export class Parse5DomAdapter extends DomAdapter {
       var cssSelector = new CssSelector();
       cssSelector.setElement(this.tagName(node));
       if (node.attribs) {
-        for (var attrName in node.attribs) {
+        Object.keys(node.attribs).forEach(attrName => {
           cssSelector.addAttribute(attrName, node.attribs[attrName]);
-        }
+        });
       }
       var classList = this.classList(node);
       for (var i = 0; i < classList.length; i++) {
@@ -124,7 +126,7 @@ export class Parse5DomAdapter extends DomAdapter {
 
       matcher.match(
           cssSelector,
-          function(selector: any, cb: any) { result = true; });
+          (_selector: any, _cb: any) => { result = true; });
     }
     return result;
   }
@@ -184,9 +186,9 @@ export class Parse5DomAdapter extends DomAdapter {
     return isPresent(evt.returnValue) && !evt.returnValue;
   }
   getInnerHTML(el: any): string {
-    return serializer.serialize(this.templateAwareRoot(el), parse5.treeAdapters.htmlparse2);
+    return serializer(this.templateAwareRoot(el), parse5.treeAdapters.htmlparse2);
   }
-  getTemplateContent(el: any): any {  /* Node */
+  getTemplateContent(_el: any): any {  /* Node */
     return null;  // no <template> support in parse5.
   }
   getOuterHTML(el: any): string {
@@ -196,7 +198,7 @@ export class Parse5DomAdapter extends DomAdapter {
   }
   nodeName(node: any): string { return node.tagName; }
   nodeValue(node: any): string { return node.nodeValue; }
-  type(node: any): string { throw _notImplemented('type'); }
+  type(_node: any): string { throw _notImplemented('type'); }
   content(node: any): string { return node.childNodes[0]; }
   firstChild(el: any): any { /*Node*/
     return el.firstChild;
@@ -279,7 +281,7 @@ export class Parse5DomAdapter extends DomAdapter {
       // In the DOM, comments within an element return an empty string for textContent
       // However, comment node instances return the comment content for textContent getter
       return isRecursive ? '' : el.data;
-    } else if (isBlank(el.childNodes) || el.childNodes.length == 0) {
+    } else if (isBlank(el.childNodes) || el.childNodes.length === 0) {
       return '';
     } else {
       var textContent = '';
@@ -294,7 +296,9 @@ export class Parse5DomAdapter extends DomAdapter {
       el.data = value;
     } else {
       this.clearNodes(el);
-      if (value !== '') treeAdapter.insertText(el, value);
+      if (value !== '') {
+        treeAdapter.insertText(el, value);
+      }
     }
   }
   getValue(el: any): string { return el.value; }
@@ -337,16 +341,16 @@ export class Parse5DomAdapter extends DomAdapter {
     return el.shadowRoot;
   }
   getHost(el: any): string { return el.host; }
-  getDistributedNodes(el: any): any[] { throw _notImplemented('getDistributedNodes'); }
+  getDistributedNodes(_el: any): any[] { throw _notImplemented('getDistributedNodes'); }
   clone(node: any): any { /* Node */
     var _recursive = (node: any) => {
       var nodeClone = Object.create(Object.getPrototypeOf(node));
-      for (var prop in node) {
+      Object.keys(node).forEach(prop => {
         var desc = Object.getOwnPropertyDescriptor(node, prop);
         if (desc && 'value' in desc && typeof desc.value !== 'object') {
           nodeClone[prop] = node[prop];
         }
-      }
+      });
       nodeClone.parent = null;
       nodeClone.prev = null;
       nodeClone.next = null;
@@ -355,9 +359,9 @@ export class Parse5DomAdapter extends DomAdapter {
       mapProps.forEach(mapName => {
         if (isPresent(node[mapName])) {
           nodeClone[mapName] = {};
-          for (var prop in node[mapName]) {
+          Object.keys(node[mapName]).forEach(prop => {
             nodeClone[mapName][prop] = node[mapName][prop];
-          }
+          });
         }
       });
       var cNodes = node.children;
@@ -382,7 +386,7 @@ export class Parse5DomAdapter extends DomAdapter {
   getElementsByClassName(element: any, name: string): any[] { /* HTMLElement */
     return this.querySelectorAll(element, '.' + name);
   }
-  getElementsByTagName(element: any, name: string): any[] { /* HTMLElement */
+  getElementsByTagName(_element: any, _name: string): any[] { /* HTMLElement */
     throw _notImplemented('getElementsByTagName');
   }
   classList(element: any): string[] {
@@ -396,7 +400,7 @@ export class Parse5DomAdapter extends DomAdapter {
   addClass(element: any, className: string) {
     var classList = this.classList(element);
     var index = classList.indexOf(className);
-    if (index == -1) {
+    if (index === -1) {
       classList.push(className);
       element.attribs['class'] = element.className = classList.join(' ');
     }
@@ -414,7 +418,7 @@ export class Parse5DomAdapter extends DomAdapter {
   }
   hasStyle(element: any, styleName: string, styleValue: string = null): boolean {
     var value = this.getStyle(element, styleName) || '';
-    return styleValue ? value == styleValue : value.length > 0;
+    return styleValue ? value === styleValue : value.length > 0;
   }
   /** @internal */
   _readStyleAttribute(element: any) {
@@ -435,12 +439,12 @@ export class Parse5DomAdapter extends DomAdapter {
   /** @internal */
   _writeStyleAttribute(element: any, styleMap: any) {
     var styleAttrValue = '';
-    for (var key in styleMap) {
+    Object.keys(styleMap).forEach(key => {
       var newValue = styleMap[key];
       if (newValue && newValue.length > 0) {
         styleAttrValue += key + ':' + styleMap[key] + ';';
       }
-    }
+    });
     element.attribs['style'] = styleAttrValue;
   }
   setStyle(element: any, styleName: string, styleValue: string) {
@@ -456,7 +460,7 @@ export class Parse5DomAdapter extends DomAdapter {
     return styleMap.hasOwnProperty(styleName) ? (styleMap as any)[styleName] : '';
   }
   tagName(element: any): string {
-    return element.tagName == 'style' ? 'STYLE' : element.tagName;
+    return element.tagName === 'style' ? 'STYLE' : element.tagName;
   }
   attributeMap(element: any): Map<string, string> {
     var res = new Map<string, string>();
@@ -470,7 +474,7 @@ export class Parse5DomAdapter extends DomAdapter {
   hasAttribute(element: any, attribute: string): boolean {
     return element.attribs && element.attribs.hasOwnProperty(attribute);
   }
-  hasAttributeNS(element: any, ns: string, attribute: string): boolean {
+  hasAttributeNS(_element: any, _ns: string, _attribute: string): boolean {
     throw _notImplemented('hasAttributeNS');
   }
   getAttribute(element: any, attribute: string): string {
@@ -478,7 +482,7 @@ export class Parse5DomAdapter extends DomAdapter {
         element.attribs[attribute] :
         null;
   }
-  getAttributeNS(element: any, ns: string, attribute: string): string {
+  getAttributeNS(_element: any, _ns: string, _attribute: string): string {
     throw _notImplemented('getAttributeNS');
   }
   setAttribute(element: any, attribute: string, value: string) {
@@ -489,15 +493,15 @@ export class Parse5DomAdapter extends DomAdapter {
       }
     }
   }
-  setAttributeNS(element: any, ns: string, attribute: string, value: string) {
+  setAttributeNS(_element: any, _ns: string, _attribute: string, _value: string) {
     throw _notImplemented('setAttributeNS');
   }
   removeAttribute(element: any, attribute: string) {
     if (attribute) {
-      delete element.attribs[attribute]
+      delete element.attribs[attribute];
     }
   }
-  removeAttributeNS(element: any, ns: string, name: string) {
+  removeAttributeNS(_element: any, _ns: string, _name: string) {
     throw _notImplemented('removeAttributeNS');
   }
   templateAwareRoot(el: any): any {
@@ -521,15 +525,24 @@ export class Parse5DomAdapter extends DomAdapter {
     // if (defDoc === null) {
     //   defDoc = this.createHtmlDocument();
     // }
-    // TODO()
+    // TODO(gdi2290): needed for BROWSER_SANITIZATION_PROVIDERS
+    const document = Zone.current.get('document');
+    if (document) {
+      return document;
+    }
     return {documentMode: false};
   }
   // UNIVERSAL FIX
-  getBoundingClientRect(el: any): any {
+  getBoundingClientRect(_el: any): any {
     return {left: 0, top: 0, width: 0, height: 0};
   }
   // UNIVERSAL FIX
   getTitle(): string {
+    const document = Zone.current.get('document');
+    if (document && document.title) {
+      return document.title;
+    }
+
     throw _notImplemented('getTitle');
     // return this.defaultDoc().title || '';
   }
@@ -537,6 +550,11 @@ export class Parse5DomAdapter extends DomAdapter {
 
   // UNIVERSAL FIX
   setTitle(newTitle: string) {
+    const document = Zone.current.get('document');
+    if (document && document.title) {
+      return document.title = newTitle;
+    }
+
     throw _notImplemented('setTitle');
     // this.defaultDoc().title = newTitle;
   }
@@ -550,7 +568,7 @@ export class Parse5DomAdapter extends DomAdapter {
     return node ? treeAdapter.isElementNode(node) : false;
   }
   hasShadowRoot(node: any): boolean { return isPresent(node.shadowRoot); }
-  isShadowRoot(node: any): boolean { return this.getShadowRoot(node) == node; }
+  isShadowRoot(node: any): boolean { return this.getShadowRoot(node) === node; }
   importIntoDoc(node: any): any { return this.clone(node); }
   adoptNode(node: any): any { return node; }
   getHref(el: any): string { return el.href; }
@@ -569,7 +587,7 @@ export class Parse5DomAdapter extends DomAdapter {
       var rule: {[key: string]: any} = {};
       rule['cssText'] = css;
       rule['style'] = {content: '', cssText: ''};
-      if (parsedRule.type == 'rule') {
+      if (parsedRule.type === 'rule') {
         rule['type'] = 1;
         rule['selectorText'] = (parsedRule.selectors
           .join(', ')
@@ -586,7 +604,7 @@ export class Parse5DomAdapter extends DomAdapter {
           rule['style'][declaration.property] = declaration.value;
           rule['style'].cssText += declaration.property + ': ' + declaration.value + ';';
         }
-      } else if (parsedRule.type == 'media') {
+      } else if (parsedRule.type === 'media') {
         rule['type'] = 4;
         rule['media'] = { mediaText: parsedRule.media };
         if (parsedRule.rules) {
@@ -600,7 +618,7 @@ export class Parse5DomAdapter extends DomAdapter {
   supportsDOMEvents(): boolean { return false; }
   supportsNativeShadowDOM(): boolean { return false; }
   // UNIVERSAL FIX
-  getGlobalEventTarget(target: string): any {
+  getGlobalEventTarget(_target: string): any {
     throw _notImplemented('getGlobalEventTarget');
   }
   getBaseHref(): string {
@@ -619,7 +637,7 @@ export class Parse5DomAdapter extends DomAdapter {
   getData(el: any, name: string): string {
     return this.getAttribute(el, 'data-' + name);
   }
-  getComputedStyle(el: any): any {
+  getComputedStyle(_el: any): any {
     throw _notImplemented('getComputedStyle');
   }
   setData(el: any, name: string, value: string) {
@@ -640,31 +658,40 @@ export class Parse5DomAdapter extends DomAdapter {
   getTransitionEnd(): string { return 'transitionend'; }
   supportsAnimation(): boolean { return true; }
 
-  replaceChild(el: any, newNode: any, oldNode: any) {
+  replaceChild(_el: any, _newNode: any, _oldNode: any) {
     throw _notImplemented('replaceChild');
   }
   // TODO(gdi2290): move node-document to here
-  parse(templateHtml: string) {
+  parse(_templateHtml: string) {
     throw _notImplemented('Parse5DomAdapter#parse');
   }
-  invoke(el: any /*Element*/, methodName: string, args: any[]): any {
+  invoke(_el: any /*Element*/, _methodName: string, _args: any[]): any {
     throw _notImplemented('Parse5DomAdapter#invoke');
   }
-  getEventKey(event: any): string {
+  getEventKey(_event: any): string {
     throw _notImplemented('Parse5DomAdapter#getEventKey');
   }
   supportsCookies(): boolean { return false; }
-  getCookie(name: string): string {
+  getCookie(_name: string): string {
+    const document = Zone.current.get('document');
+    if (document && document.cookie) {
+      return document.cookie;
+    }
     throw _notImplemented('Parse5DomAdapter#getCookie');
   }
   setCookie(name: string, value: string) {
+    const document = Zone.current.get('document');
+    if (document && document.cookie) {
+      return document.cookie[name] = value;
+    }
     throw _notImplemented('Parse5DomAdapter#setCookie');
   }
-  animate(element: any, keyframes: any[], options: any): any {
+  animate(_element: any, _keyframes: any[], _options: any): any {
     throw _notImplemented('Parse5DomAdapter#animate');
   }
 }
 
+// TODO(gdi2290): require json file
 // TODO: build a proper list, this one is all the keys of a HTMLInputElement
 var _HTMLElementPropertyList = [
   'webkitEntries',

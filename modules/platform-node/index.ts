@@ -1,3 +1,5 @@
+export {getDOM} from './get-dom';
+
 export * from './helper';
 
 export * from './node-document';

@@ -1,24 +1,23 @@
-/// <reference path="typings/index.d.ts" />
 import * as utils from './build-utils';
 import * as ts from 'typescript';
 
 const modules = [
-  'broccoli-prerender',
   'express-engine',
   'grunt-prerender',
   'gulp-prerender',
   'hapi-engine',
-  'universal-polyfills',
+  'platform-node',
   'universal',
+  'universal-polyfills',
   'webpack-prerender'
 ];
 
 const publishedModuleNames = [
-  'angular2-broccoli-prerender',
   'angular2-express-engine',
   'angular2-grunt-prerender',
   'angular2-gulp-prerender',
   'angular2-hapi-engine',
+  'angular2-platform-node',
   'angular2-universal',
   'angular2-universal-polyfills',
   'angular2-webpack-prerender'
@@ -28,24 +27,24 @@ const sampleRootPackage = {
   version: '1.0.0',
   devDependencies: {
     'jasmine': '2.0.0',
-    '@angular/core': '2.0.0-rc.4'
+    '@angular/core': '2.0.0'
   },
   dependencies: {
-    '@angular/compiler': '2.0.0-rc.4'
+    '@angular/compiler': '2.0.0'
   }
 };
 
 const flattenedDeps = {
-  '@angular/compiler': '2.0.0-rc.4',
-  '@angular/core': '2.0.0-rc.4',
+  '@angular/compiler': '2.0.0',
   'jasmine': '2.0.0',
-  'angular2-broccoli-prerender': '~1.0.0',
+  '@angular/core': '2.0.0',
   'angular2-express-engine': '~1.0.0',
   'angular2-grunt-prerender': '~1.0.0',
   'angular2-gulp-prerender': '~1.0.0',
   'angular2-hapi-engine': '~1.0.0',
-  'angular2-universal-polyfills': '~1.0.0',
+  'angular2-platform-node': '~1.0.0',
   'angular2-universal': '~1.0.0',
+  'angular2-universal-polyfills': '~1.0.0',
   'angular2-webpack-prerender': '~1.0.0'
 };
 
@@ -76,7 +75,8 @@ describe('build-utils', () => {
       expect(utils.getTargetFiles(false, '', config)).toEqual(config.files);
     });
 
-    it('should return all config files plus spec if --test but NOT --module flag is provided', () => {
+    // currently same tsconfig.json is used.
+    xit('should return all config files plus spec if --test but NOT --module flag is provided', () => {
       expect(utils.getTargetFiles(true, '', config).length).toBeGreaterThan(config.files.length);
     });
 
@@ -94,8 +94,10 @@ describe('build-utils', () => {
 
   describe('getSrcFromPath', () => {
     it('should strip /src/ from the path', () => {
-      expect(utils.stripSrcFromPath({dirname: 'modules/universal/src/index.js'})).toEqual({dirname: 'modules/universal/index.js'});
-      expect(utils.stripSrcFromPath({dirname: 'modules/grunt-prerender/tasks/index.js'})).toEqual({dirname: 'modules/grunt-prerender/tasks/index.js'});
+      expect(utils.stripSrcFromPath({dirname: 'modules/universal/src/index.js'}))
+        .toEqual({dirname: 'modules/universal/index.js'});
+      expect(utils.stripSrcFromPath({dirname: 'modules/grunt-prerender/tasks/index.js'}))
+        .toEqual({dirname: 'modules/grunt-prerender/tasks/index.js'});
     });
   });
 });

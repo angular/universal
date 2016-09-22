@@ -1,5 +1,3 @@
-/// <reference path="node_modules/@types/node/index.d.ts" />
-/// <reference path="node_modules/@types/core-js/index.d.ts" />
 
 
 /**
@@ -7,7 +5,6 @@
  * For example, `build` and `test` can accept --module=universal,grunt-prerender
  * to build or test only those modules.
  */
-import * as fs from 'fs';
 import * as child_process from 'child_process';
 import * as buildUtils from './build-utils';
 import * as ts from 'typescript';
@@ -15,15 +12,14 @@ import * as gulpTs from 'gulp-typescript';
 
 const gulp = require('gulp');
 const gulpChangelog = require('gulp-conventional-changelog');
-const gulpJasmine = require('gulp-jasmine');
 const jsonTransform = require('gulp-json-transform');
 const rimraf = require('rimraf');
 const rename = require('gulp-rename');
 const args = require('minimist')(process.argv);
 const tsConfig = require('./tsconfig.json');
 const rootPkg = require('./package.json');
-const jasmineConfig = require('./spec/support/jasmine.json');
 const runSequence = require('run-sequence');
+const replace = require('gulp-replace');
 
 // For any task that contains "test" or if --test arg is passed, include spec files
 const isTest = process.argv[2] && process.argv[2].indexOf('test') > -1 || args['test'] ? true : false;
@@ -72,16 +68,18 @@ function build(path: string[]): Promise<any> {
     var doneCount = 0;
     output.js
       .pipe(rename(buildUtils.stripSrcFromPath))
+      .pipe(replace(/\.\/src\//g, './'))
       .pipe(gulp.dest('dist'))
       .on('end', maybeDone),
     output.dts
       .pipe(rename(buildUtils.stripSrcFromPath))
+      .pipe(replace(/\.\/src\//g, './'))
       .pipe(gulp.dest('dist'))
       .on('end', maybeDone);
 
     function maybeDone() {
       doneCount++;
-      if (doneCount === 2) { 
+      if (doneCount === 2) {
         resolve();
       }
     }
@@ -94,7 +92,13 @@ gulp.task('rewrite_packages', () => {
   const publishedModuleNames = buildUtils.getPublishedModuleNames(allModules);
   const rootDependencies = buildUtils.getRootDependencies(rootPkg, publishedModuleNames);
   gulp.src('modules/**/package.json')
-    .pipe(jsonTransform((data, file) => {
+    .pipe(jsonTransform((data, _file) => {
+      if (data.main) {
+        data.main = data.main.replace('src/', '').replace('.ts', '.js');
+      }
+      if (data.browser) {
+        data.browser = data.browser.replace('src/', '').replace('.ts', '.js');
+      }
       Object.keys(data)
         .filter(k => ['dependencies', 'peerDependencies'].indexOf(k) > -1)
         .forEach(k => {
@@ -111,9 +115,19 @@ gulp.task('clean', () => {
   rimraf.sync('dist');
 });
 
-gulp.task('pre-publish', ['build', 'rewrite_packages', 'changelog', 'copy_license']);
+gulp.task('pre-publish', ['build', 'rewrite_packages', 'changelog', 'copy_license', 'copy_files']);
 
-gulp.task('copy_license', () => buildUtils.getAllModules().reduce((stream, mod: string) => stream.pipe(gulp.dest(`dist/${mod}`)), gulp.src('LICENSE')));
+gulp.task('copy_license', () => {
+  return buildUtils.getAllModules().reduce((stream, mod: string) => {
+    return stream.pipe(gulp.dest(`dist/${mod}`));
+  }, gulp.src('LICENSE'));
+});
+
+gulp.task('copy_files', () => {
+  return gulp.src('modules/universal/typings.d.ts')
+  .pipe(replace(/\.\/src\//g, './'))
+    .pipe(gulp.dest(`dist/universal`));
+});
 
 gulp.task('changelog', () => {
   return gulp.src('CHANGELOG.md')

@@ -4,7 +4,6 @@ import * as ts from 'typescript';
 const glob = require('glob');
 
 const MODULES_PATH = 'modules';
-const DIST_PATH = 'dist';
 const NPM_PREFIX = 'angular2';
 
 export function getAllModules(): string[] {
@@ -20,6 +19,9 @@ export function getPublishedModuleNames(allModules: string[]): string[] {
 }
 
 export function getTargetFiles(testArg: boolean, argModule: string, config: TSConfig): string[] {
+  // TODO(gdi2290): filter out build root level typescript
+  config.files = config.files.filter(file => !(/gulpfile|build-utils/.test(file)));
+
   if (testArg && !argModule) {
     return config.files.concat(getAllTestFiles());
   } else if (argModule) {
@@ -72,7 +74,7 @@ export function getRootDependencyVersion(packageNames: string[], rootDependencie
 
 export function addMetadataToPackage(pkg: PackageLike, rootPackage: PackageLike): PackageLike {
   let {contributors, version, homepage, license, repository, bugs, config, engines } = rootPackage;
-  return Object.assign({}, pkg, {contributors, version, homepage, license, repository, bugs, config, engines})
+  return Object.assign({}, pkg, {contributors, version, homepage, license, repository, bugs, config, engines});
 }
 
 export function stripSrcFromPath(path) {

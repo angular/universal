@@ -37,7 +37,7 @@ import * as https from 'https';
 import * as url from 'url';
 
 
-import { BASE_URL, ORIGIN_URL, REQUEST_URL } from './tokens';
+import { APP_BASE_HREF, ORIGIN_URL, REQUEST_URL } from './tokens';
 import { isPresent, isSuccess } from './helper';
 
 const JSONP_ERR_WRONG_METHOD = 'JSONP requests must use GET request method.';
@@ -60,7 +60,7 @@ export class PreloadHttp extends Http {
     // this._activeNode = _rootNode;
 
   }
-  preload(url, factory) {
+  preload(_url, factory) {
 
     var obs = new EventEmitter(false);
 
@@ -145,7 +145,7 @@ export class NodeConnection implements Connection {
     baseResponseOptions: ResponseOptions,
     // ngZone: NgZone,
     @Inject(ORIGIN_URL) originUrl: string = '',
-    @Optional() @Inject(BASE_URL) baseUrl?: string,
+    @Optional() @Inject(APP_BASE_HREF) baseUrl?: string,
     // @Optional() @Inject(Cookie) cookie?: Cookie,
     // @Optional() @Inject(COOKIE_KEY) cookieKey?: any
     ) {
@@ -248,8 +248,8 @@ export class NodeConnection implements Connection {
 export class NodeBackend implements ConnectionBackend {
   constructor(
     private _baseResponseOptions: ResponseOptions,
-    private _ngZone: NgZone,
-    @Inject(BASE_URL) private _baseUrl: string,
+    _ngZone: NgZone,
+    @Inject(APP_BASE_HREF) private _baseUrl: string,
     @Inject(ORIGIN_URL) private _originUrl: string) {}
 
   public createConnection(request: Request): NodeConnection {
@@ -268,7 +268,7 @@ export class NodeJSONPConnection {
     baseResponseOptions: ResponseOptions,
     ngZone: NgZone,
     @Optional() @Inject(ORIGIN_URL) originUrl: string = '',
-    @Optional() @Inject(BASE_URL) baseUrl?: string) {
+    @Optional() @Inject(APP_BASE_HREF) baseUrl?: string) {
 
     if (req.method !== RequestMethod.Get) {
       throw new TypeError(JSONP_ERR_WRONG_METHOD);
@@ -319,13 +319,16 @@ export class NodeJSONPConnection {
         res.on('end', () => {
           var responseJson;
           try {
+            if (body.indexOf('JSONP_CALLBACK') === -1) {
+              throw new Error('Http request ' + req.url + ' did not return the response with JSONP_CALLBACK()')
+            }
             var responseFactory = new Function('JSONP_CALLBACK', body);
             responseFactory(json => {
               responseJson = json;
             });
           } catch (e) {
             console.log('JSONP Error:', e);
-            throw e;
+            return onError(e);
           }
 
           let responseOptions = new ResponseOptions({body: responseJson, status, headers, url});
@@ -341,14 +344,12 @@ export class NodeJSONPConnection {
         });
       });
 
-      let onError = (err) => {
+      function onError (err) {
         let responseOptions = new ResponseOptions({body: err, type: ResponseType.Error});
         if (isPresent(baseResponseOptions)) {
           responseOptions = baseResponseOptions.merge(responseOptions);
         }
-        ngZone.run(() => {
-          responseObserver.error(new Response(responseOptions));
-        });
+        responseObserver.error(new Response(responseOptions));
       };
 
       nodeReq.on('error', onError);
@@ -371,7 +372,7 @@ export class NodeJsonpBackend_ extends NodeJsonpBackend {
   constructor(
     private _baseResponseOptions: ResponseOptions,
     private _ngZone: NgZone,
-    @Inject(BASE_URL) private _baseUrl: string,
+    @Inject(APP_BASE_HREF) private _baseUrl: string,
     @Inject(ORIGIN_URL) private _originUrl: string) {
     super();
   }
@@ -415,7 +416,7 @@ export class NodeHttpModule {
   static withConfig(config: any = {}) {
     var providers = [];
     if (config.baseUrl) {
-      providers.push({ provide: BASE_URL, useValue: config.baseUrl });
+      providers.push({ provide: APP_BASE_HREF, useValue: config.baseUrl });
     }
     if (config.requestUrl) {
       providers.push({ provide: REQUEST_URL, useValue: config.requestUrl });
@@ -441,7 +442,7 @@ export class NodeJsonpModule {
   static withConfig(config: any = {}) {
     var providers = [];
     if (config.baseUrl) {
-      providers.push({ provide: BASE_URL, useValue: config.baseUrl });
+      providers.push({ provide: APP_BASE_HREF, useValue: config.baseUrl });
     }
     if (config.requestUrl) {
       providers.push({ provide: REQUEST_URL, useValue: config.requestUrl });

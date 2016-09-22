@@ -1,5 +1,5 @@
 // PRIVATE
-import { getDOM } from './__private_imports__';
+import { getDOM } from './get-dom';
 // PRIVATE
 
 import {
@@ -7,7 +7,6 @@ import {
   Injectable,
   Renderer,
   RenderComponentType,
-  Injector,
   RootRenderer,
   ViewEncapsulation,
 } from '@angular/core';
@@ -21,7 +20,6 @@ import {
 
 import {
   cssHyphenate,
-  isString,
   isPresent,
   isBlank,
   stringify,
@@ -31,7 +29,7 @@ import {
 
 import {
   NodeSharedStylesHost
-} from './node-shared-styles-host'
+} from './node-shared-styles-host';
 
 const NAMESPACE_URIS = {
   'xlink': 'http://www.w3.org/1999/xlink',
@@ -253,7 +251,7 @@ export class DomRenderer implements Renderer {
     }
   }
 
-  selectRootElement(selectorOrNode: string|any, debugInfo: any /*RenderDebugInfo*/): any { /*Element*/
+  selectRootElement(_selectorOrNode: string|any, _debugInfo: any /*RenderDebugInfo*/): any { /*Element*/
   //   var el: any;
   //   if (isString(selectorOrNode)) {
   //     el = getDOM().querySelector(this._rootRenderer.document, selectorOrNode);
@@ -267,7 +265,7 @@ export class DomRenderer implements Renderer {
   //   return el;
   }
 
-  createElement(parent: any/*Element*/, name: string, debugInfo: any/*RenderDebugInfo*/): any { /* Node */
+  createElement(parent: any/*Element*/, name: string, _debugInfo: any/*RenderDebugInfo*/): any { /* Node */
     var nsAndName = splitNamespace(name);
     var el = isPresent(nsAndName[0]) ?
         getDOM().createElementNS(
@@ -299,7 +297,7 @@ export class DomRenderer implements Renderer {
     return nodesParent;
   }
 
-  createTemplateAnchor(parentElement: any, debugInfo: any /*RenderDebugInfo*/): any {
+  createTemplateAnchor(parentElement: any, _debugInfo: any /*RenderDebugInfo*/): any {
     var comment = getDOM().createComment(TEMPLATE_COMMENT_TEXT);
     if (isPresent(parentElement)) {
       getDOM().appendChild(parentElement, comment);
@@ -307,7 +305,7 @@ export class DomRenderer implements Renderer {
     return comment;
   }
 
-  createText(parentElement: any, value: string, debugInfo: any /*RenderDebugInfo*/): any {
+  createText(parentElement: any, value: string, _debugInfo: any /*RenderDebugInfo*/): any {
     var node = getDOM().createTextNode(value);
     if (isPresent(parentElement)) {
       getDOM().appendChild(parentElement, node);
@@ -316,7 +314,7 @@ export class DomRenderer implements Renderer {
   }
 
   projectNodes(parentElement: any, nodes: any[]) {
-    if (isBlank(parentElement)) return;
+    if (isBlank(parentElement)) { return; }
     appendNodes(parentElement, nodes);
   }
 
@@ -330,7 +328,7 @@ export class DomRenderer implements Renderer {
     }
   }
 
-  destroyView(hostElement: any, viewAllNodes: any[]) {
+  destroyView(hostElement: any, _viewAllNodes: any[]) {
     if (this.componentProto.encapsulation === ViewEncapsulation.Native && isPresent(hostElement)) {
       this._rootRenderer.sharedStylesHost.removeHost(getDOM().getShadowRoot(hostElement));
     }
@@ -435,7 +433,7 @@ export class NodeDomRenderer extends DomRenderer {
     this.__rootRenderer = _rootRenderer;
   }
 
-  selectRootElement(selectorOrNode: string|any, debugInfo: any): any { /* Element */
+  selectRootElement(selectorOrNode: string|any, _debugInfo: any): any { /* Element */
     var el: any;
     if (typeof selectorOrNode === 'string') {
       // el = parseFragment(`<${selectorOrNode}></${selectorOrNode}>`);
@@ -473,6 +471,10 @@ export class NodeDomRenderer extends DomRenderer {
         propertyValue = '';
       }
     }
+    // ignore boolean prop values for parse5 serialize
+    if ((propertyName === 'autofocus' || propertyName === 'spellcheck') && propertyValue === false) {
+        return;
+    }
 
     let setProp = super.setElementProperty(renderElement, propertyName, propertyValue);
     if (IGNORE_ATTRIBUTES[propertyName]) {
@@ -495,7 +497,9 @@ export class NodeDomRenderer extends DomRenderer {
         }
       }
     }
-    return super.setElementAttribute(renderElement, propertyName, propertyValue);
+    if (typeof propertyValue === 'string') {
+        return super.setElementAttribute(renderElement, propertyName, propertyValue);
+    }
   }
 
   setElementStyle(renderElement: any, styleName: string, styleValue: string): void {
@@ -513,7 +517,7 @@ export class NodeDomRenderer extends DomRenderer {
     return super.invokeElementMethod(location, methodName, args);
   }
 
-  _setDisabledAttribute(renderElement, propertyName, propertyValue) {
+  _setDisabledAttribute(renderElement, _propertyName, propertyValue) {
     if (isPresent(propertyValue)) {
       if (propertyValue === true || propertyValue.toString() !== 'false') {
         return super.setElementAttribute(renderElement, 'disabled', 'disabled');
@@ -521,7 +525,7 @@ export class NodeDomRenderer extends DomRenderer {
     }
   }
 
-  _setCheckedAttribute(renderElement, propertyName, propertyValue) {
+  _setCheckedAttribute(renderElement, _propertyName, propertyValue) {
     if (isPresent(propertyValue)) {
       if (propertyValue === true) {
         return super.setElementAttribute(renderElement, propertyValue, 'checked');
@@ -620,7 +624,7 @@ function _flattenStyles(compId: string, styles: Array<any|any[]>, target: string
 const NS_PREFIX_RE = /^:([^:]+):(.+)$/;
 
 function splitNamespace(name: string): string[] {
-  if (name[0] != ':') {
+  if (name[0] !== ':') {
     return [null, name];
   }
   const match = name.match(NS_PREFIX_RE);

@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { Http, Jsonp } from '@angular/http';
-// import 'rxjs/Rx';
 
 @Component({
   selector: 'wat',
@@ -32,7 +31,7 @@ export class Wat {
     <div>hello world!!!</div>
     <pre>{{ response | json }}</pre>
     <div>
-      <input id="myInput">
+      <input id="myInput" [(ngModel)]="wat">
       Hello World
       {{ wat }}
       <div *ngIf="toggle">
@@ -43,9 +42,9 @@ export class Wat {
   `
 })
 export class App implements OnInit {
-
+  wat = 'yolo';
   response = {};
-  toggle = true;
+  toggle = false;
   onWat() {
     this.toggle = !this.toggle;
   }

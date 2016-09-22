@@ -1,5 +1,5 @@
 // PRIVATE
-import { getDOM } from './__private_imports__';
+import { getDOM } from './get-dom';
 // PRIVATE
 
 import { Injectable } from '@angular/core';
@@ -23,7 +23,7 @@ export class SharedStylesHost {
     this.onStylesAdded(additions);
   }
 
-  onStylesAdded(additions: string[]) {}
+  onStylesAdded(_additions: string[]) {}
 
   getAllStyles(): string[] { return this._styles; }
 }

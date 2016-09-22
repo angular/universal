@@ -1,0 +1,11 @@
+{
+  "name": "angular2-platform-node",
+  "main": "index.js",
+  "typings": "index.d.ts",
+  "description": "Universal (isomorphic) javascript support for Angular2",
+  "dependencies": {
+    "preboot": "<INHERIT>",
+    "parse5": "<INHERIT>",
+    "css": "<INHERIT>"
+  }
+}
