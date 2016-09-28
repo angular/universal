@@ -8,13 +8,11 @@
 import * as child_process from 'child_process';
 import * as buildUtils from './build-utils';
 import * as ts from 'typescript';
-import * as gulpTs from 'gulp-typescript';
 
 const gulp = require('gulp');
 const gulpChangelog = require('gulp-conventional-changelog');
 const jsonTransform = require('gulp-json-transform');
 const rimraf = require('rimraf');
-const rename = require('gulp-rename');
 const args = require('minimist')(process.argv);
 const tsConfig = require('./tsconfig.json');
 const rootPkg = require('./package.json');
@@ -30,12 +28,12 @@ const program = ts.createProgram(files, compilerOptions, host);
 const sourceFiles = program.getSourceFiles().map(f => f.path);
 
 gulp.task('watch', () => {
-  return gulp.watch(sourceFiles, ({path}) => build([path]));
+  return gulp.watch(sourceFiles, () => build());
 });
 
 gulp.task('test:watch', ['test'], () => {
-  gulp.watch(sourceFiles, ({path}) => {
-    build([path])
+  gulp.watch(sourceFiles, () => {
+    build()
       .then(() => {
         runSequence(['_test']);
       });
@@ -51,40 +49,30 @@ gulp.task('_test', () => {
   child_process.spawnSync(`./node_modules/.bin/jasmine`, [], {stdio: 'inherit'});
 });
 
-gulp.task('build', ['clean'], () => build(sourceFiles));
+gulp.task('build', ['clean'], () => build());
 gulp.task('default', ['build']);
 
-function build(path: string[]): Promise<any> {
-  // TODO: remove this if it every works in watch mode without needing to re-create.
-  let project = gulpTs.createProject('tsconfig.json', {
-    typescript: require('typescript'),
-    rootDir: 'modules'
-  });
-  let output = gulp.src(path)
-    .pipe(gulpTs(project));
-  // Using a promise instead of merging streams since end
-  // event on streams seems not to be propagated when merged.
+function build(): Promise<any> {
   return new Promise((resolve) => {
-    var doneCount = 0;
-    output.js
-      .pipe(rename(buildUtils.stripSrcFromPath))
-      .pipe(replace(/\.\/src\//g, './'))
-      .pipe(gulp.dest('dist'))
-      .on('end', maybeDone),
-    output.dts
-      .pipe(rename(buildUtils.stripSrcFromPath))
-      .pipe(replace(/\.\/src\//g, './'))
-      .pipe(gulp.dest('dist'))
-      .on('end', maybeDone);
-
-    function maybeDone() {
-      doneCount++;
-      if (doneCount === 2) {
-        resolve();
+    // TODO: better watch support to not transpile the whole project
+    // for single file changes, perhaps using similar implementation to
+    // this: https://github.com/mgechev/angular2-seed/blob/master/tools/tasks/seed/compile.ahead.prod.ts
+    child_process.exec('node_modules/.bin/ngc -p tsconfig.aot.json', (err, stdout, stderr) => {
+      if (err) {
+        throw err;
       }
-    }
-  });
 
+      if (stdout) {
+        console.log(stdout);
+      }
+
+      if (stderr) {
+        console.warn(stderr);
+      }
+
+      resolve();
+    });
+  });
 }
 
 gulp.task('rewrite_packages', () => {

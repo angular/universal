@@ -678,6 +678,12 @@ export function _ORIGIN_URL(_zone) {
   return Zone.current.get('originUrl');
 }
 
+export class MockTestabilityRegistry {
+  registerApplication() {
+    return null;
+  }
+}
+
 
 @NgModule({
   providers: [
@@ -719,7 +725,7 @@ export function _ORIGIN_URL(_zone) {
     { provide: ORIGIN_URL, useFactory: _ORIGIN_URL, deps: [ NgZone ] },
 
     { provide: APP_ID, useValue: '%cmp%' },
-    { provide: TestabilityRegistry, useValue: {registerApplication: () => null} }
+    { provide: TestabilityRegistry, useClass: MockTestabilityRegistry }
   ],
   exports: [  CommonModule, ApplicationModule  ]
 })
