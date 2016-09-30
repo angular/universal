@@ -543,7 +543,7 @@ export class NodeDomRenderer extends DomRenderer {
         return super.setElementAttribute(renderElement, propertyValue, 'off');
       }
     }
-    return super.setElementAttribute(renderElement, propertyName, propertyValue);
+    return super.setElementAttribute(renderElement, propertyName, String(propertyValue));
 
   }
   _setBooleanAttribute(renderElement, propertyName, propertyValue) {
@@ -551,10 +551,10 @@ export class NodeDomRenderer extends DomRenderer {
       if (propertyValue === true) {
         return super.setElementAttribute(renderElement, propertyName, '');
       } else {
-        return super.setElementAttribute(renderElement, propertyName, propertyValue);
+        return super.setElementAttribute(renderElement, propertyName, String(propertyValue));
       }
     }
-    return super.setElementAttribute(renderElement, propertyName, propertyValue);
+    return super.setElementAttribute(renderElement, propertyName, String(propertyValue));
   }
 }
 
