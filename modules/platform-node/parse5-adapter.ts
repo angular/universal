@@ -186,7 +186,7 @@ export class Parse5DomAdapter extends DomAdapter {
     return isPresent(evt.returnValue) && !evt.returnValue;
   }
   getInnerHTML(el: any): string {
-    return serializer(this.templateAwareRoot(el), parse5.treeAdapters.htmlparse2);
+    return serializer(this.templateAwareRoot(el), {treeAdapter});
   }
   getTemplateContent(_el: any): any {  /* Node */
     return null;  // no <template> support in parse5.
@@ -269,7 +269,7 @@ export class Parse5DomAdapter extends DomAdapter {
   }
   setInnerHTML(el: any, value: any) {
     this.clearNodes(el);
-    var content = parser.parseFragment(value, treeAdapter);
+    var content = parser.parseFragment(value, {treeAdapter});
     for (var i = 0; i < content.childNodes.length; i++) {
       treeAdapter.appendChild(el, content.childNodes[i]);
     }
@@ -308,7 +308,7 @@ export class Parse5DomAdapter extends DomAdapter {
   createComment(text: string): Comment { return treeAdapter.createCommentNode(text); }
   createTemplate(html: any): any { /* HTMLElement */
     var template = treeAdapter.createElement('template', 'http://www.w3.org/1999/xhtml', []);
-    var content = parser.parseFragment(html, treeAdapter);
+    var content = parser.parseFragment(html, {treeAdapter});
     treeAdapter.appendChild(template, content);
     return template;
   }
