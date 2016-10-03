@@ -1,15 +1,4 @@
 import { getDOM } from './get-dom';
-// PRIVATE
-import {
-  BROWSER_SANITIZATION_PROVIDERS,
-  SharedStylesHost,
-  DomSharedStylesHost,
-  DomRootRenderer,
-  DomEventsPlugin,
-  KeyEventsPlugin,
-  HammerGesturesPlugin,
-} from './__private_imports__';
-// PRIVATE
 
 import {
   DOCUMENT,
@@ -17,8 +6,19 @@ import {
   AnimationDriver,
   EventManager,
   HAMMER_GESTURE_CONFIG,
-  HammerGestureConfig
+  HammerGestureConfig,
+  DomSanitizer,
 } from '@angular/platform-browser';
+
+// Private imports
+// Ngc does not compile properly when taking these from __private_imports__ but works
+// as expected when importing from their full file path
+import { KeyEventsPlugin } from '@angular/platform-browser/src/dom/events/key_events';
+import { DomEventsPlugin } from '@angular/platform-browser/src/dom/events/dom_events';
+import { HammerGesturesPlugin } from '@angular/platform-browser/src/dom/events/hammer_gestures';
+import { DomSanitizerImpl } from '@angular/platform-browser/src/security/dom_sanitization_service';
+import { DomRootRenderer } from '@angular/platform-browser/src/dom/dom_renderer';
+import { SharedStylesHost, DomSharedStylesHost } from '@angular/platform-browser/src/dom/shared_styles_host';
 
 import {
   ErrorHandler,
@@ -42,6 +42,7 @@ import {
   NgModuleRef,
   NgZone,
   CompilerFactory,
+  Sanitizer,
   TestabilityRegistry
 } from '@angular/core';
 
@@ -138,7 +139,7 @@ export class NodePlatform  {
     }
     return compiler.compileModuleAsync(moduleType)
         .then((moduleFactory) => {
-          NodePlatform._cache.set(moduleType, moduleFactory)
+          NodePlatform._cache.set(moduleType, moduleFactory);
           return moduleFactory;
         });
   }
@@ -207,10 +208,10 @@ export class NodePlatform  {
       try {
         document = store.get('DOCUMENT');
         if (typeof document !== 'string') {
-          document = Zone.current.get('document')
+          document = Zone.current.get('document');
         }
         if (typeof document !== 'string') {
-          document = Zone.current.get('DOCUMENT')
+          document = Zone.current.get('DOCUMENT');
         }
         let appRef = store.get('ApplicationRef');
         if (appRef && appRef.ngOnDestroy) {
@@ -507,8 +508,8 @@ export class NodePlatform  {
     }
     return compiler.compileModuleAsync(moduleType)
         .then((moduleFactory) => {
-          NodePlatform._cache.set(moduleType, moduleFactory)
-          return this.platformRef.bootstrapModuleFactory(moduleFactory)
+          NodePlatform._cache.set(moduleType, moduleFactory);
+          return this.platformRef.bootstrapModuleFactory(moduleFactory);
         });
   }
   bootstrapModuleFactory<T>(moduleFactory): Promise<NgModuleRef<T>> {
@@ -546,7 +547,6 @@ export class NodePlatform  {
  * the event loop and better management of refernces in task. This also allows for ZoneLocalStore.
  * We can also introduce sagas or serverless
  */
-// @internal
 function asyncPromiseSeries(store, modRef, errorHandler, cancelHandler, config, middleware, _timer = 1) {
   let errorCalled = false;
   config.time && console.time('id: ' + config.id + ' asyncPromiseSeries: ');
@@ -678,7 +678,7 @@ export function _ORIGIN_URL(_zone) {
   return Zone.current.get('originUrl');
 }
 
-export class MockTestabilityRegistry {
+export class MockTestabilityRegistry extends TestabilityRegistry {
   registerApplication() {
     return null;
   }
@@ -691,7 +691,9 @@ export class MockTestabilityRegistry {
     // normally in platform provides but there is url state in NodePlatformLocation
     { provide: PlatformLocation, useClass: NodePlatformLocation },
 
-    BROWSER_SANITIZATION_PROVIDERS,
+    { provide: Sanitizer, useExisting: DomSanitizer },
+    { provide: DomSanitizer, useClass: DomSanitizerImpl },
+
     { provide: ErrorHandler, useFactory: _errorHandler, deps: [] },
 
     { provide: DOCUMENT, useFactory: _document, deps: _documentDeps },

@@ -17,7 +17,6 @@ const args = require('minimist')(process.argv);
 const tsConfig = require('./tsconfig.json');
 const rootPkg = require('./package.json');
 const runSequence = require('run-sequence');
-const replace = require('gulp-replace');
 
 // For any task that contains "test" or if --test arg is passed, include spec files
 const isTest = process.argv[2] && process.argv[2].indexOf('test') > -1 || args['test'] ? true : false;
@@ -52,22 +51,33 @@ gulp.task('_test', () => {
 gulp.task('build', ['clean'], () => build());
 gulp.task('default', ['build']);
 
+// This is handy when using npm link from dist/modules to test universal
+// updates. If you use the normal buid with `clean` your npm link symlinks
+// get wiped out and need recreating with each build which can be difficult
+// for development and testing
+gulp.task('build:no-clean', () => build());
+
 function build(): Promise<any> {
-  return new Promise((resolve) => {
+  return new Promise((resolve, reject) => {
     // TODO: better watch support to not transpile the whole project
     // for single file changes, perhaps using similar implementation to
     // this: https://github.com/mgechev/angular2-seed/blob/master/tools/tasks/seed/compile.ahead.prod.ts
     child_process.exec('node_modules/.bin/ngc -p tsconfig.aot.json', (err, stdout, stderr) => {
       if (err) {
-        throw err;
+        reject(err);
+        return;
       }
 
       if (stdout) {
         console.log(stdout);
+        resolve(stdout);
+        return;
       }
 
       if (stderr) {
         console.warn(stderr);
+        reject(stderr);
+        return;
       }
 
       resolve();
@@ -82,10 +92,10 @@ gulp.task('rewrite_packages', () => {
   gulp.src('modules/**/package.json')
     .pipe(jsonTransform((data, _file) => {
       if (data.main) {
-        data.main = data.main.replace('src/', '').replace('.ts', '.js');
+        data.main = data.main.replace('.ts', '.js');
       }
       if (data.browser) {
-        data.browser = data.browser.replace('src/', '').replace('.ts', '.js');
+        data.browser = data.browser.replace('.ts', '.js');
       }
       Object.keys(data)
         .filter(k => ['dependencies', 'peerDependencies'].indexOf(k) > -1)
@@ -113,7 +123,8 @@ gulp.task('copy_license', () => {
 
 gulp.task('copy_files', () => {
   return gulp.src('modules/universal/typings.d.ts')
-  .pipe(replace(/\.\/src\//g, './'))
+    // This will be added back before merge
+    // .pipe(replace(/\.\/src\//g, './'))
     .pipe(gulp.dest(`dist/universal`));
 });
 
