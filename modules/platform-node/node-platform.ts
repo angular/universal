@@ -67,7 +67,7 @@ import {
   createUrlProviders,
 } from './tokens';
 
-// @internal
+// internal
 
 export function _errorHandler(): ErrorHandler {
   return new ErrorHandler();
@@ -75,7 +75,7 @@ export function _errorHandler(): ErrorHandler {
 
 declare var Zone: any;
 
-// @internal
+// internal
 const _documentDeps = [ NodeSharedStylesHost, NgZone ];
 export function _document(domSharedStylesHost: NodeSharedStylesHost, _zone: any): any {
   let document: any = Zone.current.get('document');
@@ -89,7 +89,7 @@ export function _document(domSharedStylesHost: NodeSharedStylesHost, _zone: any)
   return document;
 }
 
-// @internal
+// internal
 export function _resolveDefaultAnimationDriver(): AnimationDriver {
   if (getDOM().supportsWebAnimation()) {
     return AnimationDriver.NOOP;
@@ -98,7 +98,7 @@ export function _resolveDefaultAnimationDriver(): AnimationDriver {
 }
 
 // Hold Reference
-// @internal
+// internal
 export var __PLATFORM_REF: PlatformRef = null;
 export function removePlatformRef() {
   __PLATFORM_REF = null;
@@ -111,7 +111,7 @@ export function setPlatformRef(platformRef) {
 }
 // End platform Reference
 
-// @internal
+// internal
 function s4() {
   return Math.floor((1 + Math.random()) * 0x10000).toString(16).substring(1);
 }
@@ -613,7 +613,7 @@ export class NodeEventManager {
   }
 
 
-  /** @internal */
+  /** internal */
   _findPluginFor(eventName: string): EventManagerPlugin {
     var plugins = this._plugins;
     for (var i = 0; i < plugins.length; i++) {
@@ -752,7 +752,7 @@ export class NodeModule {
   }
 }
 
-// @internal
+// internal
 function initParse5Adapter() {
   Parse5DomAdapter.makeCurrent();
   // wtfInit();

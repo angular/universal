@@ -22,11 +22,11 @@ try {
   prebootClient = (prebootClient && prebootClient.prebootClient) || prebootClient;
 } catch (e) {}
 
-// @internal
+// internal
 function _randomChar() {
   return String.fromCharCode(97 + Math.floor(Math.random() * 25));
 }
-// @internal
+// internal
 function _appIdRandomProviderFactory() {
   return `${_randomChar()}${_randomChar()}${_randomChar()}`;
 }

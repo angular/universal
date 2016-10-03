@@ -209,7 +209,7 @@ export class NodePlatformLocation extends PlatformLocation {
   }
 }
 
-// @internal
+// internal
 export function joinWithSlash(start: string, end: string): string {
   if (start.length === 0) {
     return end;

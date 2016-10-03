@@ -420,7 +420,7 @@ export class Parse5DomAdapter extends DomAdapter {
     var value = this.getStyle(element, styleName) || '';
     return styleValue ? value === styleValue : value.length > 0;
   }
-  /** @internal */
+  /** internal */
   _readStyleAttribute(element: any) {
     var styleMap = {};
     var attributes = element.attribs;
@@ -436,7 +436,7 @@ export class Parse5DomAdapter extends DomAdapter {
     }
     return styleMap;
   }
-  /** @internal */
+  /** internal */
   _writeStyleAttribute(element: any, styleMap: any) {
     var styleAttrValue = '';
     Object.keys(styleMap).forEach(key => {
@@ -579,7 +579,7 @@ export class Parse5DomAdapter extends DomAdapter {
       el.href = baseUrl + '/../' + href;
     }
   }
-  /** @internal */
+  /** internal */
   _buildRules(parsedRules: any, css?: any) {
     var rules: any[] = [];
     for (var i = 0; i < parsedRules.length; i++) {
