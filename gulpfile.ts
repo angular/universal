@@ -17,6 +17,8 @@ const args = require('minimist')(process.argv);
 const tsConfig = require('./tsconfig.json');
 const rootPkg = require('./package.json');
 const runSequence = require('run-sequence');
+const replace = require('gulp-replace');
+const rename = require('gulp-rename');
 
 // For any task that contains "test" or if --test arg is passed, include spec files
 const isTest = process.argv[2] && process.argv[2].indexOf('test') > -1 || args['test'] ? true : false;
@@ -27,15 +29,12 @@ const program = ts.createProgram(files, compilerOptions, host);
 const sourceFiles = program.getSourceFiles().map(f => f.path);
 
 gulp.task('watch', () => {
-  return gulp.watch(sourceFiles, () => build());
+  return gulp.watch(sourceFiles, build);
 });
 
 gulp.task('test:watch', ['test'], () => {
   gulp.watch(sourceFiles, () => {
-    build()
-      .then(() => {
-        runSequence(['_test']);
-      });
+    runSequence('build', '_test');
   });
 });
 
@@ -48,20 +47,17 @@ gulp.task('_test', () => {
   child_process.spawnSync(`./node_modules/.bin/jasmine`, [], {stdio: 'inherit'});
 });
 
-gulp.task('build', ['clean'], () => build());
+gulp.task('build', ['clean'], build);
 gulp.task('default', ['build']);
 
 // This is handy when using npm link from dist/modules to test universal
 // updates. If you use the normal buid with `clean` your npm link symlinks
 // get wiped out and need recreating with each build which can be difficult
 // for development and testing
-gulp.task('build:no-clean', () => build());
+gulp.task('build:no-clean', build);
 
-function build(): Promise<any> {
+function build() {
   return new Promise((resolve, reject) => {
-    // TODO: better watch support to not transpile the whole project
-    // for single file changes, perhaps using similar implementation to
-    // this: https://github.com/mgechev/angular2-seed/blob/master/tools/tasks/seed/compile.ahead.prod.ts
     child_process.exec('node_modules/.bin/ngc -p tsconfig.aot.json', (err, stdout, stderr) => {
       if (err) {
         reject(err);
@@ -82,6 +78,16 @@ function build(): Promise<any> {
 
       resolve();
     });
+  }).then(() => {
+    return new Promise((resolve, reject) => {
+      gulp
+        .src('compiled/ngc/**/*')
+        .pipe(rename(buildUtils.stripSrcFromPath))
+        .pipe(replace(/\.\/src\//g, './'))
+        .pipe(gulp.dest('dist'))
+        .on('error', reject)
+        .on('end', resolve);
+    });
   });
 }
 
@@ -92,10 +98,10 @@ gulp.task('rewrite_packages', () => {
   gulp.src('modules/**/package.json')
     .pipe(jsonTransform((data, _file) => {
       if (data.main) {
-        data.main = data.main.replace('.ts', '.js');
+        data.main = data.main.replace('src/', '').replace('.ts', '.js');
       }
       if (data.browser) {
-        data.browser = data.browser.replace('.ts', '.js');
+        data.browser = data.browser.replace('src/', '').replace('.ts', '.js');
       }
       Object.keys(data)
         .filter(k => ['dependencies', 'peerDependencies'].indexOf(k) > -1)
@@ -123,8 +129,7 @@ gulp.task('copy_license', () => {
 
 gulp.task('copy_files', () => {
   return gulp.src('modules/universal/typings.d.ts')
-    // This will be added back before merge
-    // .pipe(replace(/\.\/src\//g, './'))
+    .pipe(replace(/\.\/src\//g, './'))
     .pipe(gulp.dest(`dist/universal`));
 });
 

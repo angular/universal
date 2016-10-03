@@ -15,7 +15,7 @@
   	"sourceMap": true,
     "inlineSources": true,
     "rootDir": "./modules",
-  	"outDir": "dist",
+  	"outDir": "compiled/ngc",
     "pretty": true,
     "stripInternal": true,
     "lib": ["es6", "dom"],
@@ -69,6 +69,6 @@
   "buildOnSave": false,
   "atom": { "rewriteTsconfig": false },
   "angularCompilerOptions": {
-    "genDir": "compiled"
+    "genDir": "compiled/ngfactory"
   }
 }
