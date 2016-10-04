@@ -1,9 +1,6 @@
 const fs = require('graceful-fs');
 
-// TODO: TS can't find module 'angular2-universal/node' when using direct imports
-// despite this being in "path" in tsconfig.json
-// import { platformUniversalDynamic } from 'angular2-universal/node';
-const { platformUniversalDynamic } = require('angular2-universal/node');
+import { platformUniversalDynamic } from 'angular2-universal/node';
 
 import { PrebootOptions } from 'preboot';
 

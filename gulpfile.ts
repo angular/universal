@@ -58,7 +58,7 @@ gulp.task('build:no-clean', build);
 
 function build() {
   return new Promise((resolve, reject) => {
-    child_process.exec('node_modules/.bin/ngc -p tsconfig.aot.json', (err, stdout, stderr) => {
+    child_process.exec('node_modules/.bin/ngc', (err, stdout, stderr) => {
       if (err) {
         reject(err);
         return;
@@ -81,7 +81,7 @@ function build() {
   }).then(() => {
     return new Promise((resolve, reject) => {
       gulp
-        .src('compiled/ngc/**/*')
+        .src('compiled/ngc/modules/**/*')
         .pipe(rename(buildUtils.stripSrcFromPath))
         .pipe(replace(/\.\/src\//g, './'))
         .pipe(gulp.dest('dist'))
