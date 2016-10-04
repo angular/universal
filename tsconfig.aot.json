@@ -17,7 +17,7 @@
     "rootDir": "./modules",
   	"outDir": "compiled/ngc",
     "pretty": true,
-    "stripInternal": true,
+    "stripInternal": false,
     "lib": ["es6", "dom"],
     "types": [
       "node", "jasmine"

@@ -7,18 +7,17 @@ import {
   EventManager,
   HAMMER_GESTURE_CONFIG,
   HammerGestureConfig,
-  DomSanitizer,
 } from '@angular/platform-browser';
 
-// Private imports
-// Ngc does not compile properly when taking these from __private_imports__ but works
-// as expected when importing from their full file path
-import { KeyEventsPlugin } from '@angular/platform-browser/src/dom/events/key_events';
-import { DomEventsPlugin } from '@angular/platform-browser/src/dom/events/dom_events';
-import { HammerGesturesPlugin } from '@angular/platform-browser/src/dom/events/hammer_gestures';
-import { DomSanitizerImpl } from '@angular/platform-browser/src/security/dom_sanitization_service';
-import { DomRootRenderer } from '@angular/platform-browser/src/dom/dom_renderer';
-import { SharedStylesHost, DomSharedStylesHost } from '@angular/platform-browser/src/dom/shared_styles_host';
+import {
+  KeyEventsPlugin,
+  DomEventsPlugin,
+  HammerGesturesPlugin,
+  BROWSER_SANITIZATION_PROVIDERS,
+  DomRootRenderer,
+  SharedStylesHost,
+  DomSharedStylesHost,
+} from './__private_imports__';
 
 import {
   ErrorHandler,
@@ -42,7 +41,6 @@ import {
   NgModuleRef,
   NgZone,
   CompilerFactory,
-  Sanitizer,
   TestabilityRegistry
 } from '@angular/core';
 
@@ -691,8 +689,7 @@ export class MockTestabilityRegistry extends TestabilityRegistry {
     // normally in platform provides but there is url state in NodePlatformLocation
     { provide: PlatformLocation, useClass: NodePlatformLocation },
 
-    { provide: Sanitizer, useExisting: DomSanitizer },
-    { provide: DomSanitizer, useClass: DomSanitizerImpl },
+    BROWSER_SANITIZATION_PROVIDERS,
 
     { provide: ErrorHandler, useFactory: _errorHandler, deps: [] },
 
