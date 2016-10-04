@@ -1,6 +1,6 @@
 
 
-// internal
+// @internal
 export function cssHyphenate(propertyName: string): string {
   return propertyName.replace(/([A-Z])/g, '-$1')
     .replace(/^ms-/, '-ms-') // Internet Explorer vendor prefix.
@@ -9,28 +9,28 @@ export function cssHyphenate(propertyName: string): string {
 
 
 // Copied from @angular/core/facade/lang.ts
-// internal
+// @internal
 export function isPresent(obj: any): boolean {
   return obj !== undefined && obj !== null;
 }
 
-// internal
+// @internal
 export function isString(str: any): boolean {
   return typeof str === 'string';
 }
 
-// internal
+// @internal
 export function isBlank(obj: any): boolean {
   return obj === undefined || obj === null;
 }
 
-// internal
+// @internal
 export function regExFirstMatch (regExp: RegExp, input: string): RegExpExecArray {
   regExp.lastIndex = 0;
   return regExp.exec(input);
 }
 
-// internal
+// @internal
 export function setValueOnPath(context: any, path: string, value: any) {
   var parts = path.split('.');
   var obj: any = context;
@@ -48,7 +48,7 @@ export function setValueOnPath(context: any, path: string, value: any) {
   obj[parts.shift()] = value;
 }
 
-// internal
+// @internal
 export class ListWrapper {
   static contains<T>(list: T[], el: T): boolean { return list.indexOf(el) !== -1; }
   static remove<T>(list: T[], el: T): boolean {
@@ -61,7 +61,7 @@ export class ListWrapper {
   }
 }
 
-// internal
+// @internal
 export class StringMapWrapper {
   static create(): {[k: /*any*/ string]: any} {
     // Note: We are not using Object.create(null) here due to
@@ -139,17 +139,17 @@ function replaceAllMapped(s: string, from: RegExp, cb: (m: string[]) => string):
   });
 }
 
-// internal
+// @internal
 export function camelCaseToDashCase(input: string): string {
   return replaceAllMapped(input, CAMEL_CASE_REGEXP, (m: any) => { return '-' + m[1].toLowerCase(); });
 }
 
-// internal
+// @internal
 export function dashCaseToCamelCase(input: string): string {
   return replaceAllMapped(input, DASH_CASE_REGEXP, (m: any) => { return m[1].toUpperCase(); });
 }
 
-// internal
+// @internal
 export function stringify(token: any): string {
   if (typeof token === 'string') {
     return token;
@@ -172,10 +172,10 @@ export function stringify(token: any): string {
 }
 
 // Copied from @angular/facade/src/collection.ts
-// internal
+// @internal
 export const listContains = (list: any[], el: any): boolean => list.indexOf(el) !== -1;
 
-// internal
+// @internal
 export function stringMapForEach(map: {[key: string]: any}, callback: (V, K) => void) {
   for (var prop in map) {
       if (map.hasOwnProperty(prop)) {
@@ -185,20 +185,20 @@ export function stringMapForEach(map: {[key: string]: any}, callback: (V, K) => 
 }
 
 // Copied from @angular/http/src/http_utils.ts
-// internal
+// @internal
 export const isSuccess = ((status: number): boolean => (status >= 200 && status < 300));
 
-// internal
+// @internal
 export function _randomChar() {
   return String.fromCharCode(97 + Math.floor(Math.random() * 25));
 }
 
-// internal
+// @internal
 export function _appIdRandomProviderFactory() {
   return `${_randomChar()}${_randomChar()}${_randomChar()}`;
 }
 
-// internal
+// @internal
 export function arrayFlattenTree(children: any[], arr: any[]): any[] {
   for (let child of children) {
     if (Array.isArray(child)) {

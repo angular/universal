@@ -9,7 +9,7 @@ export const PRIME_CACHE: OpaqueToken = new OpaqueToken('PRIME_CACHE');
 export const COOKIE_KEY: OpaqueToken = new OpaqueToken('COOKIE_KEY');
 export const NODE_APP_ID = new OpaqueToken('NODE_APP_ID');
 
-// internal
+// @internal
 export function getUrlConfig() {
   return [
     { provide: APP_BASE_HREF, useValue: 'baseUrl' },
@@ -18,7 +18,7 @@ export function getUrlConfig() {
   ]
 }
 
-// internal
+// @internal
 export function createUrlProviders(config) {
   return getUrlConfig()
     .filter((provider) => (provider.useValue in config))

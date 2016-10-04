@@ -30,7 +30,7 @@ const {
 
 
 
-// internal
+// @internal
 export {
   // platform-browser
   BROWSER_SANITIZATION_PROVIDERS,

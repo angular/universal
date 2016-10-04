@@ -591,11 +591,11 @@ function decoratePreventDefault(eventHandler: Function): Function {
 }
 
 var COMPONENT_REGEX = /%COMP%/g;
-// internal
+// @internal
 export const COMPONENT_VARIABLE = '%COMP%';
-// internal
+// @internal
 export const HOST_ATTR = `_nghost-${COMPONENT_VARIABLE}`;
-// internal
+// @internal
 export const CONTENT_ATTR = `_ngcontent-${COMPONENT_VARIABLE}`;
 
 function _shimContentAttribute(componentShortId: string): string {

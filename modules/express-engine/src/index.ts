@@ -8,7 +8,7 @@ const { platformUniversalDynamic } = require('angular2-universal/node');
 import { PrebootOptions } from 'preboot';
 
 declare var Zone: any;
-// internal
+// @internal
 function s4() {
   return Math.floor((1 + Math.random()) * 0x10000).toString(16).substring(1);
 }

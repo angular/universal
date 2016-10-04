@@ -16,7 +16,6 @@
     "inlineSources": true,
   	"outDir": "dist",
     "pretty": true,
-    "stripInternal": true,
     "lib": ["es6", "dom"],
     "types": [
       "node", "jasmine"
