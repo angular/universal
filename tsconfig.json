@@ -20,7 +20,12 @@
     "stripInternal": false,
     "lib": ["es6", "dom"],
     "types": [
-      "node", "jasmine"
+      "body-parser",
+      "browserify",
+      "express",
+      "jasmine",
+      "node",
+      "through2"
     ],
     "paths": {
       "angular2-express-engine": [
