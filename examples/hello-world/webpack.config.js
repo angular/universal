@@ -35,7 +35,7 @@ var sharedPlugins = [
   new ForkCheckerPlugin()
 ];
 var webpackConfig = setTypeScriptAlias(require('./tsconfig.json'), {
-  cache: true,
+  cache: false,
 
   devtool: 'source-map',
 
