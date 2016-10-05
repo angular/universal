@@ -21,8 +21,8 @@ import {
   ResponseOptions,
   RequestOptionsArgs,
   ResponseType,
-  BrowserXhr,
-  XSRFStrategy,
+  // BrowserXhr,
+  // XSRFStrategy,
 
   Jsonp,
   JSONPBackend,
