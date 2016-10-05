@@ -10,6 +10,7 @@ import { FormsModule } from '@angular/forms';
 
 import { App, Wat } from './app';
 
+declare var Zone: any;
 
 @Component({
   selector: 'another-component',
@@ -29,6 +30,43 @@ export const platform = platformUniversalDynamic();
 function s4() {
   return Math.floor((1 + Math.random()) * 0x10000).toString(16).substring(1);
 }
+
+@NgModule({
+  bootstrap: [ App, AnotherComponent ],
+  declarations: [ App, Wat, AnotherComponent ],
+  imports: [
+    UniversalModule,
+    FormsModule
+  ]
+})
+export class MainModule {
+  ngOnInit() {
+    console.log('ngOnInit');
+  }
+  // ngDoCheck() {
+  //   console.log('ngDoCheck');
+  //   return true;
+  // }
+  ngOnStable() {
+    console.log('ngOnStable');
+  }
+  ngOnRendered() {
+    console.log('ngOnRendered');
+  }
+}
+
+function getConfig(document) {
+  return {
+    document: document,
+    ngModule: MainModule,
+    originUrl: 'http://localhost:3000',
+    baseUrl: '/',
+    requestUrl: '/',
+    // preboot: false,
+    preboot: { appRoot: ['app'], uglify: true },
+  }
+}
+
 export function main(document, config?: any) {
   var id = config && config.id || s4();
   var cancelHandler = () => false;
@@ -37,41 +75,14 @@ export function main(document, config?: any) {
   }
   if (cancelHandler()) { return Promise.resolve(document); }
 
-  @NgModule({
-    bootstrap: [ App, AnotherComponent ],
-    declarations: [ App, Wat, AnotherComponent ],
-    imports: [
-      // UniversalModule,
-      UniversalModule.withConfig({
-        document: document,
-        originUrl: 'http://localhost:3000',
-        baseUrl: '/',
-        requestUrl: '/',
-        // preboot: false,
-        preboot: { appRoot: ['app'], uglify: true },
-      }),
-      FormsModule
-    ]
-  })
-  class MainModule {
-    ngOnInit() {
-      console.log('ngOnInit');
-    }
-    // ngDoCheck() {
-    //   console.log('ngDoCheck');
-    //   return true;
-    // }
-    ngOnStable() {
-      console.log('ngOnStable');
-    }
-    ngOnRendered() {
-      console.log('ngOnRendered');
-    }
-  }
+
+  var zone = Zone.current.fork({
+    name: 'Universal',
+    properties: getConfig(document)
+  });
 
   // nodePlatform serialize
-  return platform
-    .serializeModule(MainModule, config)
+  return zone.run(() => platform.serializeModule(Zone.current.get('ngModule'), config))
     .then((html) => {
       // console.log('\n -- serializeModule FINISHED --');
       return html;
