@@ -1,0 +1,64 @@
+{
+  "compilerOptions": {
+    "declaration": false,
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "outDir": "dist",
+    "sourceMap": true,
+    "sourceRoot": "src",
+    "target": "es5",
+    "lib": ["es6", "dom"],
+    "baseUrl": ".",
+    "types": [
+      "body-parser",
+      "browserify",
+      "express",
+      "jasmine",
+      "node"
+    ],
+    "paths": {
+      "angular2-express-engine": [
+        "../../dist/express-engine"
+      ],
+      "angular2-universal-webpack-plugin": [
+        "../../dist/webpack-prerender"
+      ],
+      "angular2-platform-node": [
+        "../../dist/platform-node"
+      ],
+      "angular2-platform-node-dynamic": [
+        "../../dist/platform-node-dynamic"
+      ],
+      "angular2-universal": [
+        "../../dist/universal"
+      ],
+      "angular2-universal/browser": [
+        "../../dist/universal/browser"
+      ],
+      "angular2-universal/node": [
+        "../../dist/universal/node"
+      ],
+      "rxjs/*": [
+        "./node_modules/rxjs-es/*"
+      ]
+    }
+  },
+  "exclude": [
+    "node_modules",
+    "dist"
+  ],
+  "angularCompilerOptions": {
+    "basePath": ".",
+    "genDir": "ngfactory",
+    "skipMetadataEmit": false
+  },
+  "awesomeTypescriptLoaderOptions": {
+    "useWebpackText": true,
+    "forkChecker": true
+  },
+  "compileOnSave": false,
+  "buildOnSave": false,
+  "atom": { "rewriteTsconfig": false }
+}
