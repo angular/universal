@@ -46,40 +46,11 @@ var webpackConfig = setTypeScriptAlias(require('./tsconfig.json'), {
 
   module: {
     loaders: [
-      // fix angular2
-      // {
-      //   test: /(systemjs_component_resolver|system_js_ng_module_factory_loader)\.js$/,
-      //   loader: 'string-replace-loader',
-      //   query: {
-      //     search: '(lang_1(.*[\\n\\r]\\s*\\.|\\.))?(global(.*[\\n\\r]\\s*\\.|\\.))?(System|SystemJS)(.*[\\n\\r]\\s*\\.|\\.)import',
-      //     replace: 'System.import',
-      //     flags: 'g'
-      //   }
-      // },
-      // {
-      //   test: /.js$/,
-      //   loader: 'string-replace-loader',
-      //   query: {
-      //     search: 'moduleId: module.id,',
-      //     replace: '',
-      //     flags: 'g'
-      //   }
-      // },
-      // end angular2 fix
       // .ts files for TypeScript
       { test: /\.(js|ts)$/, loaders: ['awesome-typescript-loader', 'angular2-template-loader'], exclude: [/node_modules/] },
       { test: /\.json$/, loader: 'json-loader' },
       { test: /\.html$/, loader: 'raw-loader' },
       { test: /\.css$/, loader: 'raw-loader' },
-      // {
-      //   test: /\.js$/,
-      //   loader: 'string-replace-loader',
-      //   query: {
-      //     search: 'var sourceMappingUrl = extractSourceMappingUrl\\(cssText\\);',
-      //     replace: 'var sourceMappingUrl = "";',
-      //     flags: 'g'
-      //   }
-      // }
     ],
 
   },
