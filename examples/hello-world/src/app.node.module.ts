@@ -25,8 +25,6 @@ declare var Zone: any;
 })
 class AnotherComponent {}
 
-export const platform = platformUniversalDynamic();
-
 function s4() {
   return Math.floor((1 + Math.random()) * 0x10000).toString(16).substring(1);
 }
@@ -54,6 +52,9 @@ export class MainModule {
     console.log('ngOnRendered');
   }
 }
+
+export const platform = platformUniversalDynamic();
+// platform.cacheModuleFactory(MainModule);
 
 function getConfig(document) {
   return {
