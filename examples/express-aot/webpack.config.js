@@ -58,7 +58,7 @@ var webpackConfig = setTypeScriptAlias(require('./tsconfig.json'), {
   module: {
     loaders: [
       // .ts files for TypeScript
-      { test: /\.(js|ts)$/, loaders: ['awesome-typescript-loader', 'angular2-template-loader'], exclude: [/node_modules/] },
+      { test: /\.ts$/, loaders: ['awesome-typescript-loader', 'angular2-template-loader'], exclude: [/node_modules/] },
       { test: /\.json$/, loader: 'json-loader' },
       { test: /\.html$/, loader: 'raw-loader' },
       { test: /\.css$/, loader: 'raw-loader' },

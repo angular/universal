@@ -44,7 +44,7 @@ export class Wat {
       <div *ngIf="toggle">
         <wat></wat>
       </div>
-      <button (click)="onWat($event)">Wat</button>
+      <button (click)="onWat()">Wat</button>
     </div>
   `
 })
