@@ -3,7 +3,7 @@ var path = require('path');
 
 module.exports = function(config) {
   config.target = 'web';
-  config.entry =  './ngfactory/client',
+  config.entry =  './src/client.main.ts',
   config.output.filename = 'public/browser-bundle.js';
   config.output.library = 'universal';
   config.output.libraryTarget = 'var';
