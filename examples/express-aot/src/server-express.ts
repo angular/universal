@@ -14,7 +14,7 @@ const app = express();
 const ROOT = path.join(path.resolve(__dirname, '..'));
 
 // Express View
-app.engine('.html', createEngine({ precompile: true, ngModule: MainModuleNgFactory, time: true }));
+app.engine('.html', createEngine({ precompile: false, ngModule: MainModuleNgFactory, time: true }));
 app.set('views', __dirname);
 app.set('view engine', 'html');
 

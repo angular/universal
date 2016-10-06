@@ -7,17 +7,27 @@ import {
   EventManager,
   HAMMER_GESTURE_CONFIG,
   HammerGestureConfig,
+  DomSanitizer,
 } from '@angular/platform-browser';
 
-import {
-  KeyEventsPlugin,
-  DomEventsPlugin,
-  HammerGesturesPlugin,
-  BROWSER_SANITIZATION_PROVIDERS,
-  DomRootRenderer,
-  SharedStylesHost,
-  DomSharedStylesHost,
-} from './__private_imports__';
+// Private imports - Remove me!
+import { KeyEventsPlugin } from '@angular/platform-browser/src/dom/events/key_events';
+import { DomEventsPlugin } from '@angular/platform-browser/src/dom/events/dom_events';
+import { HammerGesturesPlugin } from '@angular/platform-browser/src/dom/events/hammer_gestures';
+import { DomRootRenderer } from '@angular/platform-browser/src/dom/dom_renderer';
+import { SharedStylesHost, DomSharedStylesHost } from '@angular/platform-browser/src/dom/shared_styles_host';
+import { DomSanitizerImpl } from '@angular/platform-browser/src/security/dom_sanitization_service';
+
+// Correct imports - get me back in!
+// import {
+//   KeyEventsPlugin,
+//   DomEventsPlugin,
+//   HammerGesturesPlugin,
+//   BROWSER_SANITIZATION_PROVIDERS,
+//   DomRootRenderer,
+//   SharedStylesHost,
+//   DomSharedStylesHost,
+// } from './__private_imports__';
 
 import {
   ErrorHandler,
@@ -41,7 +51,8 @@ import {
   NgModuleRef,
   NgZone,
   CompilerFactory,
-  TestabilityRegistry
+  TestabilityRegistry,
+  Sanitizer,
 } from '@angular/core';
 
 import { CommonModule, PlatformLocation, APP_BASE_HREF } from '@angular/common';
@@ -689,7 +700,9 @@ export class MockTestabilityRegistry extends TestabilityRegistry {
     // normally in platform provides but there is url state in NodePlatformLocation
     { provide: PlatformLocation, useClass: NodePlatformLocation },
 
-    BROWSER_SANITIZATION_PROVIDERS,
+    // BROWSER_SANITIZATION_PROVIDERS,
+    { provide: Sanitizer, useExisting: DomSanitizer },
+    { provide: DomSanitizer, useClass: DomSanitizerImpl },
 
     { provide: ErrorHandler, useFactory: _errorHandler, deps: [] },
 
