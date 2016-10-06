@@ -21,8 +21,8 @@ import {
   ResponseOptions,
   RequestOptionsArgs,
   ResponseType,
-  // BrowserXhr,
-  // XSRFStrategy,
+  BrowserXhr,
+  XSRFStrategy,
 
   Jsonp,
   JSONPBackend,
@@ -136,7 +136,7 @@ export class PreloadHttp extends Http {
 
 
 @Injectable()
-export class NodeConnection /*implements XHRConnection*/ {
+export class NodeConnection implements XHRConnection {
   public readyState: ReadyState;
   public request: Request;
   public response: Observable<Response> | Observable<any>;
@@ -249,15 +249,15 @@ export class NodeConnection /*implements XHRConnection*/ {
 
 
 @Injectable()
-export class NodeBackend /*extends XHRBackend*/ {
+export class NodeBackend extends XHRBackend {
   constructor(
     private baseResponseOptions: ResponseOptions,
-    // _browserXHR: BrowserXhr,
-    // _xsrfStrategy: XSRFStrategy,
+    _browserXHR: BrowserXhr,
+    _xsrfStrategy: XSRFStrategy,
     _ngZone: NgZone,
     @Inject(APP_BASE_HREF) private _baseUrl: string,
     @Inject(ORIGIN_URL) private _originUrl: string) {
-      // super(_browserXHR, baseResponseOptions, _xsrfStrategy);
+      super(_browserXHR, baseResponseOptions, _xsrfStrategy);
     }
 
   public createConnection(request: Request): NodeConnection {
@@ -390,9 +390,15 @@ export class NodeJsonpBackend_ extends NodeJsonpBackend /*implements JSONPBacken
   }
 }
 
+export function __noop() {
+
+}
+
 export const NODE_HTTP_PROVIDERS_COMMON: Array<any> = [
-  {provide: RequestOptions, useClass: BaseRequestOptions},
-  {provide: ResponseOptions, useClass: BaseResponseOptions}
+  { provide: XSRFStrategy, useValue: __noop },
+  { provide: BrowserXhr, useValue: __noop },
+  { provide: RequestOptions, useClass: BaseRequestOptions },
+  { provide: ResponseOptions, useClass: BaseResponseOptions }
 ];
 
 export const NODE_HTTP_PROVIDERS = [
