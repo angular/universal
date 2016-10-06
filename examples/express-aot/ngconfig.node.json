@@ -3,6 +3,14 @@
     "target": "es6",
     "module": "commonjs",
     "lib": ["es5", "dom"],
+    "types": [
+      "body-parser",
+      "browserify",
+      "core-js",
+      "express",
+      "jasmine",
+      "node"
+    ],
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
     "outDir": "ngfactory",
@@ -34,11 +42,8 @@
       ]
     }
   },
-  "exclude": [
-    "node_modules",
-    "src/app/github/**/*",
-    "src/app/app.component.ts",
-    "src/app.browser.module.ts"
+  "files": [
+    "src/app.node.module.ts"
   ],
   "angularCompilerOptions": {
     "basePath": ".",
