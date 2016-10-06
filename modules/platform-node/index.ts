@@ -1,4 +1,4 @@
-export {getDOM} from './get-dom';
+export { getDOM } from './get-dom';
 
 export * from './helper';
 

@@ -9,11 +9,12 @@
     "sourceMap": true,
     "sourceRoot": "src",
     "target": "es5",
-    "lib": ["es6", "dom"],
+    "lib": ["es5", "dom"],
     "baseUrl": ".",
     "types": [
       "body-parser",
       "browserify",
+      "core-js",
       "express",
       "jasmine",
       "node"
@@ -47,7 +48,9 @@
   },
   "exclude": [
     "node_modules",
-    "dist"
+    "dist",
+    "./src/app.browser.module.ts",
+    "./src/app.node.module.ts"
   ],
   "angularCompilerOptions": {
     "basePath": ".",

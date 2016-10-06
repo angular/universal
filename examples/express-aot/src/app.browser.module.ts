@@ -7,14 +7,14 @@ import {
   platformUniversalDynamic
 } from 'angular2-universal/browser';
 
-// import { App, Wat } from './app';
+import { App, Wat } from './app';
 
 
 export const platform = platformUniversalDynamic();
 
 @NgModule({
-  // bootstrap: [ App ],
-  // declarations: [ App, Wat ],
+  bootstrap: [ App ],
+  declarations: [ App, Wat ],
   imports: [
     UniversalModule,
     FormsModule
@@ -23,7 +23,7 @@ export const platform = platformUniversalDynamic();
 
   ]
 })
-export class MainBrowserModule {
+export class MainModule {
 }
 
 export function main() {

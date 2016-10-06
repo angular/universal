@@ -20,7 +20,7 @@ import { App, Wat } from './app';
     FormsModule
   ]
 })
-export class MainNodeModule {
+export class MainModule {
   constructor() {
     createGlobalProxy();
   }
