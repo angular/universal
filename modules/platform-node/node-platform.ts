@@ -7,27 +7,11 @@ import {
   EventManager,
   HAMMER_GESTURE_CONFIG,
   HammerGestureConfig,
-  DomSanitizer,
 } from '@angular/platform-browser';
 
-// Private imports - Remove me!
-import { KeyEventsPlugin } from '@angular/platform-browser/src/dom/events/key_events';
-import { DomEventsPlugin } from '@angular/platform-browser/src/dom/events/dom_events';
-import { HammerGesturesPlugin } from '@angular/platform-browser/src/dom/events/hammer_gestures';
-import { DomRootRenderer } from '@angular/platform-browser/src/dom/dom_renderer';
-import { SharedStylesHost, DomSharedStylesHost } from '@angular/platform-browser/src/dom/shared_styles_host';
-import { DomSanitizerImpl } from '@angular/platform-browser/src/security/dom_sanitization_service';
-
-// Correct imports - get me back in!
-// import {
-//   KeyEventsPlugin,
-//   DomEventsPlugin,
-//   HammerGesturesPlugin,
-//   BROWSER_SANITIZATION_PROVIDERS,
-//   DomRootRenderer,
-//   SharedStylesHost,
-//   DomSharedStylesHost,
-// } from './__private_imports__';
+import {
+  __platform_browser_private__ as privateImports,
+} from '@angular/platform-browser';
 
 import {
   ErrorHandler,
@@ -52,7 +36,6 @@ import {
   NgZone,
   CompilerFactory,
   TestabilityRegistry,
-  Sanitizer,
 } from '@angular/core';
 
 import { CommonModule, PlatformLocation, APP_BASE_HREF } from '@angular/common';
@@ -700,19 +683,17 @@ export class MockTestabilityRegistry extends TestabilityRegistry {
     // normally in platform provides but there is url state in NodePlatformLocation
     { provide: PlatformLocation, useClass: NodePlatformLocation },
 
-    // BROWSER_SANITIZATION_PROVIDERS,
-    { provide: Sanitizer, useExisting: DomSanitizer },
-    { provide: DomSanitizer, useClass: DomSanitizerImpl },
+    privateImports.BROWSER_SANITIZATION_PROVIDERS,
 
     { provide: ErrorHandler, useFactory: _errorHandler, deps: [] },
 
     { provide: DOCUMENT, useFactory: _document, deps: _documentDeps },
 
     NodeDomEventsPlugin,
-    { provide: DomEventsPlugin, useExisting: NodeDomEventsPlugin, multi: true },
+    { provide: privateImports.DomEventsPlugin, useExisting: NodeDomEventsPlugin, multi: true },
     { provide: EVENT_MANAGER_PLUGINS, useExisting: NodeDomEventsPlugin, multi: true },
-    { provide: EVENT_MANAGER_PLUGINS, useClass: KeyEventsPlugin, multi: true },
-    { provide: EVENT_MANAGER_PLUGINS, useClass: HammerGesturesPlugin, multi: true },
+    { provide: EVENT_MANAGER_PLUGINS, useClass: privateImports.KeyEventsPlugin, multi: true },
+    { provide: EVENT_MANAGER_PLUGINS, useClass: privateImports.HammerGesturesPlugin, multi: true },
     { provide: HAMMER_GESTURE_CONFIG, useClass: HammerGestureConfig },
 
     NodeEventManager,
@@ -725,12 +706,12 @@ export class MockTestabilityRegistry extends TestabilityRegistry {
     // ELEMENT_PROBE_PROVIDERS,
 
     NodeDomRootRenderer,
-    { provide: DomRootRenderer, useExisting: NodeDomRootRenderer },
-    { provide: RootRenderer, useExisting: DomRootRenderer },
+    { provide: privateImports.DomRootRenderer, useExisting: NodeDomRootRenderer },
+    { provide: RootRenderer, useExisting: privateImports.DomRootRenderer },
 
     NodeSharedStylesHost,
-    { provide: SharedStylesHost, useExisting: NodeSharedStylesHost },
-    { provide: DomSharedStylesHost, useExisting: NodeSharedStylesHost },
+    { provide: privateImports.SharedStylesHost, useExisting: NodeSharedStylesHost },
+    { provide: privateImports.DomSharedStylesHost, useExisting: NodeSharedStylesHost },
 
     { provide: APP_BASE_HREF, useFactory: _APP_BASE_HREF, deps: [ NgZone ] },
     { provide: REQUEST_URL, useFactory: _REQUEST_URL, deps: [ NgZone ] },
