@@ -10,8 +10,14 @@ import {
 } from '@angular/platform-browser';
 
 import {
-  __platform_browser_private__ as privateImports,
-} from '@angular/platform-browser';
+  BROWSER_SANITIZATION_PROVIDERS,
+  DomEventsPlugin,
+  KeyEventsPlugin,
+  DomRootRenderer,
+  SharedStylesHost,
+  HammerGesturesPlugin,
+  DomSharedStylesHost,
+} from './__private_imports__';
 
 import {
   ErrorHandler,
@@ -683,17 +689,17 @@ export class MockTestabilityRegistry extends TestabilityRegistry {
     // normally in platform provides but there is url state in NodePlatformLocation
     { provide: PlatformLocation, useClass: NodePlatformLocation },
 
-    privateImports.BROWSER_SANITIZATION_PROVIDERS,
+    BROWSER_SANITIZATION_PROVIDERS,
 
     { provide: ErrorHandler, useFactory: _errorHandler, deps: [] },
 
     { provide: DOCUMENT, useFactory: _document, deps: _documentDeps },
 
     NodeDomEventsPlugin,
-    { provide: privateImports.DomEventsPlugin, useExisting: NodeDomEventsPlugin, multi: true },
+    { provide: DomEventsPlugin, useExisting: NodeDomEventsPlugin, multi: true },
     { provide: EVENT_MANAGER_PLUGINS, useExisting: NodeDomEventsPlugin, multi: true },
-    { provide: EVENT_MANAGER_PLUGINS, useClass: privateImports.KeyEventsPlugin, multi: true },
-    { provide: EVENT_MANAGER_PLUGINS, useClass: privateImports.HammerGesturesPlugin, multi: true },
+    { provide: EVENT_MANAGER_PLUGINS, useClass: KeyEventsPlugin, multi: true },
+    { provide: EVENT_MANAGER_PLUGINS, useClass: HammerGesturesPlugin, multi: true },
     { provide: HAMMER_GESTURE_CONFIG, useClass: HammerGestureConfig },
 
     NodeEventManager,
@@ -706,12 +712,12 @@ export class MockTestabilityRegistry extends TestabilityRegistry {
     // ELEMENT_PROBE_PROVIDERS,
 
     NodeDomRootRenderer,
-    { provide: privateImports.DomRootRenderer, useExisting: NodeDomRootRenderer },
-    { provide: RootRenderer, useExisting: privateImports.DomRootRenderer },
+    { provide: DomRootRenderer, useExisting: NodeDomRootRenderer },
+    { provide: RootRenderer, useExisting: DomRootRenderer },
 
     NodeSharedStylesHost,
-    { provide: privateImports.SharedStylesHost, useExisting: NodeSharedStylesHost },
-    { provide: privateImports.DomSharedStylesHost, useExisting: NodeSharedStylesHost },
+    { provide: SharedStylesHost, useExisting: NodeSharedStylesHost },
+    { provide: DomSharedStylesHost, useExisting: NodeSharedStylesHost },
 
     { provide: APP_BASE_HREF, useFactory: _APP_BASE_HREF, deps: [ NgZone ] },
     { provide: REQUEST_URL, useFactory: _REQUEST_URL, deps: [ NgZone ] },
