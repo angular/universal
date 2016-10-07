@@ -67,11 +67,20 @@ function ignoreAlias (config, log) {
       if (log) { console.log('resolve.alias', request); }
       return cb();
     }
-    return checkNodeImport(context, request, cb);
+    return checkExternal(context, request, cb);
   }
 }
 
-function checkNodeImport(context, request, cb) {
+function checkExternal(context, request, cb) {
+  // With AOT, ngfactory deep imports @angular/core/src/linker/ng_module_factory.js
+  // The problem with deep imports in angular now is they use esmodules, so we need
+  // to process this file and anything it depends on, so let's ensure anything @angular/
+  // is processed as there are dependencies of @angular/common as well (possibly others)
+  if (request.indexOf('@angular/') === 0) {
+    return cb();
+  }
+
+  // Check node import
   if (!path.isAbsolute(request) && request.charAt(0) !== '.') {
     return cb(null, 'commonjs ' + request);
   }
