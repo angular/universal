@@ -166,8 +166,8 @@ export class Parse5DomAdapter extends DomAdapter {
       this.dispatchEvent(el._window, evt);
     }
   }
-  createMouseEvent(eventType: any): Event { return this.createEvent(eventType); }
-  createEvent(eventType: string): Event {
+  createMouseEvent(eventType: any): any /* Event */ { return this.createEvent(eventType); }
+  createEvent(eventType: string): any /* Event */ {
     let event = <Event>{
       type: eventType,
       defaultPrevented: false,
@@ -180,7 +180,7 @@ export class Parse5DomAdapter extends DomAdapter {
   getInnerHTML(el: any): string {
     return parse5.serialize(this.templateAwareRoot(el), {treeAdapter});
   }
-  getTemplateContent(_el: any): Node { return null; }
+  getTemplateContent(_el: any): any /* Node */ { return null; }
   getOuterHTML(el: any): string {
     const fragment = treeAdapter.createDocumentFragment();
     this.appendChild(fragment, el);
@@ -190,10 +190,10 @@ export class Parse5DomAdapter extends DomAdapter {
   nodeValue(node: any): string { return node.nodeValue; }
   type(_node: any): string { throw _notImplemented('type'); }
   content(node: any): string { return node.childNodes[0]; }
-  firstChild(el: any): Node { return el.firstChild; }
-  nextSibling(el: any): Node { return el.nextSibling; }
-  parentElement(el: any): Node { return el.parent; }
-  childNodes(el: any): Node[] { return el.childNodes; }
+  firstChild(el: any): any /* Node */ { return el.firstChild; }
+  nextSibling(el: any): any /* Node */ { return el.nextSibling; }
+  parentElement(el: any): any /* Node */ { return el.parent; }
+  childNodes(el: any): any /* Node */[] { return el.childNodes; }
   childNodesAsList(el: any): any[] {
     const childNodes = el.childNodes;
     const res = new Array(childNodes.length);
@@ -216,7 +216,7 @@ export class Parse5DomAdapter extends DomAdapter {
       this.remove(node);
     }
   }
-  remove(el: any): HTMLElement {
+  remove(el: any): any /* HTMLElement */ {
     const parent = el.parent;
     if (parent) {
       const index = parent.childNodes.indexOf(el);
@@ -289,16 +289,16 @@ export class Parse5DomAdapter extends DomAdapter {
   getChecked(el: any): boolean { return el.checked; }
   setChecked(el: any, value: boolean) { el.checked = value; }
   createComment(text: string): Comment { return treeAdapter.createCommentNode(text); }
-  createTemplate(html: any): HTMLElement {
+  createTemplate(html: any): any /* HTMLElement */ {
     const template = treeAdapter.createElement('template', 'http://www.w3.org/1999/xhtml', []);
     const content = parse5.parseFragment(html, {treeAdapter});
     treeAdapter.setTemplateContent(template, content);
     return template;
   }
-  createElement(tagName: any): HTMLElement {
+  createElement(tagName: any): any /* HTMLElement */ {
     return treeAdapter.createElement(tagName, 'http://www.w3.org/1999/xhtml', []);
   }
-  createElementNS(ns: any, tagName: any): HTMLElement {
+  createElementNS(ns: any, tagName: any): any /* HTMLElement */ {
     return treeAdapter.createElement(tagName, ns, []);
   }
   createTextNode(text: string): Text {
@@ -306,7 +306,7 @@ export class Parse5DomAdapter extends DomAdapter {
     t.type = 'text';
     return t;
   }
-  createScriptTag(attrName: string, attrValue: string): HTMLElement {
+  createScriptTag(attrName: string, attrValue: string): any /* HTMLElement */ {
     return treeAdapter.createElement(
         'script', 'http://www.w3.org/1999/xhtml', [{name: attrName, value: attrValue}]);
   }
@@ -315,15 +315,15 @@ export class Parse5DomAdapter extends DomAdapter {
     this.setText(style, css);
     return <HTMLStyleElement>style;
   }
-  createShadowRoot(el: any): HTMLElement {
+  createShadowRoot(el: any): any /* HTMLElement */ {
     el.shadowRoot = treeAdapter.createDocumentFragment();
     el.shadowRoot.parent = el;
     return el.shadowRoot;
   }
   getShadowRoot(el: any): Element { return el.shadowRoot; }
   getHost(el: any): string { return el.host; }
-  getDistributedNodes(_el: any): Node[] { throw _notImplemented('getDistributedNodes'); }
-  clone(node: Node): Node {
+  getDistributedNodes(_el: any): any /* Node */[] { throw _notImplemented('getDistributedNodes'); }
+  clone(node: any /* Node */): any /* Node */ {
     const _recursive = (node: any) => {
       const nodeClone = Object.create(Object.getPrototypeOf(node));
       for (const prop in node) {
@@ -364,10 +364,10 @@ export class Parse5DomAdapter extends DomAdapter {
     };
     return _recursive(node);
   }
-  getElementsByClassName(element: any, name: string): HTMLElement[] {
+  getElementsByClassName(element: any, name: string): any /* HTMLElement */[] {
     return this.querySelectorAll(element, '.' + name);
   }
-  getElementsByTagName(_element: any, _name: string): HTMLElement[] {
+  getElementsByTagName(_element: any, _name: string): any /* HTMLElement */[] {
     throw _notImplemented('getElementsByTagName');
   }
   classList(element: any): string[] {
