@@ -48,14 +48,6 @@ export class Parse5DomAdapter extends DomAdapter {
     setRootDomAdapter(new Parse5DomAdapter());
   }
 
-  // Previously we had:
-  // static makeCurrent() {
-  //   parser = parse5;
-  //   serializer = parse5.serialize;
-  //   treeAdapter = parse5.treeAdapters.htmlparser2;
-  //   setRootDomAdapter(new Parse5DomAdapter());
-  // }
-
   parse(_templateHtml: string) { throw _notImplemented('parse'); }
 
   hasProperty(_element: any, name: string): boolean {
