@@ -141,7 +141,7 @@ export class Parse5DomAdapter extends DomAdapter {
       cssSelector.setElement(this.tagName(node));
       if (node.attribs) {
         for (const attrName in node.attribs) {
-          if (node.attibs.hasOwnProperty(attrName)) {
+          if (node.attribs.hasOwnProperty(attrName)) {
           cssSelector.addAttribute(attrName, node.attribs[attrName]);
           }
         }
