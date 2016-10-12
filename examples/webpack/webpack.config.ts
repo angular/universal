@@ -11,7 +11,7 @@ var TsConfigPathsPlugin = require('awesome-typescript-loader').TsConfigPathsPlug
 var ForkCheckerPlugin = require('awesome-typescript-loader').ForkCheckerPlugin;
 
 import { UniversalPrerender } from 'angular2-webpack-prerender';
-import { MainModule } from './src/main.node';
+import { MainModule } from './src/app.node.module';
 debugger
 
 var sharedPlugins = [
@@ -40,7 +40,7 @@ var sharedPlugins = [
   new ForkCheckerPlugin(),
   new UniversalPrerender({
     ngModule: MainModule,
-    documentPath: 'index.html',
+    documentPath: './public/index.html',
     document: `
 <!doctype>
 <html lang="en">
