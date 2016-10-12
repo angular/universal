@@ -539,7 +539,7 @@ export class Parse5DomAdapter extends DomAdapter {
   getTitle(): string { 
     const document = Zone.current.get('document');
     if (document && document.title) {
-      return document.title = newTitle;
+      return document.title;
     }
     throw _notImplemented('getTitle');
   }
