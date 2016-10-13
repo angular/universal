@@ -2,7 +2,7 @@ import './polyfills.browser';
 import { enableProdMode } from '@angular/core';
 enableProdMode();
 
-import {main} from './app.browser.module';
+import { main } from './client.main';
 
 var _win: any = window;
 let bootOnce = false;
