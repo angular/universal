@@ -7,7 +7,7 @@ var DedupePlugin = require('webpack/lib/optimize/DedupePlugin');
 var ContextReplacementPlugin = require('webpack/lib/ContextReplacementPlugin');
 var TsConfigPathsPlugin = require('awesome-typescript-loader').TsConfigPathsPlugin;
 var ForkCheckerPlugin = require('awesome-typescript-loader').ForkCheckerPlugin;
-var NgcWebpackPlugin = require('@ngtools/webpack').NgcWebpackPlugin;
+// var NgcWebpackPlugin = require('@ngtools/webpack').NgcWebpackPlugin;
 
 var sharedPlugins = [
   // new DedupePlugin(),
