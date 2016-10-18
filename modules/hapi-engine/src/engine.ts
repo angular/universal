@@ -92,7 +92,7 @@ export class HapiEngine {
       const mergedContext = Object.assign({}, mergedConfig, context);
 
       // runtime variables passed from compile to renderer
-      const mergedRuntimeOptions = Object.assign({}, mergedConfig, { platformRef, template });
+      const mergedRuntimeOptions = Object.assign({}, runtimeOptions, { platformRef, template });
 
       this._renderer(mergedContext, mergedRuntimeOptions, callback);
     };
