@@ -1,6 +1,8 @@
 import { __platform_browser_private__ } from '@angular/platform-browser';
 import { __core_private__ } from '@angular/core';
-import { __compiler_private__ } from '@angular/compiler';
+import {
+  SelectorMatcher as SelectorMatcher211, 
+  CssSelector as CssSelector211 } from '@angular/compiler';
 
 // PRIVATE
 const {
@@ -16,18 +18,24 @@ const {
 } = __platform_browser_private__;
 
 const {
-  ViewUtils,
+  view_utils,
   AnimationKeyframe,
   AnimationPlayer,
   AnimationStyles,
   RenderDebugInfo
 } = __core_private__;
 
-const {
-  SelectorMatcher,
-  CssSelector
-} = __compiler_private__;
+let SelectorMatcher;
+let CssSelector;
 
+if (SelectorMatcher211 && CssSelector211) {
+  SelectorMatcher = SelectorMatcher211;
+  CssSelector = CssSelector211;
+} else {
+  const _compiler_private_  = require('@angular/compiler').__compiler_private__;
+  SelectorMatcher = _compiler_private_.SelectorMatcher;
+  CssSelector = _compiler_private_.CssSelector;
+}
 
 
 // @internal
@@ -47,9 +55,8 @@ export {
   SelectorMatcher,
   CssSelector,
 
-
   // core
-  ViewUtils,
+  view_utils,
   AnimationKeyframe,
   AnimationPlayer,
   AnimationStyles,
