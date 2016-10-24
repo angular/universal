@@ -18,12 +18,21 @@ const {
 } = __platform_browser_private__;
 
 const {
-  view_utils,
   AnimationKeyframe,
   AnimationPlayer,
   AnimationStyles,
   RenderDebugInfo
 } = __core_private__;
+
+let view_utils;
+let ViewUtils;
+
+if (__core_private__.ViewUtils) {
+  ViewUtils = __core_private__.ViewUtils;
+} else {
+  view_utils = __core_private__.view_utils;
+}
+
 
 let SelectorMatcher;
 let CssSelector;
@@ -56,7 +65,8 @@ export {
   CssSelector,
 
   // core
-  view_utils,
+  ViewUtils,  // < 2.1.0
+  view_utils, // 2.1.1 +
   AnimationKeyframe,
   AnimationPlayer,
   AnimationStyles,
