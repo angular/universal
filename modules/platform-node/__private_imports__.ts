@@ -27,10 +27,10 @@ const {
 let view_utils;
 let ViewUtils;
 
-if (__core_private__.ViewUtils) {
-  ViewUtils = __core_private__.ViewUtils;
+if (__core_private__['ViewUtils']) {
+  ViewUtils = __core_private__['ViewUtils'];
 } else {
-  view_utils = __core_private__.view_utils;
+  view_utils = __core_private__['view_utils'];
 }
 
 
