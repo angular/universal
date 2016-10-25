@@ -59,6 +59,7 @@
   },
   "scripts": {
     "ngc": "ngc",
+    "jasmine": "jasmine",
     "test": "gulp test"
   },
   "devDependencies": {
