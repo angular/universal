@@ -58,7 +58,7 @@ gulp.task('build:no-clean', build);
 
 function build() {
   return new Promise((resolve, reject) => {
-    child_process.exec('node_modules/.bin/ngc', (err, stdout, stderr) => {
+    child_process.exec('npm run ngc', (err, stdout, stderr) => {
       if (err) {
         reject(err);
         return;

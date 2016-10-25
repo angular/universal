@@ -58,6 +58,7 @@
     "npm": ">= 3"
   },
   "scripts": {
+    "ngc": "ngc",
     "test": "gulp test"
   },
   "devDependencies": {
