@@ -31,9 +31,10 @@ export function parseDocument (documentHtml: string): any {
   // Build entire doc <!doctype><html> etc
   if (documentHtml.indexOf('<html>') > -1 && documentHtml.indexOf('</html>') > -1) {
     doc = parse5.parse(documentHtml, { treeAdapter : parse5.treeAdapters.htmlparser2 });
+  } else {
+    // ASP.NET case : parse only the fragment - don't build entire <html> doc
+    doc = parseFragment(documentHtml);
   }
-  // ASP.NET case : parse only the fragment - don't build entire <html> doc
-  doc = parseFragment(documentHtml);
   
 
   let rootNode = undefined;
