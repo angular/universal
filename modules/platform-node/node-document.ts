@@ -26,17 +26,15 @@ export function parseDocument (documentHtml: string): any {
     throw new Error('parseDocument needs to be a string to be parsed correctly');
   }
 
-  const doc = parse5.parse(documentHtml, { treeAdapter : parse5.treeAdapters.htmlparser2 });
+  let doc;
 
-
-  /*
   // Build entire doc <!doctype><html> etc
   if (documentHtml.indexOf('<html>') > -1 && documentHtml.indexOf('</html>') > -1) {
-    const doc = parser.parse(documentHtml);
+    doc = parse5.parse(documentHtml, { treeAdapter : parse5.treeAdapters.htmlparser2 });
   }
   // ASP.NET case : parse only the fragment - don't build entire <html> doc
-  const doc = parser.parseFragment(documentHtml);
-  */
+  doc = parseFragment(documentHtml);
+  
 
   let rootNode = undefined;
   let bodyNode = undefined;
