@@ -1,0 +1,56 @@
+{
+  "compilerOptions": {
+    "target": "es6",
+    "module": "commonjs",
+    "lib": ["es5", "dom"],
+    "types": [
+      "body-parser",
+      "browserify",
+      "core-js",
+      "express",
+      "jasmine",
+      "node"
+    ],
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "outDir": "ngfactory",
+    "baseUrl": ".",
+    "paths": {
+      "angular2-express-engine": [
+        "../../dist/express-engine"
+      ],
+      "angular2-universal-webpack-plugin": [
+        "../../dist/webpack-prerender"
+      ],
+      "angular2-platform-node": [
+        "../../dist/platform-node"
+      ],
+      "angular2-platform-node-dynamic": [
+        "../../dist/platform-node-dynamic"
+      ],
+      "angular2-universal": [
+        "../../dist/universal"
+      ],
+      "angular2-universal/browser": [
+        "../../dist/universal/browser"
+      ],
+      "angular2-universal/node": [
+        "../../dist/universal/node"
+      ],
+      "rxjs/*": [
+        "./node_modules/rxjs-es/*"
+      ]
+    }
+  },
+  "files": [
+    "src/app.node.module.ts"
+  ],
+  "angularCompilerOptions": {
+    "basePath": ".",
+    "genDir": "ngfactory",
+    "skipMetadataEmit": false
+  },
+  "compileOnSave": false,
+  "buildOnSave": false,
+  "atom": { "rewriteTsconfig": false }
+}

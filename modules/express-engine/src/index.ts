@@ -63,7 +63,7 @@ export function createEngine(options?: any) {
 
   const platformRef: any = __platform(__providers);
   var prom;
-  if (_options.ngModule) {
+  if (_options.ngModule && _options.precompile) {
     prom = platformRef.cacheModuleFactory(_options.ngModule)
   }
 
@@ -109,8 +109,6 @@ export function createEngine(options?: any) {
         name: 'UNIVERSAL request',
         properties: _data
       });
-
-
 
       // convert to string
       return zone.run(() => (_options.precompile ?

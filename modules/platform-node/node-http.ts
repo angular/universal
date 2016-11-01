@@ -376,7 +376,7 @@ export class NodeJSONPConnection {
 export abstract class NodeJsonpBackend extends ConnectionBackend {}
 
 @Injectable()
-export class NodeJsonpBackend_ extends NodeJsonpBackend implements JSONPBackend {
+export class NodeJsonpBackend_ extends NodeJsonpBackend /*implements JSONPBackend*/ {
   constructor(
     private _baseResponseOptions: ResponseOptions,
     private _ngZone: NgZone,
@@ -390,9 +390,15 @@ export class NodeJsonpBackend_ extends NodeJsonpBackend implements JSONPBackend 
   }
 }
 
+export function _noop() {
+
+}
+
 export const NODE_HTTP_PROVIDERS_COMMON: Array<any> = [
-  {provide: RequestOptions, useClass: BaseRequestOptions},
-  {provide: ResponseOptions, useClass: BaseResponseOptions}
+  { provide: XSRFStrategy, useValue: _noop },
+  { provide: BrowserXhr, useValue: _noop },
+  { provide: RequestOptions, useClass: BaseRequestOptions },
+  { provide: ResponseOptions, useClass: BaseResponseOptions }
 ];
 
 export const NODE_HTTP_PROVIDERS = [

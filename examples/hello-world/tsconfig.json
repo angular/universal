@@ -25,10 +25,10 @@
         "../../modules/universal"
       ],
       "angular2-universal/browser": [
-        "../../modules/universal/browser.ts"
+        "../../modules/universal/browser"
       ],
       "angular2-universal/node": [
-        "../../modules/universal/node.ts"
+        "../../modules/universal/node"
       ],
       "rxjs/*": [
         "./node_modules/rxjs-es/*"

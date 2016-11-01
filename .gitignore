@@ -13,9 +13,11 @@ logs
 # Users Environment Variables
 .lock-wscript
 
-typings
 dist
 node_modules
+coverage
 
 /compiled
 *.metadata.json
+
+**/ngfactory

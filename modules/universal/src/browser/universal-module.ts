@@ -16,8 +16,11 @@ import {
   __platform_browser_private__
 } from '@angular/platform-browser';
 
+declare var require: any;
+
 var prebootClient;
 try {
+  // legacy preboot APIs
   prebootClient = require('preboot/__build/src/browser/preboot_browser');
   prebootClient = (prebootClient && prebootClient.prebootClient) || prebootClient;
 } catch (e) {}
@@ -57,12 +60,15 @@ export function appIdFactory() {
 }
 
 export function appBootstrapListenerFactory(autoPreboot: boolean) {
-  return () => {
-    let _win: any = window;
-    if (_win && prebootClient && autoPreboot) {
-      setTimeout(() => prebootClient().complete());
-    }
-  };
+  return autoPreboot ? prebootComplete : () => {};
+}
+
+export function prebootComplete(value?: any) {
+  let _win: any = window;
+  if (_win && prebootClient) {
+    setTimeout(() => prebootClient().complete());
+  }
+  return value;
 }
 
 @NgModule({

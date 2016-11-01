@@ -12,8 +12,12 @@
     "src",
     "typings.d.ts",
     "browser.js",
+    "browser.js.map",
+    "browser.metadata.json",
     "browser.d.ts",
     "node.js",
+    "node.js.map",
+    "node.metadata.json",
     "node.d.ts",
     "LICENSE",
     "index.js"

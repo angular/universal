@@ -10,12 +10,12 @@ import {
 } from '@angular/platform-browser';
 
 import {
-  KeyEventsPlugin,
-  DomEventsPlugin,
-  HammerGesturesPlugin,
   BROWSER_SANITIZATION_PROVIDERS,
+  DomEventsPlugin,
+  KeyEventsPlugin,
   DomRootRenderer,
   SharedStylesHost,
+  HammerGesturesPlugin,
   DomSharedStylesHost,
 } from './__private_imports__';
 
@@ -41,7 +41,7 @@ import {
   NgModuleRef,
   NgZone,
   CompilerFactory,
-  TestabilityRegistry
+  TestabilityRegistry,
 } from '@angular/core';
 
 import { CommonModule, PlatformLocation, APP_BASE_HREF } from '@angular/common';
@@ -159,6 +159,9 @@ export class NodePlatform  {
       .then(html => {
         config.time && console.timeEnd('id: ' + config.id + ' ngApp: ');
         return html;
+      })
+      .catch(e => {
+        throw e;
       });
 
   }
@@ -175,6 +178,9 @@ export class NodePlatform  {
       .then(html => {
         config.time && console.timeEnd('id: ' + config.id + ' ngApp: ');
         return html;
+      })
+      .catch(e => {
+        throw e;
       });
   }
 
@@ -251,11 +257,12 @@ export class NodePlatform  {
         config.time && console.time('id: ' + config.id + ' stable: ');
         let universalDoCheck = store.get('universalDoCheck');
         let universalOnInit = store.get('universalOnInit');
+        let universalOnStable = store.get('universalOnStable');
         let rootNgZone: NgZone = store.get('NgZone');
         let appRef: ApplicationRef = store.get('ApplicationRef');
         let components = appRef.components;
 
-        universalOnInit();
+        universalOnInit(moduleRef);
 
         // lifecycle hooks
         function outsideNg(compRef, ngZone, http, jsonp) {
@@ -306,6 +313,7 @@ export class NodePlatform  {
         })
           .then(() => {
             config.time && console.timeEnd('id: ' + config.id + ' stable: ');
+            universalOnStable(moduleRef)
             return moduleRef;
           });
       },

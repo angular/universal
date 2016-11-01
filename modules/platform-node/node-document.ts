@@ -51,7 +51,7 @@ export function parseDocument (documentHtml: string): any {
       break;
     }
   }
-
+  //TODO: can be removed, is not used in any test case
   if (!rootNode) {
     rootNode = doc;
   }
@@ -69,12 +69,13 @@ export function parseDocument (documentHtml: string): any {
     }
   }
 
+  //TODO: can be removed, is not used in any test case
   if (!headNode) {
     headNode = treeAdapter.createElement('head', null, []);
     getDOM().appendChild(doc, headNode);
   }
 
-
+//TODO: can be removed, is not used in any test case
   if (!bodyNode) {
     bodyNode = treeAdapter.createElement('body', null, []);
     getDOM().appendChild(doc, bodyNode);

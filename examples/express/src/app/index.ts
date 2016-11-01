@@ -46,9 +46,14 @@ export class Wat {
       </div>
       <button (click)="onWat($event)">Wat</button>
     </div>
+    <div>
+    test innerHTML
+    <p [innerHTML]="htmlValue"></p>
+    </div>
   `
 })
 export class App  {
+  htmlValue = '<b>testing InnerHTML</b>';
   wat = 'yolo';
   response = {};
   toggle = false;
