@@ -40,9 +40,9 @@
   - Minimal webpack angular2 & universal starter
   - **Installation**: Clone the above repo, `npm i && npm start` to fire it up.
 
-[* ASP.NET Core :: Universal Starter repo](https://github.com/aspnet/JavaScriptServices/tree/master/templates/Angular2Spa)
-  - **Installation**: `npm i -g generator-aspnetcore-spa yo`
-  - `yo aspnetcore-spa` - select "Angular2" - `dotnet run` to fire it up.
+[* ASP.NET Core :: Universal Starter repo](https://github.com/MarkPieszak/aspnetcore-angular2-universal)
+  - **Installation**: Clone the above repo, `npm i && dotnet restore` *(VStudio will run these automatically when opening the project)*
+  - Launch files included for both VSCode & VStudio to run/debug automatically (press F5).
 
 ---- 
 
