@@ -3,7 +3,7 @@
   	"target": "es5",
   	"module": "commonjs",
   	"declaration": true,
-    "noImplicitAny": false,
+    "noImplicitAny": true,
     "noUnusedLocals": true,
     "noImplicitReturns": true,
     "noImplicitThis": true,
