@@ -18,6 +18,7 @@
 * [Getting Started with Universal](#getting-started)
     * w/ NodeJS Server
     * w/ ASP.NET Core Server
+* [Universal "Gotchas"](#universal-gotchas)
 * [Modules](#modules)
     * [Universal](#universal)
 * [What's in a name?](#whats-in-a-name)
