@@ -60,7 +60,7 @@ export class NodeDomRootRenderer implements RootRenderer {
 
 }
 
-export const ATTRIBUTES = {
+export const ATTRIBUTES: { [name: string]: string[]; } = {
   textarea: [
     'autocapitalize',
     'autocomplete',
@@ -224,7 +224,7 @@ export const ATTRIBUTES = {
 };
 
 // TODO(gdi2290): provide better whitelist above to alias setting props as attrs
-export const IGNORE_ATTRIBUTES = {
+export const IGNORE_ATTRIBUTES: { [key: string]: boolean; } = {
   'innerHTML': true,
   'hidden' : true
 };
@@ -448,7 +448,7 @@ export class NodeDomRenderer extends DomRenderer {
     return el;
   }
 
-  _isObject(val) {
+  _isObject(val: any) {
     if (val === null) {
       return false;
     }
@@ -471,15 +471,22 @@ export class NodeDomRenderer extends DomRenderer {
         propertyValue = '';
       }
     }
+
     if (propertyName === 'innerHTML') {
       return super.setElementProperty(renderElement, propertyName, propertyValue);
     }
+
+    if (propertyName === 'hidden') {
+      return this._setHiddenAttribute(renderElement, propertyName, propertyValue);
+    }
+
     // ignore boolean prop values for parse5 serialize
     if ((propertyName === 'autofocus' || propertyName === 'spellcheck') && propertyValue === false) {
         return;
     }
 
     let setProp = super.setElementProperty(renderElement, propertyName, propertyValue);
+
     if (IGNORE_ATTRIBUTES[propertyName]) {
       return setProp;
     }
@@ -520,7 +527,7 @@ export class NodeDomRenderer extends DomRenderer {
     return super.invokeElementMethod(location, methodName, args);
   }
 
-  _setDisabledAttribute(renderElement, _propertyName, propertyValue) {
+  _setDisabledAttribute(renderElement: any, _propertyName: any, propertyValue: any) {
     if (isPresent(propertyValue)) {
       if (propertyValue === true || propertyValue.toString() !== 'false') {
         return super.setElementAttribute(renderElement, 'disabled', 'disabled');
@@ -528,7 +535,7 @@ export class NodeDomRenderer extends DomRenderer {
     }
   }
 
-  _setCheckedAttribute(renderElement, _propertyName, propertyValue) {
+  _setCheckedAttribute(renderElement: any, _propertyName: any, propertyValue: any) {
     if (isPresent(propertyValue)) {
       if (propertyValue === true) {
         return super.setElementAttribute(renderElement, propertyValue, 'checked');
@@ -538,7 +545,7 @@ export class NodeDomRenderer extends DomRenderer {
     }
   }
 
-  _setOnOffAttribute(renderElement, propertyName, propertyValue) {
+  _setOnOffAttribute(renderElement: any, propertyName: any, propertyValue: any) {
     if (isPresent(propertyValue)) {
       if (propertyValue === true) {
         return super.setElementAttribute(renderElement, propertyValue, 'on');
@@ -549,7 +556,7 @@ export class NodeDomRenderer extends DomRenderer {
     return super.setElementAttribute(renderElement, propertyName, propertyValue);
 
   }
-  _setBooleanAttribute(renderElement, propertyName, propertyValue) {
+  _setBooleanAttribute(renderElement: any, propertyName: any, propertyValue: any) {
     if (isPresent(propertyValue) && propertyValue !== false) {
       if (propertyValue === true) {
         return super.setElementAttribute(renderElement, propertyName, '');
@@ -559,6 +566,18 @@ export class NodeDomRenderer extends DomRenderer {
     }
     return super.setElementAttribute(renderElement, propertyName, propertyValue);
   }
+
+  _setHiddenAttribute(renderElement: any, propertyName: any, propertyValue: any) {
+    if (isPresent(propertyValue)) {
+      // Follow Angular default behavior, true || string (of anything) will cause it to be hidden
+      if (propertyValue === true || propertyValue.toString().length) {
+        return super.setElementAttribute(renderElement, propertyName, propertyValue);
+      } else {
+        return;
+      }
+    }
+  }
+
 }
 
 function moveNodesAfterSibling(sibling: any, nodes: any) {
