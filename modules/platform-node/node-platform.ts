@@ -134,7 +134,7 @@ export class NodePlatform  {
   }
   constructor(private _platformRef: PlatformRef) {
   }
-  cacheModuleFactory<T>(moduleType: any, compilerOptions?: any): Promise<any> {
+  cacheModuleFactory(moduleType: any, compilerOptions?: any): Promise<any> {
     if (NodePlatform._cache.has(moduleType)) {
       return Promise.resolve(NodePlatform._cache.get(moduleType));
     }
