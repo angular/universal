@@ -134,7 +134,7 @@ export class NodePlatform  {
   }
   constructor(private _platformRef: PlatformRef) {
   }
-  cacheModuleFactory<T>(moduleType: any, compilerOptions?: any): Promise<NgModuleRef<T>> {
+  cacheModuleFactory<T>(moduleType: any, compilerOptions?: any): Promise<any> {
     if (NodePlatform._cache.has(moduleType)) {
       return Promise.resolve(NodePlatform._cache.get(moduleType));
     }
@@ -146,11 +146,14 @@ export class NodePlatform  {
     } else {
       compiler = compilerFactory.createCompiler();
     }
-    return compiler.compileModuleAsync(moduleType)
+    return Promise.resolve().then(() => {
+      return compiler.compileModuleAsync(moduleType)
         .then((moduleFactory) => {
           NodePlatform._cache.set(moduleType, moduleFactory);
           return moduleFactory;
         });
+    });
+        
   }
 
   // TODO(gdi2290): refactor into bootloader
