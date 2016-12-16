@@ -57,7 +57,7 @@
  - **`window`**, **`document`**, **`navigator`**, and other browser types - _do not exist on the server_ - so using them, or any library that uses them (jQuery for example) will not work. You do have some options, if you truly need some of this functionality:
     - If you need to use them, consider limiting them to only your main.client and wrapping them situationally with the imported *isBrowser / isNode* features from Universal.  `import { isBrowser, isNode } from 'angular2-universal'`;
     - Another option is using `DOM` from ["@angular/platform-browser"](https://github.com/angular/angular/blob/e3687706c71beb7c9dbdae1bbb5fbbcea588c476/modules/%40angular/platform-browser/src/dom/dom_adapter.ts#L34)
- - Try to *limit or* **avoid** using **`setTimeout`**. It will slow down the server-side rendering process. Make sure to remove them [`ondestroy`](https://angular.io/docs/ts/latest/api/core/index/OnDestroy-class.html) in Components.
+ - Try to *limit or* **avoid** using **`setTimeout`**. It will slow down the server-side rendering process. Make sure to remove them [`ngOnDestroy`](https://angular.io/docs/ts/latest/api/core/index/OnDestroy-class.html) in Components.
    - Also for RxJs timeouts, make sure to _cancel_ their stream on success, for they can slow down rendering as well.
  - **Don't manipulate the nativeElement directly**. Use the _Renderer_. We do this to ensure that in any environment we're able to change our view.
 ```
@@ -66,7 +66,7 @@ constructor(element: ElementRef, renderer: Renderer) {
 }
 ```
  - The application runs XHR requests on the server & once again on the Client-side (when the application bootstraps)
-    - Use a [UniversalCache](https://github.com/angular/universal-starter/blob/master/src/app/shared/api.service.ts#L46-L71) instead of regular Http, to save certain requests so they aren't re-ran again on the Client.
+    - Use a [UniversalCache](https://github.com/angular/universal-starter/blob/master/src/%2Bapp/shared/model/model.service.ts#L34-L50) instead of regular Http, to save certain requests so they aren't re-ran again on the Client. ([Example useage here](https://github.com/angular/universal-starter/blob/cc71e2d5b2d783f2bb52eebd1b5c6fa0ba23f08a/src/%2Bapp/%2Bhome/home.component.ts#L22-L24))
  - Know the difference between attributes and properties in relation to the DOM.
  - Keep your directives stateless as much as possible. For stateful directives, you may need to provide an attribute that reflects the corresponding property with an initial string value such as url in img tag. For our native <img src=""> element the src attribute is reflected as the src property of the element type HTMLImageElement.
 
