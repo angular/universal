@@ -49,13 +49,7 @@ export class NodeDomRootRenderer implements RootRenderer {
     private _animationDriver: AnimationDriver) {
   }
   renderComponent(componentProto: RenderComponentType): Renderer {
-    // TODO(gdi2290): see PR https://github.com/angular/angular/pull/6584
-    var renderer = this.registeredComponents.get(componentProto.id);
-    if (isBlank(renderer)) {
-      renderer = new NodeDomRenderer(this, componentProto, this._animationDriver);
-      this.registeredComponents.set(componentProto.id, renderer);
-    }
-    return renderer;
+    return new NodeDomRenderer(this, componentProto, this._animationDriver);
   }
 
 }
