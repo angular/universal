@@ -97,6 +97,7 @@ export function appBootstrapListenerFactory(autoPreboot: boolean) {
 })
 export class UniversalModule {
   constructor(@Inject(SharedStylesHost) sharedStylesHost: any) {
+    sharedStylesHost._styles = sharedStylesHost._styles || [];
     const domStyles = document.head.querySelectorAll('style');
     const styles = Array.prototype.slice.call(domStyles)
       .filter((style: any) => (style.innerText || style.textContent).indexOf('_ng') !== -1)
