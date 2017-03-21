@@ -59,7 +59,7 @@ export default createServerRenderer(params => {
 
 ```
 
-# What about on the .NET MVC Controller side?
+# What about on the .NET side?
 
 Previously, this was all done with TagHelpers and you passed in your boot-server file to it: `<app asp-prerender-module="dist/boot-server.js"></app>`, but this hindered us from getting the SEO benefits of prerendering.
 
@@ -68,6 +68,8 @@ Because .NET has control over the Html, using the ngAspnetCoreEngine, we're able
 Below is how you can invoke the boot-server file which gets everything started:
 
 > Hopefully in the future this will be cleaned up and less code as well.
+
+### HomeController.cs
 
 ```csharp
 using System.Threading.Tasks;
@@ -122,7 +124,17 @@ namespace WebApplicationBasic.Controllers
         }
     }
 }
+```
 
+### Startup.cs : Make sure you add NodeServices to ConfigureServices:
+
+```csharp
+public void ConfigureServices(IServiceCollection services)
+{
+    // ... other things ...
+
+    services.AddNodeServices(); // <--
+}
 ```
 
 # What updates do our Views need now?
