@@ -40,6 +40,7 @@
     "@angular/common": "^4.0.0-rc.5 || ^4.0.0",
     "@angular/compiler": "^4.0.0-rc.5 || ^4.0.0",
     "@angular/core": "^4.0.0-rc.5 || ^4.0.0",
+    "@angular/http": "^4.0.0-rc.5 || ^4.0.0",
     "@angular/platform-browser": "^4.0.0-rc.5 || ^4.0.0",
     "@angular/platform-server": "^4.0.0-rc.5 || ^4.0.0",
     "rimraf": "^2.6.1",

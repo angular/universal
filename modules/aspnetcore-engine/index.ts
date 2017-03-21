@@ -1,6 +1,9 @@
 import { Type, NgModuleRef, ApplicationRef, Provider } from '@angular/core';
 import { platformDynamicServer, PlatformState } from '@angular/platform-server';
 
+import 'rxjs/add/operator/filter';
+import 'rxjs/add/operator/first';
+
 export function ngAspnetCoreEngine(
     providers: Provider[],
     ngModule: Type<{}>
@@ -18,7 +21,7 @@ export function ngAspnetCoreEngine(
             appRef.isStable
                 .filter((isStable: boolean) => isStable)
                 .first()
-                .subscribe((stable) => {
+                .subscribe(() => {
 
                     // Fire the TransferCache
                     const bootstrap = moduleRef.instance['ngOnBootstrap'];
