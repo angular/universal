@@ -22,15 +22,13 @@ import 'zone.js';
 
 import { enableProdMode } from '@angular/core';
 import { INITIAL_CONFIG } from '@angular/platform-server';
-
 import { createServerRenderer, RenderResult } from 'aspnet-prerendering';
-
 // Grab the (Node) server-specific NgModule
 import { AppServerModule } from './app/app.server.module';
-
 // ***** The ASPNETCore Angular Engine *****
-import { ngAspnetCoreEngine } from './aspnetcore-engine';
-enableProdMode();
+import { ngAspnetCoreEngine } from '@universal/ng-aspnetcore-engine';
+
+enableProdMode(); // for faster server rendered builds
 
 export default createServerRenderer(params => {
 
@@ -57,19 +55,15 @@ export default createServerRenderer(params => {
      */
     ];
 
-    return new Promise((resolve, reject) => {
-        // ***** Pass in those Providers & your Server NgModule, and that's it!
-        ngAspnetCoreEngine(providers, AppServerModule).then(response => {
-            resolve({ 
-                // Our `<app></app>` serialized as a String
-                html: response.html, 
-
-                // A collection of `<meta><link><styles> & our <title> tags`
-                // We'll use these to separately let .NET handle each one individually
-                globals: response.globals 
-            });
-        })
-        .catch(error => reject(error));
+    // ***** Pass in those Providers & your Server NgModule, and that's it!
+    return ngAspnetCoreEngine(providers, AppServerModule).then(response => {
+        resolve({ 
+            // Our `<app></app>` serialized as a String
+            html: response.html, 
+            // A collection of `<meta><link><styles> & our <title> tags`
+            // We'll use these to separately let .NET handle each one individually
+            globals: response.globals 
+        });
     });
 });
 
