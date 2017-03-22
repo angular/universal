@@ -34,6 +34,14 @@ enableProdMode();
 
 export default createServerRenderer(params => {
 
+    /*
+     * How can we access data we passed from .NET ?
+     * you'd access it directly from `params` under the name you passed it
+     * ie: params.cookies 
+     * -------
+     * Next you'd want to pass in some 
+     */
+
     // Platform-server provider configuration
     const providers = [{
         provide: INITIAL_CONFIG,
@@ -41,20 +49,28 @@ export default createServerRenderer(params => {
             document: '<app></app>', // * Our Root application document
             url: params.url
         }
-    }];
+    }
+    /* Other providers you want to pass into the App would go here
+     *    { provide: CookieService, useClass: ServerCookieService }
+     * ie: Just an example of Dependency injecting a Class for providing Cookies (that you passed down from the server)
+       (Where on the browser you'd have a different class handling cookies normally)
+     */
+    ];
 
     return new Promise((resolve, reject) => {
-        // *****
+        // ***** Pass in those Providers & your Server NgModule, and that's it!
         ngAspnetCoreEngine(providers, AppServerModule).then(response => {
             resolve({ 
-                html: response.html,
-                globals: response.globals
+                // Our `<app></app>` serialized as a String
+                html: response.html, 
+
+                // A collection of `<meta><link><styles> & our <title> tags`
+                // We'll use these to separately let .NET handle each one individually
+                globals: response.globals 
             });
         })
         .catch(error => reject(error));
-
     });
-
 });
 
 ```
@@ -102,7 +118,7 @@ namespace WebApplicationBasic.Controllers
                 new JavaScriptModuleExport(applicationBasePath + "/ClientApp/dist/main-server"),
                 unencodedAbsoluteUrl,
                 unencodedPathAndQuery,
-                null,
+                null, // <-- Here you can pass any DATA you want
                 30000,
                 Request.PathBase.ToString()
             );
