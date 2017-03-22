@@ -39,7 +39,7 @@ export default createServerRenderer(params => {
      * you'd access it directly from `params` under the name you passed it
      * ie: params.cookies 
      * -------
-     * Next you'd want to pass in some 
+     * We'll show in the next section WHERE you pass this Data in on the .NET side
      */
 
     // Platform-server provider configuration
@@ -111,6 +111,14 @@ namespace WebApplicationBasic.Controllers
             var unencodedPathAndQuery = requestFeature.RawTarget;
             var unencodedAbsoluteUrl = $"{Request.Scheme}://{Request.Host}{unencodedPathAndQuery}";
 
+            // *********************************
+            // This parameter is where you'd pass in an Object of data you want passed down to Angular 
+            // to be used in the Server-rendering
+            // ie: Cookies from `ViewContext.HttpContext.Request.Cookies`
+            // ie: an Authentication token you already have generated from the Server
+            //       * any data you want! *
+            var customData = null;
+
             // Prerender / Serialize application (with Universal)
             var prerenderResult = await Prerenderer.RenderToString(
                 "/",
@@ -118,7 +126,9 @@ namespace WebApplicationBasic.Controllers
                 new JavaScriptModuleExport(applicationBasePath + "/ClientApp/dist/main-server"),
                 unencodedAbsoluteUrl,
                 unencodedPathAndQuery,
-                null, // <-- Here you can pass any DATA you want
+                // Custom data will be passed down to Angular (within the boot-server file)
+                // Available there via `params.yourObject`
+                customData, 
                 30000,
                 Request.PathBase.ToString()
             );
