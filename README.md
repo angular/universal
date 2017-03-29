@@ -35,9 +35,9 @@ This repository will host the various tools like engines to integrate with vario
 - Develop Express, ASP.NET Core, Hapi engines (In Progress)
 
 ## Angular 4.1+
-- Hooks in renderModule* to do stuff just before rendering to string
+- Hooks in `renderModule*` to do stuff just before rendering to string
 - Generic state transfer API in the platform
-- Http Cache Module that uses HTTP interceptors and state transfer API
+- Http Transfer State Module that uses HTTP interceptors and state transfer API
 - Better internal performance and stress tests
 - Make it easier to write unit tests for Universal components
 - Support [AppShell](https://developers.google.com/web/updates/2015/11/app-shell) use cases
@@ -48,7 +48,7 @@ This repository will host the various tools like engines to integrate with vario
 
 ## Angular 5.0 and Beyond
 - Full client rehydration strategy that reuses DOM elements/CSS rendered on the server
-- Make it easier to support other 3rd part libraries like jQuery/d3 that aren't Uiversal aware
+- Make it easier to support other 3rd part libraries like jQuery/d3 that aren't Universal aware
 - Node.js bridge protocol to communicate with different language backends - Django, Go, PHP etc.
 
 # Getting Started
@@ -89,7 +89,7 @@ This repository will host the various tools like engines to integrate with vario
     
      - Try to *limit or* **avoid** using **`setTimeout`**. It will slow down the server-side rendering process. Make sure to remove them [`ngOnDestroy`](https://angular.io/docs/ts/latest/api/core/index/OnDestroy-class.html) in Components.
    - Also for RxJs timeouts, make sure to _cancel_ their stream on success, for they can slow down rendering as well.
- - **Don't manipulate the nativeElement directly**. Use the _Renderer_. We do this to ensure that in any environment we're able to change our view.
+ - **Don't manipulate the nativeElement directly**. Use the _Renderer2_. We do this to ensure that in any environment we're able to change our view.
 ```
 constructor(element: ElementRef, renderer: Renderer) {
   renderer.setElementStyle(element.nativeElement, 'font-size', 'x-large');
