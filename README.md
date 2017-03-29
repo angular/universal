@@ -108,10 +108,10 @@ We believe that using the word "universal" is correct when referring to a JavaSc
 
 # Universal Team
 - PatrickJS and Jeff Whelpley - Founders of the Angular Universal project
-- Mark Pieszak - ASP.NET Core engine developer
+- Mark Pieszak - Contributor and Evangelist, ASP.NET Core Engine
 - Jason Jean - Express engine and Universal support for CLI
-- Wassim Chegham - Hapi engine developer
-- Jeff Cross - Universal evangelist and performance consultant
+- Wassim Chegham - Contributor and Evangelist, Hapi engine developer. [Angular for the rest of us](https://medium.com/google-developer-experts/angular-universal-for-the-rest-of-us-922ca8bac84), [Angular outside the browser](http://slides.com/wassimchegham/angular2-universal#/)
+- Jeff Cross - Evangelist and performance consultant
 - Vikram Subramanian and Alex Rickabaugh - Angular Core API
 
 The Universal project is driven by community contributions. Please send us your Pull Requests!
