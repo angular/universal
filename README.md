@@ -8,7 +8,7 @@
 > Universal (isomorphic) JavaScript support for Angular.
 
 # Table of Contents
-* [Documentation](#documentation)
+* [Introduction](#introduction)
 * [Roadmap](#roadmap)
 * [Getting Started with Universal](#getting-started)
     * w/ NodeJS Server
@@ -21,7 +21,7 @@
 
 ---
 
-# Documentation
+# Introduction
 The Angular Universal project consists of the base platform API and the surrounding tools that enables developer to do server side rendering(or pre-rendering) of Angular applications. The platform API part has been merged into Angular core as of 4.0. 
 
 This repository will host the various tools like engines to integrate with various backends(NodeJS, ASP.NET etc.) and also extra modules and examples to help you started with server side rendering.
@@ -107,7 +107,7 @@ constructor(element: ElementRef, renderer: Renderer) {
 We believe that using the word "universal" is correct when referring to a JavaScript Application that runs in more environments than the browser. (inspired by [Universal JavaScript](https://medium.com/@mjackson/universal-javascript-4761051b7ae9))
 
 # Universal Team
-- PatrickJS and Jeff Whelpley - Founders of the Angular Universal project
+- PatrickJS and Jeff Whelpley - Founders of the Angular Universal project. (Universal rendering is also called [PatrickJS-ing](https://twitter.com/jeffbcross/status/846512930971516928))
 - Mark Pieszak - Contributor and Evangelist, ASP.NET Core Engine
 - Jason Jean - Express engine and Universal support for CLI
 - Wassim Chegham - Contributor and Evangelist, Hapi engine developer. [Angular for the rest of us](https://medium.com/google-developer-experts/angular-universal-for-the-rest-of-us-922ca8bac84), [Angular outside the browser](http://slides.com/wassimchegham/angular2-universal#/)
