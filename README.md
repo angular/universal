@@ -30,7 +30,7 @@ This repository will host the various tools like engines to integrate with vario
 # Upgrading from Angular2-Universal
 > If you're coming from the original `angular2-universal` (2.x) here are some helpful steps for porting your application to Angular 4 & platform-server.
 
-[Go here to find the guide](https://github.com/angular/universal/UPGRADE-GUIDE.md)
+[Go here to find the guide](https://github.com/angular/universal/blob/master/UPGRADE-GUIDE.md)
 
 ----
 
