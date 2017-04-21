@@ -22,6 +22,7 @@
       "es6"
     ],
     "types": [
+      "node"
     ]
   },
   "files": [
