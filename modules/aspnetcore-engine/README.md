@@ -211,7 +211,7 @@ In our _layout.cshtml, we're going to want to pass in our different `ViewData` p
     <head>
         <base href="/" />
         <!-- Title will be the one you set in your Angular application -->
-        <title>@ViewData["Title"] - AspNET.Core Angular 2+ Universal starter</title>
+        <title>@ViewData["Title"]</title>
 
         @Html.Raw(ViewData["Meta"]) <!-- <meta /> tags -->
         @Html.Raw(ViewData["Links"]) <!-- <link /> tags -->
@@ -262,6 +262,7 @@ Well now, your Client-side Angular will take over, and you'll have a fully funct
 ## Bootstrap
 
 The engine also calls the ngOnBootstrap lifecycle hook of the module being bootstrapped, this is how the TransferData gets taken.
+Check [https://github.com/MarkPieszak/aspnetcore-angular2-universal/tree/master/Client/modules](https://github.com/MarkPieszak/aspnetcore-angular2-universal/tree/master/Client/modules) to see how to setup your Transfer classes.
 
 ```ts
 @NgModule({
@@ -274,3 +275,7 @@ export class ServerAppModule {
     }
 }
 ```
+
+## Example Application utilizing this Engine
+
+#### [Asp.net Core & Angular advanced starter application](https://github.com/MarkPieszak/aspnetcore-angular2-universal)
