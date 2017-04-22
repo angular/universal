@@ -33,19 +33,22 @@
     "prebuild": "rimraf dist"
   },
   "peerDependencies": {
-    "@angular/core": "^4.0.0-rc.5 || ^4.0.0",
-    "@angular/platform-server": "^4.0.0-rc.5 || ^4.0.0"
+    "@angular/core": "^4.0.0",
+    "@angular/platform-server": "^4.0.0"
   },
   "devDependencies": {
-    "@angular/common": "^4.0.0-rc.5 || ^4.0.0",
-    "@angular/compiler": "^4.0.0-rc.5 || ^4.0.0",
-    "@angular/core": "^4.0.0-rc.5 || ^4.0.0",
-    "@angular/http": "^4.0.0-rc.5 || ^4.0.0",
-    "@angular/platform-browser": "^4.0.0-rc.5 || ^4.0.0",
-    "@angular/platform-server": "^4.0.0-rc.5 || ^4.0.0",
+    "@angular/common": "^4.0.0",
+    "@angular/compiler": "^4.0.0",
+    "@angular/core": "^4.0.0",
+    "@angular/http": "^4.0.0",
+    "@angular/platform-browser": "^4.0.0",
+    "@angular/platform-server": "^4.0.0",
     "rimraf": "^2.6.1",
     "rxjs": "^5.2.0",
     "typescript": "^2.2.1",
     "zone.js": "^0.8.4"
+  },
+  "dependencies": {
+    "@types/node": "^7.0.13"
   }
 }

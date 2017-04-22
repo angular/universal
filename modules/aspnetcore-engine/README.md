@@ -34,36 +34,45 @@ export default createServerRenderer(params => {
 
     /*
      * How can we access data we passed from .NET ?
-     * you'd access it directly from `params` under the name you passed it
-     * ie: params.cookies 
+     * you'd access it directly from `params.data` under the name you passed it
+     * ie: params.data.WHATEVER_YOU_PASSED
      * -------
      * We'll show in the next section WHERE you pass this Data in on the .NET side
      */
 
     // Platform-server provider configuration
-    const providers = [{
-        provide: INITIAL_CONFIG,
-        useValue: {
-            document: '<app></app>', // * Our Root application document
-            url: params.url
-        }
-    }
-    /* Other providers you want to pass into the App would go here
-     *    { provide: CookieService, useClass: ServerCookieService }
-     * ie: Just an example of Dependency injecting a Class for providing Cookies (that you passed down from the server)
-       (Where on the browser you'd have a different class handling cookies normally)
-     */
-    ];
+    const setupOptions: IEngineOptions = {
+      appSelector: '<app></app>',
+      ngModule: ServerAppModule,
+      request: params,
+      providers: [
+        /* Other providers you want to pass into the App would go here
+        *    { provide: CookieService, useClass: ServerCookieService }
+
+        * ie: Just an example of Dependency injecting a Class for providing Cookies (that you passed down from the server)
+          (Where on the browser you'd have a different class handling cookies normally)
+        */
+      ]
+    };
 
     // ***** Pass in those Providers & your Server NgModule, and that's it!
-    return ngAspnetCoreEngine(providers, AppServerModule).then(response => {
-        resolve({ 
-            // Our `<app></app>` serialized as a String
-            html: response.html, 
-            // A collection of `<meta><link><styles> & our <title> tags`
-            // We'll use these to separately let .NET handle each one individually
-            globals: response.globals 
-        });
+    return ngAspnetCoreEngine(setupOptions).then(response => {
+
+      // Want to transfer data from Server -> Client?
+
+      // Add transferData to the response.globals Object, and call createTransferScript({}) passing in the Object key/values of data
+      // createTransferScript() will JSON Stringify it and return it as a <script> window.TRANSFER_CACHE={}</script>
+      // That your browser can pluck and grab the data from
+      response.globals.transferData = createTransferScript({
+        someData: 'Transfer this to the client on the window.TRANSFER_CACHE {} object',
+        fromDotnet: params.data.thisCameFromDotNET // example of data coming from dotnet, in HomeController
+      });
+
+      return ({
+        html: response.html,
+        globals: response.globals
+      });
+
     });
 });
 
@@ -108,22 +117,27 @@ namespace WebApplicationBasic.Controllers
             // *********************************
             // This parameter is where you'd pass in an Object of data you want passed down to Angular 
             // to be used in the Server-rendering
-            // ie: Cookies from `ViewContext.HttpContext.Request.Cookies`
-            // ie: an Authentication token you already have generated from the Server
-            //       * any data you want! *
-            var customData = null;
+
+            // ** TransferData concept **
+            // Here we can pass any Custom Data we want !
+
+            // By default we're passing down the REQUEST Object (Cookies, Headers, Host) from the Request object here
+            TransferData transferData = new TransferData();
+            transferData.request = AbstractHttpContextRequestInfo(Request); // You can automatically grab things from the REQUEST object in Angular because of this
+            transferData.thisCameFromDotNET = "Hi Angular it's asp.net :)";
+            // Add more customData here, add it to the TransferData class
 
             // Prerender / Serialize application (with Universal)
             var prerenderResult = await Prerenderer.RenderToString(
-                "/",
+                "/", // baseURL
                 nodeServices,
                 new JavaScriptModuleExport(applicationBasePath + "/ClientApp/dist/main-server"),
                 unencodedAbsoluteUrl,
                 unencodedPathAndQuery,
-                // Custom data will be passed down to Angular (within the boot-server file)
-                // Available there via `params.yourObject`
-                customData, 
-                30000,
+                // Our Transfer data here will be passed down to Angular (within the boot-server file)
+                // Available there via `params.data.yourData`
+                transferData, 
+                30000, // timeout duration
                 Request.PathBase.ToString()
             );
 
@@ -133,15 +147,39 @@ namespace WebApplicationBasic.Controllers
             ViewData["Styles"] = prerenderResult.Globals["styles"];
             ViewData["Meta"] = prerenderResult.Globals["meta"];
             ViewData["Links"] = prerenderResult.Globals["links"];
+            ViewData["TransferData"] = prerenderResult.Globals["transferData"]; // our transfer data set to window.TRANSFER_CACHE = {};
 
             // Let's render that Home/Index view
             return View();
         }
 
-        public IActionResult Error()
+        private IRequest AbstractHttpContextRequestInfo(HttpRequest request)
         {
-            return View();
+
+            IRequest requestSimplified = new IRequest();
+            requestSimplified.cookies = request.Cookies;
+            requestSimplified.headers = request.Headers;
+            requestSimplified.host = request.Host;
+
+            return requestSimplified;
         }
+        
+    }
+
+    public class IRequest
+    {
+        public object cookies { get; set; }
+        public object headers { get; set; }
+        public object host { get; set; }
+    }
+
+    public class TransferData
+    {
+        // By default we're expecting the REQUEST Object (in the aspnet engine), so leave this one here
+        public dynamic request { get; set; } 
+
+        // Your data here ?
+        public object thisCameFromDotNET { get; set; }
     }
 }
 ```
@@ -183,6 +221,10 @@ In our _layout.cshtml, we're going to want to pass in our different `ViewData` p
     <body>
         <!-- Our Home view will be rendered here -->
         @RenderBody() 
+
+        <!-- Here we're passing down any data to be used by grabbed and parsed by Angular -->
+        @Html.Raw(ViewData["TransferData"])
+
         @RenderSection("scripts", required: false)
     </body>
 </html>
@@ -219,9 +261,7 @@ Well now, your Client-side Angular will take over, and you'll have a fully funct
 
 ## Bootstrap
 
-> [TODO] : This needs to be explained further
-
-The engine also calls the ngOnBootstrap lifecycle hook of the module being bootstrapped
+The engine also calls the ngOnBootstrap lifecycle hook of the module being bootstrapped, this is how the TransferData gets taken.
 
 ```ts
 @NgModule({

@@ -1,12 +1,14 @@
-import { Type, NgModuleFactory, NgModuleRef, ApplicationRef, Provider, CompilerFactory, Compiler } from '@angular/core';
-import { platformServer, platformDynamicServer, PlatformState, INITIAL_CONFIG, renderModuleFactory } from '@angular/platform-server';
+import { Type, NgModuleFactory, NgModuleRef, ApplicationRef, CompilerFactory, Compiler } from '@angular/core';
+import { platformServer, platformDynamicServer, PlatformState, INITIAL_CONFIG } from '@angular/platform-server';
 import { ResourceLoader } from '@angular/compiler';
-import * as fs from 'fs';
 
 import { REQUEST, ORIGIN_URL } from './tokens';
 import { FileLoader } from './file-loader';
 
 import { IEngineOptions } from './interfaces/engine-options';
+
+import 'rxjs/add/operator/filter';
+import 'rxjs/add/operator/first';
 
 export function ngAspnetCoreEngine(
   options: IEngineOptions
@@ -64,7 +66,7 @@ export function ngAspnetCoreEngine(
             appRef.isStable
               .filter((isStable: boolean) => isStable)
               .first()
-              .subscribe((stable) => {
+              .subscribe(() => {
 
                 // Fire the TransferState Cache
                 const bootstrap = moduleRef.instance['ngOnBootstrap'];
@@ -82,7 +84,7 @@ export function ngAspnetCoreEngine(
                 );
 
                 // Strip out Styles / Meta-tags / Title
-                const STYLES = [];
+                // const STYLES = [];
                 const META = [];
                 const LINKS = [];
                 let TITLE = '';
@@ -104,7 +106,9 @@ export function ngAspnetCoreEngine(
                     TITLE = element.children[0].data;
                   }
 
-                  // Broken after 4.0 (worked in rc)
+                  // Broken after 4.0 (worked in rc) - needs investigation
+                  // As other things could be in <style> so we ideally want to get them this way
+
                   // if (element.name === 'style') {
                   //   let styleTag = '<style ';
                   //   for (let key in element.attribs) {
@@ -139,6 +143,7 @@ export function ngAspnetCoreEngine(
                   }
                 }
 
+                // Return parsed App
                 resolve({
                   html: APP_HTML,
                   globals: {

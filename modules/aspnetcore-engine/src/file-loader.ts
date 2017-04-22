@@ -1,3 +1,4 @@
+import * as fs from 'fs';
 import { ResourceLoader } from '@angular/compiler';
 
 export class FileLoader implements ResourceLoader {
