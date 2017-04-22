@@ -4,6 +4,10 @@ This is an ASP.NET Core Engine for running Angular Apps on the server for server
 
 ---
 
+## Example Application utilizing this Engine
+
+#### [Asp.net Core & Angular advanced starter application](https://github.com/MarkPieszak/aspnetcore-angular2-universal)
+
 # Usage
 
 > Things have changed since the previous ASP.NET Core & Angular Universal useage. We're no longer using TagHelpers, but now invoking the **boot-server** file from the **Home Controller** *itself*, and passing all the data down to .NET.
@@ -276,6 +280,63 @@ export class ServerAppModule {
 }
 ```
 
-## Example Application utilizing this Engine
+# Tokens
 
-#### [Asp.net Core & Angular advanced starter application](https://github.com/MarkPieszak/aspnetcore-angular2-universal)
+Along with the engine doing serializing and separating out the chunks of your Application (so we can let .NET handle it), you may have noticed we passed in the HttpRequest object from .NET into it as well.
+
+This was done so that we could take a few things from it, and using dependency injection, "provide" a few things to the Angular application.
+
+```typescript
+ORIGIN_URL
+// and
+REQUEST
+
+// imported 
+import { ORIGIN_URL, REQUEST } from '@ng-universal/ng-aspnetcore-engine';
+```
+
+Make sure in your BrowserModule you provide these tokens as well, if you're going to use them!
+
+```typescript
+@NgModule({
+    ...,
+    providers: [
+        {
+            // We need this for our Http calls since they'll be using an ORIGIN_URL provided in main.server
+            // (Also remember the Server requires Absolute URLs)
+            provide: ORIGIN_URL,
+            useFactory: (getOriginUrl)
+        }, {
+            // The server provides these in main.server
+            provide: REQUEST,
+            useFactory: (getRequest)
+        }
+    ]
+} export class BrowserAppModule() {}
+```
+
+Don't forget that the server needs Absolute URLs for paths when doing Http requests! So if your server api is at the same location as this Angular app, you can't just do `http.get('/api/whatever')` so use the ORIGIN_URL Injection Token.
+
+```typescript
+  import { ORIGIN_URL } from '@ng-universal/ng-aspnetcore-engine';
+
+  constructor(@Inject(ORIGIN_URL) private originUrl: string, private http: Http) {
+    this.http.get(`${this.originUrl}/api/whatever`)
+  }
+```
+
+As for the REQUEST object, you'll find Cookies, Headers, and Host (from .NET that we passed down in our HomeController. They'll all be accessible from that Injection Token as well.
+
+```typescript
+  import { REQUEST } from '@ng-universal/ng-aspnetcore-engine';
+
+  constructor(@Inject(REQUEST) private request) { 
+    // this.request.cookies
+    // this.request.headers
+    // etc
+  }
+
+```
+
+
+
