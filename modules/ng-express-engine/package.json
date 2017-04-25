@@ -1,5 +1,5 @@
 {
-  "name": "@nguniversal/express-engine",
+  "name": "@ng-universal/express-engine",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "version": "1.0.0-beta.0",
