@@ -7,11 +7,9 @@ This is an ASP.NET Core Engine for running Angular Apps on the server for server
 ## Installation
 
 ```bash
-npm i --S @ng-universal/aspnetcore-engine
+npm i --S @nguniversal/aspnetcore-engine
 # or yarn install
 ```
-
----
 
 ## Example Application utilizing this Engine
 
@@ -39,7 +37,7 @@ import { createServerRenderer, RenderResult } from 'aspnet-prerendering';
 // Grab the (Node) server-specific NgModule
 import { AppServerModule } from './app/app.server.module';
 // ***** The ASPNETCore Angular Engine *****
-import { ngAspnetCoreEngine } from '@ng-universal/aspnetcore-engine';
+import { ngAspnetCoreEngine } from '@nguniversal/aspnetcore-engine';
 
 enableProdMode(); // for faster server rendered builds
 
@@ -301,7 +299,7 @@ ORIGIN_URL
 REQUEST
 
 // imported 
-import { ORIGIN_URL, REQUEST } from '@ng-universal/aspnetcore-engine';
+import { ORIGIN_URL, REQUEST } from '@nguniversal/aspnetcore-engine';
 ```
 
 Make sure in your BrowserModule you provide these tokens as well, if you're going to use them!
@@ -327,7 +325,7 @@ Make sure in your BrowserModule you provide these tokens as well, if you're goin
 Don't forget that the server needs Absolute URLs for paths when doing Http requests! So if your server api is at the same location as this Angular app, you can't just do `http.get('/api/whatever')` so use the ORIGIN_URL Injection Token.
 
 ```typescript
-  import { ORIGIN_URL } from '@ng-universal/aspnetcore-engine';
+  import { ORIGIN_URL } from '@nguniversal/aspnetcore-engine';
 
   constructor(@Inject(ORIGIN_URL) private originUrl: string, private http: Http) {
     this.http.get(`${this.originUrl}/api/whatever`)
@@ -337,7 +335,7 @@ Don't forget that the server needs Absolute URLs for paths when doing Http reque
 As for the REQUEST object, you'll find Cookies, Headers, and Host (from .NET that we passed down in our HomeController. They'll all be accessible from that Injection Token as well.
 
 ```typescript
-  import { REQUEST } from '@ng-universal/aspnetcore-engine';
+  import { REQUEST } from '@nguniversal/aspnetcore-engine';
 
   constructor(@Inject(REQUEST) private request) { 
     // this.request.cookies
