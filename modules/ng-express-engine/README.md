@@ -4,13 +4,13 @@ This is an Express Engine for running Angular Apps on the server for server side
 
 ## Usage
 
-`npm install @ng-universal/express-engine --save`
+`npm install @nguniversal/express-engine --save`
 
 To use it, set the engine and then route requests to it
 
 ```ts
 import * as express from 'express';
-import { ngExpressEngine } from '@ng-universal/express-engine';
+import { ngExpressEngine } from '@nguniversal/express-engine';
 
 // Set the engine
 app.engine('html', ngExpressEngine({
