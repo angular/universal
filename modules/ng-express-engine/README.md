@@ -62,7 +62,7 @@ You can access them by @Inject
 
 ```ts
 import { Request } from 'express';
-import { REQUEST } from '@ng-universal/express-engine';
+import { REQUEST } from '@nguniversal/express-engine';
 
 @Injectable()
 export class RequestService {
