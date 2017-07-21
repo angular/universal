@@ -64,6 +64,9 @@ This repository will host the various tools like engines to integrate with vario
 
 [* **NodeJS** :: Example repo](https://github.com/robwormald/ng-universal-demo)
   - Minimal webpack & universal example with Angular 4.0
+  
+[* **NG-CLI & Express** :: Example repo](https://github.com/pquarme/cli-universal-demo)
+  - Support for Browser Animations thanks to seperation of Browser & Server Modules, which enable implementation of external UI libs.
 
 [* ASP.NET Core :: Universal Starter repo](https://github.com/MarkPieszak/aspnetcore-angular2-universal)
   - **Installation**: Clone the above repo, `npm i && dotnet restore` *(VStudio will run these automatically when opening the project)*
