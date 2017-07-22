@@ -20,7 +20,7 @@
     "engine-strict": true
   },
   "engines": {
-    "node": ">= 5.4.1 <= 7",
+    "node": ">= 5.4.1 <= 8",
     "npm": ">= 3"
   },
   "scripts": {
@@ -28,21 +28,21 @@
     "prebuild": "rimraf dist"
   },
   "peerDependencies": {
-    "@angular/core": "^4.0.0",
-    "@angular/platform-server": "^4.0.0",
+    "@angular/core": "^4.3.1",
+    "@angular/platform-server": "^4.3.1",
     "express": "^4.15.2"
   },
   "devDependencies": {
-    "@angular/animations": "^4.0.0",
-    "@angular/common": "^4.0.0",
-    "@angular/compiler": "^4.0.0",
-    "@angular/core": "^4.0.0",
-    "@angular/platform-browser": "^4.0.0",
-    "@angular/platform-server": "^4.0.0",
+    "@angular/animations": "^4.3.1",
+    "@angular/common": "^4.3.1",
+    "@angular/compiler": "^4.3.1",
+    "@angular/core": "^4.3.1",
+    "@angular/platform-browser": "^4.3.1",
+    "@angular/platform-server": "^4.3.1",
     "express": "^4.15.2",
     "rimraf": "^2.6.1",
     "rxjs": "^5.2.0",
-    "typescript": "^2.2.1",
+    "typescript": "~2.3.2",
     "zone.js": "^0.8.4"
   }
 }
