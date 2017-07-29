@@ -66,19 +66,19 @@
     "test": "exit 0"
   },
   "devDependencies": {
-    "@angular/animations": "^4.3.1",
-    "@angular/common": "^4.3.1",
-    "@angular/compiler": "^4.3.1",
-    "@angular/compiler-cli": "^4.3.1",
-    "@angular/core": "^4.3.1",
-    "@angular/http": "^4.3.1",
-    "@angular/platform-browser": "^4.3.1",
-    "@angular/platform-server": "^4.3.1",
+    "@angular/animations": "^4.0.0",
+    "@angular/common": "^4.0.0",
+    "@angular/compiler": "^4.0.0",
+    "@angular/compiler-cli": "^4.0.0",
+    "@angular/core": "^4.0.0",
+    "@angular/http": "^4.0.0",
+    "@angular/platform-browser": "^4.0.0",
+    "@angular/platform-server": "^4.0.0",
     "@types/express": "^4.0.35",
     "express": "^4.15.2",
     "rimraf": "^2.6.1",
     "rxjs": "^5.2.0",
-    "typescript": "~2.3.2",
+    "typescript": "^2.2.1",
     "zone.js": "^0.8.4"
   }
 }
