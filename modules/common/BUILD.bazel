@@ -12,9 +12,13 @@ ng_module(
 
 ng_package(
     name = "@nguniversal/common",
-    srcs = [":package.json"],
+    srcs = [
+      ":package.json",
+      "//modules/common/ls-routes:package.json",
+      ],
     entry_point = "index.js",
-    deps = [":common_module"],
+    deps = [":common_module", "//modules/common/ls-routes"],
+    secondary_entry_points = ["ls-routes"],
 )
 ts_library(
     name = "unit_test_lib",

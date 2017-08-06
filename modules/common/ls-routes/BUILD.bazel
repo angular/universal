@@ -1,0 +1,31 @@
+package(default_visibility = ["//modules/common:__subpackages__"])
+
+load("//tools:defaults.bzl", "ts_library", "ng_module", "ng_package")
+load("@build_bazel_rules_nodejs//:defs.bzl", "jasmine_node_test")
+
+exports_files(["package.json"])
+
+ng_module(
+    name = "ls-routes",
+    srcs = glob([
+        "*.ts",
+        "src/**/*.ts",
+    ]),
+    # deps = ["//modules/module-map-ngfactory-loader:module-map-ngfactory-loader_module"],
+)
+
+# ts_library(
+#     name = "unit_test_lib",
+#     srcs = glob([
+#       "spec/**/*.spec.ts"
+#     ]),
+#     testonly=True,
+#     deps = [
+#       ":common_module"
+#     ],
+# )
+
+# jasmine_node_test(
+#     name = "unit_test",
+#     srcs = [":unit_test_lib"],
+# )
