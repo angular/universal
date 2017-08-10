@@ -43,7 +43,7 @@ export function ngExpressEngine(setupOptions: NgSetupOptions) {
   const compiler: Compiler = compilerFactory.createCompiler([
     {
       providers: [
-        { provide: ResourceLoader, useClass: FileLoader }
+        { provide: ResourceLoader, useClass: FileLoader, deps: [] }
       ]
     }
   ]);
