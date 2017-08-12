@@ -1,0 +1,49 @@
+{
+  "name": "@nguniversal/koa-engine",
+  "main": "index.js",
+  "types": "index.d.ts",
+  "version": "1.0.0-beta.1",
+  "description": "Koa Engine for running Server Angular Apps",
+  "homepage": "https://github.com/angular/universal",
+  "license": "MIT",
+  "contributors": [
+    "paullryan",
+    "FrozenPandaz"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/angular/universal"
+  },
+  "bugs": {
+    "url": "https://github.com/angular/universal/issues"
+  },
+  "config": {
+    "engine-strict": true
+  },
+  "engines": {
+    "node": ">= 6 <= 8",
+    "npm": ">= 3"
+  },
+  "scripts": {
+    "build": "tsc",
+    "prebuild": "rimraf dist"
+  },
+  "peerDependencies": {
+    "@angular/core": "^4.0.0",
+    "@angular/platform-server": "^4.0.0",
+    "koa": "^2.0.0"
+  },
+  "devDependencies": {
+    "@angular/animations": "^4.0.0",
+    "@angular/common": "^4.0.0",
+    "@angular/compiler": "^4.0.0",
+    "@angular/core": "^4.0.0",
+    "@angular/platform-browser": "^4.0.0",
+    "@angular/platform-server": "^4.0.0",
+    "koa": "^2.0.0",
+    "rimraf": "^2.6.1",
+    "rxjs": "^5.2.0",
+    "typescript": "~2.3.2",
+    "zone.js": "^0.8.4"
+  }
+}

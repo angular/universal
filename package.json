@@ -54,13 +54,14 @@
     "engine-strict": true
   },
   "engines": {
-    "node": ">= 5.4.1 <= 8",
+    "node": ">= 6 <= 8",
     "npm": ">= 3"
   },
   "scripts": {
     "ngc": "ngc",
     "jasmine": "jasmine",
     "build:ng-express-engine": "ngc -p modules/ng-express-engine/tsconfig.json",
+    "build:ng-koa-engine": "ngc -p modules/ng-koa-engine/tsconfig.json",
     "build:ng-aspnetcore-engine": "ngc -p modules/ng-aspnetcore-engine/tsconfig.json",
     "build:ng-module-map-ngfactory-loader": "ngc -p modules/ng-module-map-ngfactory-loader/tsconfig.json",
     "build": "./build.sh",
@@ -76,10 +77,12 @@
     "@angular/platform-browser": "^4.0.0",
     "@angular/platform-server": "^4.0.0",
     "@types/express": "^4.0.35",
+    "@types/koa": "^2.0.39",
     "express": "^4.15.2",
+    "koa": "^2.0.0",
     "rimraf": "^2.6.1",
     "rxjs": "^5.2.0",
-    "typescript": "^2.2.1",
+    "typescript": "~2.3.2",
     "zone.js": "^0.8.4"
   }
 }
