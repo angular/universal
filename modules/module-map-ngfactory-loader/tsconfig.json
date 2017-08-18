@@ -1,0 +1,9 @@
+// Configuration for IDEs only.
+{
+  "extends": "../../tsconfig.json",
+  "compilerOptions": {
+    "rootDir": "..",
+    "baseUrl": "."
+  },
+  "include": ["./**/*.ts"]
+}
