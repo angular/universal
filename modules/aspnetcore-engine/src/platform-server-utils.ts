@@ -18,11 +18,9 @@ import {
   NgModuleRef,
   PlatformRef,
   StaticProvider,
-  Type
 } from '@angular/core';
 import {ɵTRANSITION_ID} from '@angular/platform-browser';
 import {
-  platformDynamicServer,
   platformServer,
   BEFORE_APP_SERIALIZED,
   INITIAL_CONFIG,
@@ -87,25 +85,6 @@ function _render<T>(platform: PlatformRef,
         return { html: output, moduleRef };
       });
   });
-}
-
-/**
- * Renders a Module to string.
- *
- * `document` is the full document HTML of the page to render, as a string.
- * `url` is the URL for the current render request.
- * `extraProviders` are the platform level providers for the current render request.
- *
- * Do not use this in a production server environment. Use pre-compiled {@link NgModuleFactory} with
- * {@link renderModuleFactory} instead.
- *
- * @experimental
- */
-export function renderModule<T>(
-  module: Type<T>, options: { document?: string, url?: string, extraProviders?: StaticProvider[] }):
-  Promise<ModuleRenderResult<T>> {
-  const platform = _getPlatform(platformDynamicServer, options);
-  return _render(platform, platform.bootstrapModule(module));
 }
 
 /**

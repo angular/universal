@@ -6,8 +6,8 @@ load("@angular//:index.bzl", _ng_package = "ng_package")
 DEFAULT_TS_CONFIG = "//:tsconfig.json"
 DEFAULT_NODE_MODULES = "//:node_modules"
 
-NG_VERSION = "^6.0.0-rc.0"
-RXJS_VERSION = "^6.0.0-beta.0"
+NG_VERSION = "^6.0.0 || ^6.0.0-rc.0"
+RXJS_VERSION = "^6.0.0 || ^6.0.0-rc.0"
 
 NGUNIVERSAL_SCOPED_PACKAGES = ["@nguniversal/%s" % p for p in [
     "aspnetcore-engine",
@@ -35,9 +35,12 @@ GLOBALS = {
       "@angular/platform-browser": "ng.platformBrowser",
       "@angular/platform-server": "ng.platformServer",
       "@angular/platform-browser-dynamic": "ng.platformBrowserDynamic",
-      "@nguniversal/aspnetcore-engine/tokens": "nguniversal.aspnetcoreEngine.tokens",
-      "@nguniversal/express-engine/tokens": "nguniversal.expressEngine.tokens",
-      "@nguniversal/hapi-engine/tokens": "nguniversal.hapiEngine.tokens",
+      "@nguniversal/aspnetcore-engine": "nguniversal.aspnetcoreEngine",
+      "@nguniversal/common": "nguniversal.common",
+      "@nguniversal/common/tokens": "nguniversal.common.tokens",
+      "@nguniversal/express-engine": "nguniversal.expressEngine",
+      "@nguniversal/hapi-engine": "nguniversal.hapiEngine",
+      "@nguniversal/module-map-ngfactory-loader": "nguniversal.moduleMapNgfactoryLoader",
       'tslib': 'tslib',
       "rxjs": "Rx",
       "rxjs/operators": "Rx.operators",

@@ -28,7 +28,7 @@ node_repositories(package_json = ["//:package.json"])
 
 local_repository(
     name = "build_bazel_rules_typescript",
-    path = "node_modules/@bazel/typescript",
+    path = "node_modules/@bazel/typescript"
 )
 
 load("@build_bazel_rules_typescript//:defs.bzl", "ts_setup_workspace")

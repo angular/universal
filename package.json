@@ -109,7 +109,11 @@
     "rollup-plugin-node-resolve": "^3.0.2",
     "rollup-plugin-sourcemaps": "^0.4.2",
     "rollup-plugin-uglify": "^2.0.1",
+<<<<<<< HEAD
     "rxjs": "^6.0.0",
+=======
+    "rxjs": "6.0.0-rc.0",
+>>>>>>> feat(common): add UniversalEngine to encapsulate rendering
     "sorcery": "^0.10.0",
     "standard-version": "^4.3.0",
     "systemjs": "0.19.43",

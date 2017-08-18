@@ -7,3 +7,8 @@
  */
 export { TransferHttpCacheModule } from './src/transfer_http';
 export { StateTransferInitializerModule } from './src/state-transfer-initializer/module';
+<<<<<<< HEAD
+=======
+export * from './src/private_export';
+export { NgSetupOptions } from './src/universal-engine/interfaces';
+>>>>>>> feat(common): add UniversalEngine to encapsulate rendering

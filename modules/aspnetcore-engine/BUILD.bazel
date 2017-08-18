@@ -12,7 +12,8 @@ ng_module(
     ]),
     module_name = "@nguniversal/aspnetcore-engine",
     deps = [
-        "//modules/aspnetcore-engine/tokens",
+        "//modules/common",
+        "//modules/common/tokens",
         "@rxjs",
     ],
 )
@@ -26,7 +27,6 @@ ng_package(
     readme_md = ":README.md",
     deps = [
         ":aspnetcore-engine",
-        "//modules/aspnetcore-engine/tokens",
     ],
 )
 
@@ -41,7 +41,7 @@ ts_library(
     ],
 )
 
-jasmine_node_test(
-    name = "unit_test",
-    srcs = [":unit_test_lib"],
-)
+# jasmine_node_test(
+#     name = "unit_test",
+#     srcs = [":unit_test_lib"],
+# )

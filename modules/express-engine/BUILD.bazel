@@ -6,21 +6,21 @@ load("@build_bazel_rules_nodejs//:defs.bzl", "jasmine_node_test")
 
 ng_module(
     name = "express-engine",
+    module_name = "@nguniversal/express-engine",
     srcs = glob([
         "*.ts",
         "src/**/*.ts",
     ]),
-    module_name = "@nguniversal/express-engine",
     deps = [
-        "//modules/express-engine/tokens",
+        "//modules/common",
+        "//modules/common/tokens",
+        "@rxjs",
     ],
 )
 
 ng_package(
     name = "npm_package",
-    srcs = [
-        ":package.json",
-    ],
+    srcs = [":package.json"],
     entry_point = "modules/express-engine/index.js",
     readme_md = ":README.md",
     deps = [
@@ -41,7 +41,7 @@ ts_library(
     ],
 )
 
-jasmine_node_test(
-    name = "unit_test",
-    srcs = [":unit_test_lib"],
-)
+# jasmine_node_test(
+#     name = "unit_test",
+#     srcs = [":unit_test_lib"],
+# )
