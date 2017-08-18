@@ -25,5 +25,7 @@
   "bugs": {
     "url": "https://github.com/angular/universal/issues"
   },
-  "homepage": "https://github.com/angular/universal"
+  "config": {
+    "engine-strict": true
+  }
 }

@@ -16,6 +16,9 @@
     "typeRoots": [
       "node_modules/@types"
     ],
+    "paths": {
+      "@nguniversal/common": ["modules/common"]
+    },
     "lib": [
       "dom",
       "es6"

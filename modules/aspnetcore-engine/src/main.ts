@@ -99,17 +99,12 @@ export function ngAspnetCoreEngine(options: IEngineOptions): Promise<IEngineRend
      for your root App component.`);
   }
 
+  const engine = new UniversalEngine();
+
   // Grab the DOM "selector" from the passed in Template <app-root> for example = "app-root"
   appSelector = options.appSelector.substring(1, options.appSelector.indexOf('>'));
 
-  const compilerFactory: CompilerFactory = platformDynamicServer().injector.get(CompilerFactory);
-  const compiler: Compiler = compilerFactory.createCompiler([
-    {
-      providers: [
-        { provide: ResourceLoader, useClass: FileLoader, deps: [] }
-      ]
-    }
-  ]);
+  const compiler = engine.ɵgetCompiler();
 
   return new Promise((resolve, reject) => {
 
@@ -132,7 +127,7 @@ export function ngAspnetCoreEngine(options: IEngineOptions): Promise<IEngineRend
         ]
       );
 
-      getFactory(moduleOrFactory, compiler)
+      engine.ɵgetFactory(moduleOrFactory, compiler)
         .then(factory => {
           return renderModuleFactory(factory, {
             document: options.appSelector,
@@ -165,36 +160,4 @@ export function ngAspnetCoreEngine(options: IEngineOptions): Promise<IEngineRend
 
   });
 
-}
-
-/* @internal */
-const factoryCacheMap = new Map<Type<{}>, NgModuleFactory<{}>>();
-function getFactory(
-  moduleOrFactory: Type<{}> | NgModuleFactory<{}>, compiler: Compiler
-): Promise<NgModuleFactory<{}>> {
-
-  return new Promise<NgModuleFactory<{}>>((resolve, reject) => {
-    // If module has been compiled AoT
-    if (moduleOrFactory instanceof NgModuleFactory) {
-      resolve(moduleOrFactory);
-      return;
-    } else {
-      let moduleFactory = factoryCacheMap.get(moduleOrFactory);
-
-      // If module factory is cached
-      if (moduleFactory) {
-        resolve(moduleFactory);
-        return;
-      }
-
-      // Compile the module and cache it
-      compiler.compileModuleAsync(moduleOrFactory)
-        .then((factory) => {
-          factoryCacheMap.set(moduleOrFactory, factory);
-          resolve(factory);
-        }, (err => {
-          reject(err);
-        }));
-    }
-  });
 }
