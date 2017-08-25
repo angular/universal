@@ -3,6 +3,8 @@ node_js:
   - '4'
   - '5'
   - '6'
+  - '7'
+  - '8'
 
 cache:
   directories:
@@ -22,6 +24,14 @@ notifications:
 env:
   global:
   - SAUCE_ACCESS_KEY=''
+  - CXX=g++-4.8
+
+addons:
+  apt:
+    sources:
+      - ubuntu-toolchain-r-test
+    packages:
+      - g++-4.8
 
 before_install:
   # Updating NPM to relevant version >= 3 on Node.JS LTS

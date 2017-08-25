@@ -20,8 +20,10 @@ app.engine('html', ngExpressEngine({
 app.set('view engine', 'html');
 
 app.get('/**/*', (req: Request, res: Response) => {
-  req: req,
-  res: res
+  res.render('../dist/index', {
+    req,
+    res
+  });
 });
 ```
 
@@ -46,12 +48,14 @@ The Bootstrap module as well as more providers can be passed on request
 
 ```ts
 app.get('/**/*', (req: Request, res: Response) => {
-  req: req,
-  res: res,
-  bootstrap: OtherServerAppModule,
-  providers: [
-    OtherServerService
-  ]
+  res.render('../dist/index', {
+    req,
+    res,
+    bootstrap: OtherServerAppModule,
+    providers: [
+      OtherServerService
+    ]
+  });
 });
 ```
 
@@ -62,7 +66,7 @@ You can access them by @Inject
 
 ```ts
 import { Request } from 'express';
-import { REQUEST } from '@nguniversal/express-engine';
+import { REQUEST } from '@nguniversal/express-engine/tokens';
 
 @Injectable()
 export class RequestService {
@@ -78,8 +82,10 @@ You can also use a custom callback to better handle your errors
 
 ```ts
 app.get('/**/*', (req: Request, res: Response) => {
-  req: req,
-  res: res
+  res.render('../dist/index', {
+    req,
+    res
+  });
 }, (err: Error, html: string) => {
   res.status(html ? 200 : 500).send(html || err.message);
 });

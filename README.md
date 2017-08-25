@@ -1,4 +1,5 @@
 # Current Status: Universal platform API has been merged into Angular 4.0!
+## https://github.com/angular/angular/tree/master/packages/platform-server
 (The code for the 2.x version of angular2-universal has been archived at https://github.com/angular/universal/tree/2.x)
 
 [![Build Status](https://travis-ci.org/angular/universal.svg?branch=master)](https://travis-ci.org/angular/universal)
@@ -61,7 +62,7 @@ This repository will host the various tools like engines to integrate with vario
 
 # Getting Started
 
-[* **NodeJS** :: Example repo](https://github.com/robwormald/ng-universal-demo)
+[* **NodeJS** :: Example repo](https://github.com/angular/universal-starter)
   - Minimal webpack & universal example with Angular 4.0
 
 [* ASP.NET Core :: Universal Starter repo](https://github.com/MarkPieszak/aspnetcore-angular2-universal)
@@ -99,8 +100,8 @@ This repository will host the various tools like engines to integrate with vario
    - Also for RxJs timeouts, make sure to _cancel_ their stream on success, for they can slow down rendering as well.
  - **Don't manipulate the nativeElement directly**. Use the _Renderer2_. We do this to ensure that in any environment we're able to change our view.
 ```
-constructor(element: ElementRef, renderer: Renderer) {
-  renderer.setElementStyle(element.nativeElement, 'font-size', 'x-large');
+constructor(element: ElementRef, renderer: Renderer2) {
+  renderer.setStyle(element.nativeElement, 'font-size', 'x-large');
 }
 ```
  - The application runs XHR requests on the server & once again on the Client-side (when the application bootstraps)

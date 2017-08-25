@@ -54,14 +54,15 @@
     "engine-strict": true
   },
   "engines": {
-    "node": ">= 5.4.1 <= 7",
+    "node": ">= 5.4.1 <= 8",
     "npm": ">= 3"
   },
   "scripts": {
     "ngc": "ngc",
     "jasmine": "jasmine",
-    "build:ng-express-engine": "tsc -p modules/ng-express-engine/tsconfig.json",
-    "build:ng-aspnetcore-engine": "tsc -p modules/ng-aspnetcore-engine/tsconfig.json",
+    "build:ng-express-engine": "ngc -p modules/ng-express-engine/tsconfig.json",
+    "build:ng-aspnetcore-engine": "ngc -p modules/ng-aspnetcore-engine/tsconfig.json",
+    "build:ng-module-map-ngfactory-loader": "ngc -p modules/ng-module-map-ngfactory-loader/tsconfig.json",
     "build": "./build.sh",
     "test": "exit 0"
   },
@@ -69,10 +70,12 @@
     "@angular/animations": "^4.0.0",
     "@angular/common": "^4.0.0",
     "@angular/compiler": "^4.0.0",
+    "@angular/compiler-cli": "^4.0.0",
     "@angular/core": "^4.0.0",
     "@angular/http": "^4.0.0",
     "@angular/platform-browser": "^4.0.0",
     "@angular/platform-server": "^4.0.0",
+    "@types/express": "^4.0.35",
     "express": "^4.15.2",
     "rimraf": "^2.6.1",
     "rxjs": "^5.2.0",

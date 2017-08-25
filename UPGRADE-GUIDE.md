@@ -12,7 +12,7 @@ As for your individual root files, there actually aren't many changes you'll nee
 
 ## Server.ts 
 
-When it comes the underlying express-engine, things will remain fairly similar except that now, you're going to be instead doing `import { ngExpressEngine } from '@ng-universal/express-engine';` [More detailed information on the express-engine here](https://github.com/angular/universal/tree/master/modules/ng-express-engine)
+When it comes the underlying express-engine, things will remain fairly similar except that now, you're going to be instead doing `import { ngExpressEngine } from '@nguniversal/express-engine';` [More detailed information on the express-engine here](https://github.com/angular/universal/tree/master/modules/ng-express-engine)
 
 Make sure you remove `angular2-universal-polyfills` and any `__workaround.ts` files you may have been using (if you were using Universal with Angular > 2.1+). As for polyfills on the server, you'll instead need the following:
 
@@ -63,4 +63,4 @@ export class ServerAppModule { }
 
 ## Angular 4 / platform-server example
 
-An official starter will be available soon at `angular/universal-starter`, but for now you can see a fully functional demo of Angular4 with platform-server [here](https://github.com/FrozenPandaz/ng-universal-demo), to compare it to your current older application.
+An official starter can be found at [angular/universal-starter](https://github.com/angular/universal-starter)
