@@ -7,6 +7,11 @@ npm run build:ng-express-engine
 cp modules/ng-express-engine/package.json dist/ng-express-engine/package.json
 cp modules/ng-express-engine/README.md dist/ng-express-engine/README.md
 
+npm run build:ng-hapi-engine
+
+cp modules/ng-hapi-engine/package.json dist/ng-hapi-engine/package.json
+cp modules/ng-hapi-engine/README.md dist/ng-hapi-engine/README.md
+
 npm run build:ng-aspnetcore-engine
 
 cp modules/ng-aspnetcore-engine/package.json dist/ng-aspnetcore-engine/package.json
