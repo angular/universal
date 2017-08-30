@@ -1,0 +1,12 @@
+{
+  "extends": "../../tsconfig.json",
+  "compilerOptions": {
+    "outDir": "../../dist/ng-state-transfer"
+  },
+  "angularCompilerOptions": {
+    "genDir": "ngfactory"
+  },
+  "files": [
+    "index.ts"
+  ]
+}

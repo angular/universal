@@ -1,0 +1,22 @@
+{
+  "name": "@nguniversal/state-transfer",
+  "main": "index.js",
+  "types": "index.d.ts",
+  "version": "1.0.0-beta.3",
+  "description": "Allows for passing state between server and client",
+  "homepage": "https://github.com/angular/universal",
+  "license": "MIT",
+  "contributors": [
+    "Toxicable"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/angular/universal"
+  },
+  "bugs": {
+    "url": "https://github.com/angular/universal/issues"
+  },
+  "peerDependencies": {
+    "@angular/core": "^4.0.0"
+  }
+}
