@@ -1,7 +1,7 @@
 import * as fs from 'fs';
 import { Request, Response } from 'express';
 
-import { Provider, NgModuleFactory, Type, CompilerFactory, Compiler } from '@angular/core';
+import { Provider, StaticProvider, NgModuleFactory, Type, CompilerFactory, Compiler } from '@angular/core';
 import { ResourceLoader } from '@angular/compiler';
 import { INITIAL_CONFIG, renderModuleFactory, platformDynamicServer } from '@angular/platform-server';
 
@@ -13,7 +13,7 @@ import { REQUEST, RESPONSE } from './tokens';
  */
 export interface NgSetupOptions {
   bootstrap: Type<{}> | NgModuleFactory<{}>;
-  providers?: Provider[];
+  providers?: StaticProvider[];
 }
 
 /**
