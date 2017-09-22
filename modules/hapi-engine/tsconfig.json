@@ -4,7 +4,8 @@
     "outDir": "../../dist/hapi-engine"
   },
   "angularCompilerOptions": {
-    "genDir": "ngfactory"
+    "genDir": "ngfactory",
+    "skipTemplateCodegen": true
   },
   "files": [
     "index.ts"
