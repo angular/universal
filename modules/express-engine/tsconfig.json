@@ -1,0 +1,13 @@
+{
+  "extends": "../../tsconfig.json",
+  "compilerOptions": {
+    "outDir": "../../dist/express-engine"
+  },
+  "angularCompilerOptions": {
+    "skipTemplateCodegen": true
+  },
+  "files": [
+    "index.ts",
+    "tokens.ts"
+  ]
+}

@@ -1,10 +1,10 @@
 {
   "extends": "../../tsconfig.json",
   "compilerOptions": {
-    "outDir": "../../dist/ng-aspnetcore-engine"
+    "outDir": "../../dist/hapi-engine"
   },
   "angularCompilerOptions": {
-    "genDir": "ngfactory"
+    "skipTemplateCodegen": true
   },
   "files": [
     "index.ts"
