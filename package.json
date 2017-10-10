@@ -65,7 +65,7 @@
     "build:hapi-engine": "ngc -p modules/hapi-engine/tsconfig.json",
     "build:module-map-ngfactory-loader": "ngc -p modules/module-map-ngfactory-loader/tsconfig.json",
     "build": "./build.sh",
-    "changelog": "conventional-changelog -p angular -i CHANGELOG.md -s -r 1",
+    "changelog": "conventional-changelog -p angular -i CHANGELOG.md -s -r 1 -u",
     "test": "exit 0"
   },
   "devDependencies": {
