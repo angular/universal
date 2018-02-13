@@ -95,19 +95,18 @@ export function ngAspnetCoreEngine(
       options.providers = options.providers || [];
 
       const extraProviders = options.providers.concat(
-        ...options.providers,
-          [{
-            provide: ORIGIN_URL,
-            useValue: options.request.origin
-          }, {
-            provide: REQUEST,
-            useValue: options.request.data.request
-          }, {
-            provide: BEFORE_APP_SERIALIZED,
-            useFactory: beforeAppSerialized, multi: true, deps: [ DOCUMENT ]
-          }
-        ]
-      );
+        [{
+          provide: ORIGIN_URL,
+          useValue: options.request.origin
+        }, {
+          provide: REQUEST,
+          useValue: options.request.data.request
+        }, {
+          provide: BEFORE_APP_SERIALIZED,
+          useFactory: beforeAppSerialized, multi: true, deps: [ DOCUMENT ]
+        }
+      ]
+    );
 
       getFactory(moduleOrFactory, compiler)
         .then(factory => {
