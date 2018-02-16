@@ -3,11 +3,9 @@ node_js:
   - '6'
   - '7'
   - '8'
+  - '9'
 
-cache:
-  directories:
-    - node_modules
-    - typings
+cache: yarn
 
 notifications:
   webhooks:
@@ -19,24 +17,8 @@ notifications:
   slack:
     secure: EP4MzZ8JMyNQJ4S3cd5LEPWSMjC7ZRdzt3veelDiOeorJ6GwZfCDHncR+4BahDzQAuqyE/yNpZqaLbwRWloDi15qIUsm09vgl/1IyNky1Sqc6lEknhzIXpWSalo4/T9ZP8w870EoDvM/UO+LCV99R3wS8Nm9o99eLoWVb2HIUu0=
 
-env:
-  global:
-  - SAUCE_ACCESS_KEY=''
-  - CXX=g++-4.8
-
-addons:
-  apt:
-    sources:
-      - ubuntu-toolchain-r-test
-    packages:
-      - g++-4.8
-
-before_install:
-  # Updating NPM to relevant version >= 3 on Node.JS LTS
-  - npm i -g npm@^3
-
 before_script:
-  - npm install
+  - yarn install --frozen-lockfile
 
 script:
   - ./build.sh
