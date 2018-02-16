@@ -39,5 +39,6 @@ before_script:
   - npm install
 
 script:
+  - commitlint-travis
   - ./build.sh
 
