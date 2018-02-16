@@ -52,6 +52,7 @@ const factoryCacheMap = new Map<Type<{}>, NgModuleFactory<{}>>();
  */
 export function ngHapiEngine(options: RenderOptions) {
 
+  const req = options.req;
   const compilerFactory: CompilerFactory = platformDynamicServer().injector.get(CompilerFactory);
   const compiler: Compiler = compilerFactory.createCompiler([
     {
@@ -61,11 +62,12 @@ export function ngHapiEngine(options: RenderOptions) {
     }
   ]);
 
-  if (options.req.raw.req.url === undefined) {
+  if (req.raw.req.url === undefined) {
     return Promise.reject(new Error('url is undefined'));
   }
 
-  const filePath = <string> options.req.raw.req.url;
+  const filePath = <string> req.raw.req.url;
+  const url = `${req.connection.info.protocol}://${req.info.host}${req.url.path}`;
 
   options.providers = options.providers || [];
 
@@ -84,7 +86,7 @@ export function ngHapiEngine(options: RenderOptions) {
           provide: INITIAL_CONFIG,
           useValue: {
             document: options.document || getDocument(filePath),
-            url: options.url || filePath
+            url: options.url || url
           }
         }
       ]);
