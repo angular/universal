@@ -1,4 +1,3 @@
-
 export { ngAspnetCoreEngine } from './src/main';
 export { createTransferScript } from './src/create-transfer-script';
 

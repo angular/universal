@@ -1,4 +1,4 @@
-import { NgModuleRef } from "@angular/core";
+import { NgModuleRef } from '@angular/core';
 
 export interface IEngineRenderResult {
   html: string;
