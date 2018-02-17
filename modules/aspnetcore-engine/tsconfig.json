@@ -1,13 +1,12 @@
+// Configuration for IDEs only.
 {
   "extends": "../../tsconfig.json",
   "compilerOptions": {
-    "outDir": "../../dist/aspnetcore-engine",
-    "rootDir": "./"
+    "rootDir": "..",
+    "baseUrl": ".",
+    "paths": {
+      "@nguniversal/aspnetcore-engine/*": ["./*"]
+    }
   },
-  "angularCompilerOptions": {
-    "skipTemplateCodegen": true
-  },
-  "files": [
-    "index.ts"
-  ]
+  "include": ["./**/*.ts"]
 }

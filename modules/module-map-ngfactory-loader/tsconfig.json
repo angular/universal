@@ -1,13 +1,12 @@
+// Configuration for IDEs only.
 {
   "extends": "../../tsconfig.json",
   "compilerOptions": {
-    "outDir": "../../dist/module-map-ngfactory-loader",
-    "rootDir": "./"
+    "rootDir": "..",
+    "baseUrl": ".",
+    "paths": {
+      "@nguniversal/module-map-ngfactory-loader/*": ["./*"]
+    }
   },
-  "angularCompilerOptions": {
-    "skipTemplateCodegen": true
-  },
-  "files": [
-    "index.ts"
-  ]
+  "include": ["./**/*.ts"]
 }

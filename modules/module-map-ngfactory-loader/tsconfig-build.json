@@ -1,0 +1,42 @@
+// TypeScript config file that is used to compile the library into ES2015.
+{
+  "compilerOptions": {
+    "declaration": true,
+    "stripInternal": false,
+    "experimentalDecorators": true,
+    "noUnusedParameters": true,
+    "strictNullChecks": true,
+    "importHelpers": true,
+    "newLine": "lf",
+    "module": "es2015",
+    "moduleResolution": "node",
+    "outDir": "../../dist/packages/module-map-ngfactory-loader",
+    "rootDir": ".",
+    "rootDirs": [
+      ".",
+      "../../dist/packages/module-map-ngfactory-loader"
+    ],
+    "sourceMap": true,
+    "inlineSources": true,
+    "target": "es2015",
+    "lib": ["es2015", "dom"],
+    "skipLibCheck": true,
+    "types": [],
+    "baseUrl": ".",
+    "paths": {
+      "@nguniversal/module-map-ngfactory-loader/*": ["../../dist/packages/module-map-ngfactory-loader/*"]
+    }
+  },
+  "files": [
+    "public-api.ts",
+    "typings.d.ts"
+  ],
+  "angularCompilerOptions": {
+    "annotateForClosureCompiler": true,
+    "strictMetadataEmit": true,
+    "flatModuleOutFile": "index.js",
+    "flatModuleId": "@nguniversal/module-map-ngfactory-loader",
+    "skipTemplateCodegen": true,
+    "fullTemplateTypeCheck": true
+  }
+}

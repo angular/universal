@@ -1,14 +1,12 @@
+// Configuration for IDEs only.
 {
   "extends": "../../tsconfig.json",
   "compilerOptions": {
-    "outDir": "../../dist/express-engine",
-    "rootDir": "./"
+    "rootDir": "..",
+    "baseUrl": ".",
+    "paths": {
+      "@nguniversal/express-engine/*": ["./*"]
+    }
   },
-  "angularCompilerOptions": {
-    "skipTemplateCodegen": true
-  },
-  "files": [
-    "index.ts",
-    "tokens.ts"
-  ]
+  "include": ["./**/*.ts"]
 }

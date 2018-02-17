@@ -1,13 +1,12 @@
+// Configuration for IDEs only.
 {
   "extends": "../../tsconfig.json",
   "compilerOptions": {
-    "outDir": "../../dist/common",
-    "rootDir": "./"
+    "rootDir": "..",
+    "baseUrl": ".",
+    "paths": {
+      "@nguniversal/common/*": ["./*"]
+    }
   },
-  "angularCompilerOptions": {
-    "skipTemplateCodegen": true
-  },
-  "files": [
-    "index.ts"
-  ]
+  "include": ["./**/*.ts"]
 }
