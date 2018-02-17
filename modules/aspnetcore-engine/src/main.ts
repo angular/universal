@@ -1,6 +1,6 @@
 import { Type, NgModuleFactory, CompilerFactory, Compiler } from '@angular/core';
 import { platformDynamicServer } from '@angular/platform-server';
-import { DOCUMENT } from '@angular/platform-browser';
+import { DOCUMENT } from '@angular/common';
 import { ResourceLoader } from '@angular/compiler';
 
 import { REQUEST, ORIGIN_URL } from './tokens';
@@ -24,13 +24,13 @@ let appSelector = 'app-root'; // default
 
 /* @internal */
 function _getUniversalData(
-  doc: any /* TODO: type definition for Domino - DomAPI Spec (similar to "Document") */
+  doc: Document
 ): UniversalData {
 
-  const STYLES = [];
-  const SCRIPTS = [];
-  const META = [];
-  const LINKS = [];
+  const STYLES: string[] = [];
+  const SCRIPTS: string[] = [];
+  const META: string[] = [];
+  const LINKS: string[] = [];
 
   for (let i = 0; i < doc.head.children.length; i++) {
     const element = doc.head.children[i];
@@ -78,7 +78,7 @@ function _getUniversalData(
 
   return {
     title: doc.title,
-    appNode: doc.querySelector(appSelector).outerHTML,
+    appNode: doc.querySelector(appSelector)!.outerHTML,
     scripts: SCRIPTS.join('\n'),
     styles: STYLES.join('\n'),
     meta: META.join('\n'),

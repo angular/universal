@@ -5,4 +5,8 @@
  * Use of this source code is governed by an MIT-style license that can be
  * found in the LICENSE file at https://angular.io/license
  */
-export * from './public-api';
+
+import {Version} from '@angular/core';
+
+/** Current version of the NGUniversal module map loader */
+export const VERSION = new Version('0.0.0-PLACEHOLDER');

@@ -1,54 +1,28 @@
 {
   "name": "@nguniversal/aspnetcore-engine",
-  "main": "dist/index.js",
-  "types": "dist/index.d.ts",
-  "version": "5.0.0-beta.5",
-  "description": "ASP.NET Core Engine for running Server Angular Apps",
-  "homepage": "https://github.com/angular/universal",
-  "license": "MIT",
-  "author": {
-    "name": "MarkPieszak",
-    "email": "mpieszak84@gmail.com",
-    "url": "github.com/markpieszak"
-  },
-  "contributors": [
-    "MarkPieszak"
-  ],
+  "version": "0.0.0-PLACEHOLDER",
+  "description": "ASP.NET Core Engine for running server Angular Apps",
+  "main": "./bundles/aspnetcore-engine.umd.js",
+  "module": "./esm5/aspnetcore-engine.es5.js",
+  "es2015": "./esm2015/aspnetcore-engine.js",
+  "typings": "./aspnetcore-engine.d.ts",
   "repository": {
     "type": "git",
-    "url": "https://github.com/angular/universal"
+    "url": "https://github.com/angular/universal.git"
   },
+  "keywords": [
+    "angular",
+    "universal",
+    "ssr"
+  ],
+  "license": "MIT",
   "bugs": {
     "url": "https://github.com/angular/universal/issues"
   },
-  "config": {
-    "engine-strict": true
-  },
-  "engines": {
-    "node": ">= 5.4.1 <= 8",
-    "npm": ">= 3"
-  },
-  "scripts": {
-    "build": "tsc",
-    "prebuild": "rimraf dist"
-  },
+  "homepage": "https://github.com/angular/universal",
   "peerDependencies": {
-    "@angular/core": "^5.0.0",
-    "@angular/platform-server": "^5.0.0"
-  },
-  "devDependencies": {
-    "@angular/common": "^5.0.0",
-    "@angular/compiler": "^5.0.0",
-    "@angular/core": "^5.0.0",
-    "@angular/http": "^5.0.0",
-    "@angular/platform-browser": "^5.0.0",
-    "@angular/platform-server": "^5.0.0",
-    "rimraf": "^2.6.1",
-    "rxjs": "^5.2.0",
-    "typescript": "2.4.2",
-    "zone.js": "^0.8.12"
-  },
-  "dependencies": {
-    "@types/node": "^7.0.13"
+    "@angular/common": "0.0.0-NG",
+    "@angular/core": "0.0.0-NG",
+    "@angular/platform-server": "0.0.0-NG"
   }
 }

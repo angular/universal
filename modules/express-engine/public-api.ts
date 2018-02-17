@@ -5,4 +5,5 @@
  * Use of this source code is governed by an MIT-style license that can be
  * found in the LICENSE file at https://angular.io/license
  */
-export * from './public-api';
+export { ngExpressEngine, NgSetupOptions, RenderOptions } from './src/main';
+export {REQUEST, RESPONSE} from './src/tokens';

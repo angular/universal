@@ -5,7 +5,7 @@
     "rootDir": "..",
     "baseUrl": ".",
     "paths": {
-      "@nguniversal/module-map-ngfactory-loader/*": ["./*"]
+      "@nguniversal/aspnetcore-engine/*": ["./*"]
     }
   },
   "include": ["./**/*.ts"]
