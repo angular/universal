@@ -12,6 +12,7 @@ import './tasks/clean';
 import './tasks/changelog';
 import './tasks/ci';
 import './tasks/default';
+import './tasks/lint';
 import './tasks/publish';
 import './tasks/unit-test';
 import './tasks/unit-test-server';

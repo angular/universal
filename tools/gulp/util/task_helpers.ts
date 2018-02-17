@@ -122,19 +122,6 @@ export function cleanTask(glob: string) {
   return () => gulp.src(glob, { read: false }).pipe(gulpClean(null));
 }
 
-
-/** Build an task that depends on all application build tasks. */
-export function buildAppTask(appName: string) {
-  const buildTasks = ['ts', 'scss', 'assets']
-    .map(taskName => `:build:${appName}:${taskName}`)
-    .filter(taskName => gulp.hasTask(taskName));
-
-  return sequenceTask(
-    'nguniversal:clean-build',
-    [...buildTasks]
-  );
-}
-
 /**
  * Create a task that serves a given directory in the project.
  * The server rewrites all node_module/ or dist/ requests to the correct directory.

@@ -60,6 +60,7 @@
   },
   "scripts": {
     "lib:build": "gulp :publish:build-releases",
+    "lib:lint": "gulp lint",
     "lib:test:browser": "gulp test:browser",
     "lib:test:ssr": "gulp test:server"
   },
@@ -98,6 +99,7 @@
     "hapi": "^16.1.1",
     "http-rewrite-middleware": "^0.1.6",
     "jasmine-core": "^2.8.0",
+    "madge": "^2.2.0",
     "magic-string": "^0.22.4",
     "resolve-bin": "^0.4.0",
     "rimraf": "^2.6.1",
@@ -109,6 +111,7 @@
     "sorcery": "^0.10.0",
     "ts-node": "^3.0.4",
     "tsconfig-paths": "^2.3.0",
+    "tslint": "^5.9.1",
     "tsutils": "^2.13.0",
     "typescript": "~2.6.2",
     "uglify-js": "^2.8.14",
