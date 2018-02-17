@@ -38,18 +38,14 @@ const factoryCacheMap = new Map<Type<{}>, NgModuleFactory<{}>>();
  * This is an express engine for handling Angular Applications
  */
 export function ngExpressEngine(setupOptions: NgSetupOptions) {
-
   const compilerFactory: CompilerFactory = platformDynamicServer().injector.get(CompilerFactory);
   const compiler: Compiler = compilerFactory.createCompiler([
     {
-      providers: [
-        { provide: ResourceLoader, useClass: FileLoader, deps: [] }
-      ]
+      providers: [{ provide: ResourceLoader, useClass: FileLoader, deps: [] }]
     }
   ]);
 
-  return function (filePath: string, options: RenderOptions, callback: (err?: Error | null, html?: string) => void) {
-
+  return function(filePath: string, options: RenderOptions, callback: (err?: Error | null, html?: string) => void) {
     options.providers = options.providers || [];
 
     try {
@@ -72,7 +68,8 @@ export function ngExpressEngine(setupOptions: NgSetupOptions) {
               url: options.req.originalUrl
             }
           }
-        ]);
+        ]
+      );
 
       getFactory(moduleOrFactory, compiler)
         .then(factory => {
@@ -80,11 +77,14 @@ export function ngExpressEngine(setupOptions: NgSetupOptions) {
             extraProviders: extraProviders
           });
         })
-        .then((html: string) => {
-          callback(null, html);
-        }, (err) => {
-          callback(err);
-        });
+        .then(
+          (html: string) => {
+            callback(null, html);
+          },
+          err => {
+            callback(err);
+          }
+        );
     } catch (err) {
       callback(err);
     }
@@ -94,9 +94,7 @@ export function ngExpressEngine(setupOptions: NgSetupOptions) {
 /**
  * Get a factory from a bootstrapped module/ module factory
  */
-function getFactory(
-  moduleOrFactory: Type<{}> | NgModuleFactory<{}>, compiler: Compiler
-): Promise<NgModuleFactory<{}>> {
+function getFactory(moduleOrFactory: Type<{}> | NgModuleFactory<{}>, compiler: Compiler): Promise<NgModuleFactory<{}>> {
   return new Promise<NgModuleFactory<{}>>((resolve, reject) => {
     // If module has been compiled AoT
     if (moduleOrFactory instanceof NgModuleFactory) {
@@ -112,13 +110,15 @@ function getFactory(
       }
 
       // Compile the module and cache it
-      compiler.compileModuleAsync(moduleOrFactory)
-        .then((factory) => {
+      compiler.compileModuleAsync(moduleOrFactory).then(
+        factory => {
           factoryCacheMap.set(moduleOrFactory, factory);
           resolve(factory);
-        }, (err => {
+        },
+        err => {
           reject(err);
-        }));
+        }
+      );
     }
   });
 }
@@ -146,5 +146,5 @@ function getReqResProviders(req: Request, res?: Response): StaticProvider[] {
  * Get the document at the file path
  */
 function getDocument(filePath: string): string {
-  return templateCache[filePath] = templateCache[filePath] || fs.readFileSync(filePath).toString();
+  return (templateCache[filePath] = templateCache[filePath] || fs.readFileSync(filePath).toString());
 }

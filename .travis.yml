@@ -39,5 +39,6 @@ before_script:
   - npm install
 
 script:
+  - yarn lint:enforce
   - ./build.sh
 

@@ -8,7 +8,13 @@ import { ɵTRANSITION_ID } from '@angular/platform-browser';
 import { filter } from 'rxjs/operator/filter';
 import { first } from 'rxjs/operator/first';
 import { toPromise } from 'rxjs/operator/toPromise';
-import { platformDynamicServer, platformServer, BEFORE_APP_SERIALIZED, INITIAL_CONFIG, PlatformState } from '@angular/platform-server';
+import {
+  platformDynamicServer,
+  platformServer,
+  BEFORE_APP_SERIALIZED,
+  INITIAL_CONFIG,
+  PlatformState
+} from '@angular/platform-server';
 
 interface PlatformOptions {
   document?: string;
@@ -23,7 +29,8 @@ export interface ModuleRenderResult<T> {
 
 function _getPlatform(
   platformFactory: (extraProviders: StaticProvider[]) => PlatformRef,
-  options: PlatformOptions): PlatformRef {
+  options: PlatformOptions
+): PlatformRef {
   const extraProviders = options.extraProviders ? options.extraProviders : [];
   return platformFactory([
     { provide: INITIAL_CONFIG, useValue: { document: options.document, url: options.url } },
@@ -31,14 +38,14 @@ function _getPlatform(
   ]);
 }
 
-function _render<T>(
-  platform: PlatformRef, moduleRefPromise: Promise<NgModuleRef<T>>): Promise<ModuleRenderResult<T>> {
+function _render<T>(platform: PlatformRef, moduleRefPromise: Promise<NgModuleRef<T>>): Promise<ModuleRenderResult<T>> {
   return moduleRefPromise.then(moduleRef => {
     const transitionId = moduleRef.injector.get(ɵTRANSITION_ID, null);
     if (!transitionId) {
       throw new Error(
         `renderModule[Factory]() requires the use of BrowserModule.withServerTransition() to ensure
-  the server-rendered app can be properly bootstrapped into a client app.`);
+  the server-rendered app can be properly bootstrapped into a client app.`
+      );
     }
     const applicationRef: ApplicationRef = moduleRef.injector.get(ApplicationRef);
     return toPromise
@@ -79,8 +86,9 @@ function _render<T>(
  * @experimental
  */
 export function renderModule<T>(
-  module: Type<T>, options: { document?: string, url?: string, extraProviders?: StaticProvider[] }):
-  Promise<ModuleRenderResult<T>> {
+  module: Type<T>,
+  options: { document?: string; url?: string; extraProviders?: StaticProvider[] }
+): Promise<ModuleRenderResult<T>> {
   const platform = _getPlatform(platformDynamicServer, options);
   return _render(platform, platform.bootstrapModule(module));
 }
@@ -96,8 +104,8 @@ export function renderModule<T>(
  */
 export function renderModuleFactory<T>(
   moduleFactory: NgModuleFactory<T>,
-  options: { document?: string, url?: string, extraProviders?: StaticProvider[] }):
-  Promise<ModuleRenderResult<T>> {
+  options: { document?: string; url?: string; extraProviders?: StaticProvider[] }
+): Promise<ModuleRenderResult<T>> {
   const platform = _getPlatform(platformServer, options);
   return _render(platform, platform.bootstrapModuleFactory(moduleFactory));
 }

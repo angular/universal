@@ -37,13 +37,10 @@ const factoryCacheMap = new Map<Type<{}>, NgModuleFactory<{}>>();
  * This is an express engine for handling Angular Applications
  */
 export function ngHapiEngine(options: RenderOptions) {
-
   const compilerFactory: CompilerFactory = platformDynamicServer().injector.get(CompilerFactory);
   const compiler: Compiler = compilerFactory.createCompiler([
     {
-      providers: [
-        { provide: ResourceLoader, useClass: FileLoader, deps: [] }
-      ]
+      providers: [{ provide: ResourceLoader, useClass: FileLoader, deps: [] }]
     }
   ]);
 
@@ -51,7 +48,7 @@ export function ngHapiEngine(options: RenderOptions) {
     return Promise.reject(new Error('url is undefined'));
   }
 
-  const filePath = <string> options.req.raw.req.url;
+  const filePath = <string>options.req.raw.req.url;
 
   options.providers = options.providers || [];
 
@@ -62,18 +59,15 @@ export function ngHapiEngine(options: RenderOptions) {
       return reject(new Error('You must pass in a NgModule or NgModuleFactory to be bootstrapped'));
     }
 
-    const extraProviders = options.providers!.concat(
-      options.providers!,
-      getReqProviders(options.req),
-      [
-        {
-          provide: INITIAL_CONFIG,
-          useValue: {
-            document: getDocument(filePath),
-            url: filePath
-          }
+    const extraProviders = options.providers!.concat(options.providers!, getReqProviders(options.req), [
+      {
+        provide: INITIAL_CONFIG,
+        useValue: {
+          document: getDocument(filePath),
+          url: filePath
         }
-      ]);
+      }
+    ]);
 
     getFactory(moduleOrFactory, compiler)
       .then(factory => {
@@ -81,20 +75,21 @@ export function ngHapiEngine(options: RenderOptions) {
           extraProviders
         });
       })
-      .then((html: string) => {
-        resolve(html);
-      }, (err) => {
-        reject(err);
-      });
+      .then(
+        (html: string) => {
+          resolve(html);
+        },
+        err => {
+          reject(err);
+        }
+      );
   });
 }
 
 /**
  * Get a factory from a bootstrapped module/ module factory
  */
-function getFactory(
-  moduleOrFactory: Type<{}> | NgModuleFactory<{}>, compiler: Compiler
-): Promise<NgModuleFactory<{}>> {
+function getFactory(moduleOrFactory: Type<{}> | NgModuleFactory<{}>, compiler: Compiler): Promise<NgModuleFactory<{}>> {
   return new Promise<NgModuleFactory<{}>>((resolve, reject) => {
     // If module has been compiled AoT
     if (moduleOrFactory instanceof NgModuleFactory) {
@@ -110,13 +105,15 @@ function getFactory(
       }
 
       // Compile the module and cache it
-      compiler.compileModuleAsync(moduleOrFactory)
-        .then((factory) => {
+      compiler.compileModuleAsync(moduleOrFactory).then(
+        factory => {
           factoryCacheMap.set(moduleOrFactory, factory);
           resolve(factory);
-        }, (err => {
+        },
+        err => {
           reject(err);
-        }));
+        }
+      );
     }
   });
 }
@@ -142,5 +139,5 @@ function getReqProviders(req: Request): StaticProvider[] {
  * Get the document at the file path
  */
 function getDocument(filePath: string): string {
-  return templateCache[filePath] = templateCache[filePath] || fs.readFileSync(filePath).toString();
+  return (templateCache[filePath] = templateCache[filePath] || fs.readFileSync(filePath).toString());
 }
