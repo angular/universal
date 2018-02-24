@@ -11,10 +11,6 @@
     "ssr",
     "universal"
   ],
-  "peerDependencies": {
-    "@angular/common": "^5.0.0",
-    "@angular/core": "^5.0.0"
-  },
   "repository": {
     "type": "git",
     "url": "https://github.com/angular/universal"
@@ -22,26 +18,9 @@
   "bugs": {
     "url": "https://github.com/angular/universal/issues"
   },
-  "config": {
-    "engine-strict": true
-  },
-  "engines": {
-    "node": ">= 6.9.0",
-    "npm": ">= 3"
-  },
   "peerDependencies": {
     "@angular/common": "^5.0.0",
     "@angular/platform-server": "^5.0.0",
     "@angular/core": "^5.0.0"
-  },
-  "devDependencies": {
-    "@angular/animations": "^5.0.0",
-    "@angular/common": "^5.0.0",
-    "@angular/core": "^5.0.0",
-    "@angular/platform-browser": "^5.0.0",
-    "@angular/platform-server": "^5.0.0",
-    "rxjs": "^5.2.0",
-    "typescript": "2.4.2",
-    "zone.js": "^0.8.12"
   }
 }

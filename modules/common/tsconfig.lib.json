@@ -21,10 +21,7 @@
     "lib": ["es2015", "dom"],
     "skipLibCheck": true,
     "types": ["node"],
-    "baseUrl": ".",
-    "paths": {
-      "@nguniversal/common": ["../common"]
-    }
+    "baseUrl": "."
   },
   "files": [
     "./public-api.ts"

@@ -24,8 +24,5 @@
   },
   "bugs": {
     "url": "https://github.com/angular/universal/issues"
-  },
-  "config": {
-    "engine-strict": true
   }
 }
