@@ -11,10 +11,6 @@
     "ssr",
     "universal"
   ],
-  "peerDependencies": {
-    "@angular/common": "^5.0.0",
-    "@angular/core": "^5.0.0"
-  },
   "repository": {
     "type": "git",
     "url": "https://github.com/angular/universal"
@@ -22,5 +18,9 @@
   "bugs": {
     "url": "https://github.com/angular/universal/issues"
   },
-  "homepage": "https://github.com/angular/universal"
+  "peerDependencies": {
+    "@angular/common": "^5.0.0",
+    "@angular/platform-server": "^5.0.0",
+    "@angular/core": "^5.0.0"
+  }
 }
