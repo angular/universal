@@ -1,0 +1,29 @@
+load("//tools:defaults.bzl", "ts_library")
+load("@build_bazel_rules_nodejs//:defs.bzl", "jasmine_node_test")
+
+ts_library(
+    name = "express-engine",
+    srcs = glob([
+        "*.ts",
+        "src/**/*.ts",
+    ]),
+    module_name = "@nguniversal/express-engine",
+    visibility = ["//visibility:public"],
+    deps = [],
+)
+
+ts_library(
+    name = "unit_test_lib",
+    srcs = glob([
+      "spec/**/*.spec.ts"
+    ]),
+    testonly=True,
+    deps = [
+      ":express-engine"
+    ],
+)
+
+jasmine_node_test(
+    name = "unit_test",
+    srcs = [":unit_test_lib"],
+)

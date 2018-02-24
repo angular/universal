@@ -19,11 +19,23 @@
     "lib": [
       "dom",
       "es6"
-    ]
+    ],
+    "noStrictGenericChecks": true,
+    "baseUrl": "",
+    "rootDir": "./"
   },
+  "exclude": [
+    "bazel-out",
+    "dist",
+    "node_modules",
+    "**/*/node_modules"
+  ],
   "compileOnSave": false,
   "buildOnSave": false,
   "atom": {
     "rewriteTsconfig": false
+  },
+  "bazelOptions": {
+    "suppressTsconfigOverrideWarnings": true
   }
 }

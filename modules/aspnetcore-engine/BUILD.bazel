@@ -1,0 +1,29 @@
+load("//tools:defaults.bzl", "ts_library")
+load("@build_bazel_rules_nodejs//:defs.bzl", "jasmine_node_test")
+
+ts_library(
+    name = "aspnetcore-engine",
+    srcs = glob([
+        "*.ts",
+        "src/**/*.ts",
+    ]),
+    module_name = "@nguniversal/aspnetcore-engine",
+    visibility = ["//visibility:public"],
+    deps = ["@rxjs"],
+)
+
+ts_library(
+    name = "unit_test_lib",
+    srcs = glob([
+      "spec/**/*.spec.ts"
+    ]),
+    testonly=True,
+    deps = [
+      ":aspnetcore-engine"
+    ],
+)
+
+jasmine_node_test(
+    name = "unit_test",
+    srcs = [":unit_test_lib"],
+)

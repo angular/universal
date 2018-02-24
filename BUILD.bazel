@@ -1,0 +1,32 @@
+# Marker file indicating this folder is a Bazel package.
+# Needed so that tsconfig.json can be referenced from BUILD rules.
+package(default_visibility=["//visibility:public"])
+
+exports_files(["tsconfig.json"])
+
+# work around for not being able to build hapi / express
+filegroup(name = "node_modules",
+srcs = glob(["/".join(["node_modules", pkg, "**", ext]) for pkg in [
+    "@angular",
+    "@types",
+    "bytebuffer",
+    "express",
+    "hapi",
+    "jasmine",
+    "minimist",
+    "protobufjs",
+    "protractor",
+    "reflect-metadata",
+    "tsickle",
+    "tslib",
+    "tsutils",
+    "typescript",
+    "zone.js",
+  ] for ext in [
+    "*.js",
+    "*.json",
+    "*.d.ts",
+  ]] + [
+    "node_modules/http-server/**",
+  ])
+)
