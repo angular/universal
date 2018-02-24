@@ -40,6 +40,9 @@ app.engine('html', ngExpressEngine({
 }));
 ```
 
+If you need to use providers for the compiler (for example for i18n), you may want to
+use the `compilerProviders` option.
+
 ## Advanced Usage
 
 ### Request based Bootstrap

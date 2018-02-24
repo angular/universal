@@ -24,6 +24,7 @@ import { REQUEST, RESPONSE } from './tokens';
  */
 export interface NgSetupOptions {
   bootstrap: Type<{}> | NgModuleFactory<{}>;
+  compilerProviders?: StaticProvider[];
   providers?: StaticProvider[];
 }
 
@@ -51,11 +52,18 @@ const factoryCacheMap = new Map<Type<{}>, NgModuleFactory<{}>>();
 export function ngExpressEngine(setupOptions: NgSetupOptions) {
 
   const compilerFactory: CompilerFactory = platformDynamicServer().injector.get(CompilerFactory);
+
+  let compilerProviders: StaticProvider[] = [
+    { provide: ResourceLoader, useClass: FileLoader, deps: [] },
+  ];
+
+  if (setupOptions.compilerProviders) {
+    compilerProviders.push(...setupOptions.compilerProviders);
+  }
+
   const compiler: Compiler = compilerFactory.createCompiler([
     {
-      providers: [
-        { provide: ResourceLoader, useClass: FileLoader, deps: [] }
-      ]
+      providers: compilerProviders
     }
   ]);
 
