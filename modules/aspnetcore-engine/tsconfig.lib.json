@@ -13,7 +13,8 @@
     "rootDir": ".",
     "rootDirs": [
       ".",
-      "../../dist/packages/aspnetcore-engine"
+      "../../dist/packages/aspnetcore-engine",
+      "../common"
     ],
     "sourceMap": true,
     "inlineSources": true,
@@ -21,7 +22,10 @@
     "lib": ["es2015", "dom"],
     "skipLibCheck": true,
     "types": ["node"],
-    "baseUrl": "."
+    "baseUrl": ".",
+    "paths": {
+      "@nguniversal/common": ["../common"]
+    }
   },
   "files": [
     "./public-api.ts"

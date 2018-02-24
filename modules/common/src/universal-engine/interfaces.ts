@@ -1,4 +1,4 @@
-import { StaticProvider } from '@angular/core'
+import { StaticProvider } from '@angular/core';
 /**
  * These are the allowed options for the render
  */

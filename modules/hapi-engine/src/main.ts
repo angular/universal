@@ -5,20 +5,8 @@
  * Use of this source code is governed by an MIT-style license that can be
  * found in the LICENSE file at https://angular.io/license
  */
-import * as fs from 'fs';
 import { Request } from 'hapi';
 
-import { NgModuleFactory, Type, CompilerFactory, Compiler, StaticProvider } from '@angular/core';
-import { ResourceLoader } from '@angular/compiler';
-import {
-  INITIAL_CONFIG,
-  renderModuleFactory,
-  platformDynamicServer
-} from '@angular/platform-server';
-
-import { FileLoader } from './file-loader';
-import { REQUEST, RESPONSE } from './tokens';
-import { Request } from 'hapi';
 import { NgModuleFactory, Type, StaticProvider } from '@angular/core';
 import { ɵUniversalEngine as UniversalEngine } from '@nguniversal/common';
 

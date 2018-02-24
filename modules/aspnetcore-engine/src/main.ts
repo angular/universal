@@ -5,16 +5,12 @@
  * Use of this source code is governed by an MIT-style license that can be
  * found in the LICENSE file at https://angular.io/license
  */
-import { Type, NgModuleFactory, CompilerFactory, Compiler } from '@angular/core';
-import { platformDynamicServer } from '@angular/platform-server';
 import { DOCUMENT } from '@angular/common';
-import { ResourceLoader } from '@angular/compiler';
-
-import { REQUEST, ORIGIN_URL } from './tokens';
-import { FileLoader } from './file-loader';
 import { IEngineOptions } from './interfaces/engine-options';
 import { IEngineRenderResult } from './interfaces/engine-render-result';
 import { renderModuleFactory } from './platform-server-utils';
+
+import { REQUEST, ORIGIN_URL, ɵUniversalEngine as UniversalEngine } from '@nguniversal/common';
 
 /* @internal */
 export class UniversalData {
