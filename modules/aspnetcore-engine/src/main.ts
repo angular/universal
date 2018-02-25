@@ -5,16 +5,13 @@
  * Use of this source code is governed by an MIT-style license that can be
  * found in the LICENSE file at https://angular.io/license
  */
-import { Type, NgModuleFactory, CompilerFactory, Compiler } from '@angular/core';
-import { platformDynamicServer } from '@angular/platform-server';
-import { DOCUMENT } from '@angular/common';
-import { ResourceLoader } from '@angular/compiler';
-
-import { REQUEST, ORIGIN_URL } from './tokens';
-import { FileLoader } from './file-loader';
-import { IEngineOptions } from './interfaces/engine-options';
-import { IEngineRenderResult } from './interfaces/engine-render-result';
-import { renderModuleFactory } from './platform-server-utils';
+import {DOCUMENT} from '@angular/common';
+import {UniversalEngine} from '@nguniversal/common';
+import {IEngineOptions} from './interfaces/engine-options';
+import {IEngineRenderResult} from './interfaces/engine-render-result';
+import {ModuleRenderResult, renderModuleFactory} from './platform-server-utils';
+import {ORIGIN_URL, REQUEST} from './tokens';
+import {NgModuleFactory} from '@angular/core';
 
 /* @internal */
 export class UniversalData {
@@ -102,45 +99,31 @@ export function ngAspnetCoreEngine(options: IEngineOptions): Promise<IEngineRend
   // Grab the DOM "selector" from the passed in Template <app-root> for example = "app-root"
   appSelector = options.appSelector.substring(1, options.appSelector.indexOf('>'));
 
-  const compilerFactory: CompilerFactory = platformDynamicServer().injector.get(CompilerFactory);
-  const compiler: Compiler = compilerFactory.createCompiler([
-    {
-      providers: [
-        { provide: ResourceLoader, useClass: FileLoader, deps: [] }
-      ]
-    }
-  ]);
-
   return new Promise((resolve, reject) => {
 
     try {
-      const moduleOrFactory = options.ngModule;
-      if (!moduleOrFactory) {
-        throw new Error('You must pass in a NgModule or NgModuleFactory to be bootstrapped');
-      }
-
-      options.providers = options.providers || [];
-
-      const extraProviders = options.providers.concat(
-        [{
-          provide: ORIGIN_URL,
-          useValue: options.request.origin
-        }, {
-          provide: REQUEST,
-          useValue: options.request.data.request
-        }
+      const extraProviders = (options.providers || []).concat(
+        [
+          {
+            provide: ORIGIN_URL,
+            useValue: options.request.origin
+          },
+          {
+            provide: REQUEST,
+            useValue: options.request.data.request
+          }
         ]
       );
 
-      getFactory(moduleOrFactory, compiler)
-        .then(factory => {
+      new UniversalEngine(options.ngModule).getFactory()
+        .then((factory: NgModuleFactory<{}>) => {
           return renderModuleFactory(factory, {
             document: options.appSelector,
             url: options.request.url,
-            extraProviders: extraProviders
+            extraProviders
           });
         })
-        .then(result => {
+        .then((result: ModuleRenderResult<{}>) => {
           const doc = result.moduleRef.injector.get(DOCUMENT);
           const universalData = _getUniversalData(doc);
 
@@ -155,7 +138,7 @@ export function ngAspnetCoreEngine(options: IEngineOptions): Promise<IEngineRend
               links: universalData.links
             }
           });
-        }, (err) => {
+        }, (err: any) => {
           reject(err);
         });
 
@@ -165,36 +148,4 @@ export function ngAspnetCoreEngine(options: IEngineOptions): Promise<IEngineRend
 
   });
 
-}
-
-/* @internal */
-const factoryCacheMap = new Map<Type<{}>, NgModuleFactory<{}>>();
-function getFactory(
-  moduleOrFactory: Type<{}> | NgModuleFactory<{}>, compiler: Compiler
-): Promise<NgModuleFactory<{}>> {
-
-  return new Promise<NgModuleFactory<{}>>((resolve, reject) => {
-    // If module has been compiled AoT
-    if (moduleOrFactory instanceof NgModuleFactory) {
-      resolve(moduleOrFactory);
-      return;
-    } else {
-      let moduleFactory = factoryCacheMap.get(moduleOrFactory);
-
-      // If module factory is cached
-      if (moduleFactory) {
-        resolve(moduleFactory);
-        return;
-      }
-
-      // Compile the module and cache it
-      compiler.compileModuleAsync(moduleOrFactory)
-        .then((factory) => {
-          factoryCacheMap.set(moduleOrFactory, factory);
-          resolve(factory);
-        }, (err => {
-          reject(err);
-        }));
-    }
-  });
 }

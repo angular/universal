@@ -5,97 +5,31 @@
  * Use of this source code is governed by an MIT-style license that can be
  * found in the LICENSE file at https://angular.io/license
  */
-import * as fs from 'fs';
-import { Request, Response } from 'express';
+import {StaticProvider} from '@angular/core';
+import {NgSetupOptions, UniversalEngine} from '@nguniversal/common';
+import {Request, Response} from 'express';
+import {REQUEST, RESPONSE} from './tokens';
 
-import { NgModuleFactory, Type, CompilerFactory, Compiler, StaticProvider } from '@angular/core';
-import { ResourceLoader } from '@angular/compiler';
-import {
-  INITIAL_CONFIG,
-  renderModuleFactory,
-  platformDynamicServer
-} from '@angular/platform-server';
-
-import { FileLoader } from './file-loader';
-import { REQUEST, RESPONSE } from './tokens';
-
-/**
- * These are the allowed options for the engine
- */
-export interface NgSetupOptions {
-  bootstrap: Type<{}> | NgModuleFactory<{}>;
-  providers?: StaticProvider[];
-}
-
-/**
- * These are the allowed options for the render
- */
+/** These are the allowed options for the render */
 export interface RenderOptions extends NgSetupOptions {
   req: Request;
   res?: Response;
 }
 
-/**
- * This holds a cached version of each index used.
- */
-const templateCache: { [key: string]: string } = {};
-
-/**
- * Map of Module Factories
- */
-const factoryCacheMap = new Map<Type<{}>, NgModuleFactory<{}>>();
-
-/**
- * This is an express engine for handling Angular Applications
- */
+/** This is an express engine for handling Angular Applications */
 export function ngExpressEngine(setupOptions: NgSetupOptions) {
-
-  const compilerFactory: CompilerFactory = platformDynamicServer().injector.get(CompilerFactory);
-  const compiler: Compiler = compilerFactory.createCompiler([
-    {
-      providers: [
-        { provide: ResourceLoader, useClass: FileLoader, deps: [] }
-      ]
-    }
-  ]);
-
-  return function (filePath: string,
-                   options: RenderOptions,
-                   callback: (err?: Error | null, html?: string) => void) {
-
-    options.providers = options.providers || [];
+  return function(filePath: string,
+                  options: RenderOptions,
+                  callback: (err?: Error | null, html?: string) => void) {
+    const engine = new UniversalEngine(setupOptions.bootstrap, setupOptions.providers);
+    options.providers = [...(options.providers || []),
+      ...getReqResProviders(options.req, options.res)];
 
     try {
-      const moduleOrFactory = options.bootstrap || setupOptions.bootstrap;
-
-      if (!moduleOrFactory) {
-        throw new Error('You must pass in a NgModule or NgModuleFactory to be bootstrapped');
-      }
-
-      setupOptions.providers = setupOptions.providers || [];
-
-      const extraProviders = setupOptions.providers.concat(
-        options.providers,
-        getReqResProviders(options.req, options.res),
-        [
-          {
-            provide: INITIAL_CONFIG,
-            useValue: {
-              document: getDocument(filePath),
-              url: options.req.originalUrl
-            }
-          }
-        ]);
-
-      getFactory(moduleOrFactory, compiler)
-        .then(factory => {
-          return renderModuleFactory(factory, {
-            extraProviders: extraProviders
-          });
-        })
+      engine.render(filePath, options.req.originalUrl, options)
         .then((html: string) => {
           callback(null, html);
-        }, (err) => {
+        }, (err: any) => {
           callback(err);
         });
     } catch (err) {
@@ -104,41 +38,7 @@ export function ngExpressEngine(setupOptions: NgSetupOptions) {
   };
 }
 
-/**
- * Get a factory from a bootstrapped module/ module factory
- */
-function getFactory(
-  moduleOrFactory: Type<{}> | NgModuleFactory<{}>, compiler: Compiler
-): Promise<NgModuleFactory<{}>> {
-  return new Promise<NgModuleFactory<{}>>((resolve, reject) => {
-    // If module has been compiled AoT
-    if (moduleOrFactory instanceof NgModuleFactory) {
-      resolve(moduleOrFactory);
-      return;
-    } else {
-      let moduleFactory = factoryCacheMap.get(moduleOrFactory);
-
-      // If module factory is cached
-      if (moduleFactory) {
-        resolve(moduleFactory);
-        return;
-      }
-
-      // Compile the module and cache it
-      compiler.compileModuleAsync(moduleOrFactory)
-        .then((factory) => {
-          factoryCacheMap.set(moduleOrFactory, factory);
-          resolve(factory);
-        }, (err => {
-          reject(err);
-        }));
-    }
-  });
-}
-
-/**
- * Get providers of the request and response
- */
+/** Get providers of the request and response */
 function getReqResProviders(req: Request, res?: Response): StaticProvider[] {
   const providers: StaticProvider[] = [
     {
@@ -153,11 +53,4 @@ function getReqResProviders(req: Request, res?: Response): StaticProvider[] {
     });
   }
   return providers;
-}
-
-/**
- * Get the document at the file path
- */
-function getDocument(filePath: string): string {
-  return templateCache[filePath] = templateCache[filePath] || fs.readFileSync(filePath).toString();
 }

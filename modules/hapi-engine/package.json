@@ -16,7 +16,8 @@
     "@angular/common": "^5.0.0",
     "@angular/core": "^5.0.0",
     "@angular/platform-server": "^5.0.0",
-    "hapi": "^16.1.1"
+    "hapi": "^16.1.1",
+    "@nguniversal/common": "5.0.0-beta.5"
   },
   "repository": {
     "type": "git",
@@ -24,6 +25,5 @@
   },
   "bugs": {
     "url": "https://github.com/angular/universal/issues"
-  },
-  "homepage": "https://github.com/angular/universal"
+  }
 }

@@ -20,5 +20,7 @@ export const rollupGlobals = {
   'rxjs/observable/of': 'Rx.Observable',
   'fs': 'fs',
   'express': 'express',
-  'hapi': 'hapi'
+  'hapi': 'hapi',
+
+  '@nguniversal/common': 'nguniversal.common'
 };

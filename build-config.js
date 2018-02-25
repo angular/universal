@@ -29,8 +29,8 @@ const namespace = '@nguniversal';
 
 /** The library entrypoints that are built under the namespace */
 const libNames = [
-  'aspnetcore-engine',
   'common',
+  'aspnetcore-engine',
   'express-engine',
   'hapi-engine',
   'module-map-ngfactory-loader',

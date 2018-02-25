@@ -7,7 +7,11 @@
     "importHelpers": false,
     "module": "commonjs",
     "target": "es5",
-    "types": ["jasmine"]
+    "types": ["jasmine"],
+    "baseUrl": ".",
+    "paths": {
+      "@nguniversal/common": ["../../dist/packages/common"]
+    }
   },
   "angularCompilerOptions": {
     "strictMetadataEmit": true,
