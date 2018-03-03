@@ -18,10 +18,11 @@
     ],
     "lib": [
       "dom",
-      "es6"
+      "es6",
+      "es2015"
     ],
     "noStrictGenericChecks": true,
-    "baseUrl": "",
+    "baseUrl": "./",
     "rootDir": "./"
   },
   "exclude": [

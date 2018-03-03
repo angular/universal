@@ -1,11 +1,6 @@
 # This file configures the build at https://circleci.com/gh/angular/universal
 # Complete documentation is at https://circleci.com/docs/2.0/
 
-general:
-  branches:
-    only:
-     - master
-
 # We use a docker image as the basis for our build, so that all the toolchains we use
 # are already installed and the build can start running right away. It also guarantees
 # the environment is portable and reproducible on your local machine.
@@ -60,23 +55,37 @@ jobs:
 
       - run: bazel info release
 
+      # TODO: Don't do this
+      - run: yarn install --frozen-lockfile
       # Install the dependencies from NPM
-      - run: bazel run --config=ci @yarn//:yarn install
+      #- run: bazel run @yarn//:yarn install
 
       # Build and Test
       # Use bazel query so that we explicitly ask for all buildable targets to
       # be built even though we run `bazel test`
       # See https://github.com/bazelbuild/bazel/issues/4257
-      - run: bazel query //... | xargs bazel test --config=ci
+      #- run: bazel query //... | xargs bazel test --config=ci
+      - run: bazel test //...
 
-      # Run the protractor end-to-end test - it's not a Bazel target because
-      # we didn't write a protractor rule yet.
-      - run: xvfb-run -a yarn e2e
+      # - store_artifacts:
+      #   path: dist/bin/modules/aspnetcore-engine/@nguniversal/aspnetcore-engine
+      #   destination: @nguniversal/aspnetcore-engine
 
+      # - store_artifacts:
+      #   path: dist/bin/modules/common-engine/@nguniversal/common
+      #   destination: @nguniversal/common
 
-      - store_artifacts:
-          path: dist/bin/modules
-          destination: modules
+      # - store_artifacts:
+      #   path: dist/bin/modules/express-engine/@nguniversal/express-engine
+      #   destination: @nguniversal/express-engine
+
+      # - store_artifacts:
+      #   path: dist/bin/modules/hapi-engine/@nguniversal/hapi-engine
+      #   destination: @nguniversal/hapi-engine
+
+      # - store_artifacts:
+      #   path: dist/bin/modules/module-map-ngfactory-loader/@nguniversal/module-map-ngfactory-loader
+      #   destination: @nguniversal/module-map-ngfactory-loader
 
       # If we get this far, save the node_modules directory for use next time.
       - save_cache:
@@ -88,5 +97,5 @@ workflows:
   version: 2
   default_workflow:
     jobs:
-      - lint
       - build
+      #- lint

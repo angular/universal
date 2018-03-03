@@ -1,15 +1,5 @@
-# The WORKSPACE file tells Bazel that this directory is a "workspace", which is like a project root.
-# The content of this file specifies all the external dependencies Bazel needs to perform a build.
-
-####################################
-# ESModule imports (and TypeScript imports) can be absolute starting with the workspace name.
-# The name of the workspace should match the npm package where we publish, so that these
-# imports also make sense when referencing the published package.
 workspace(name = "nguniversal")
 
-
-####################################
-# The Bazel buildtools repo contains tools like the BUILD file formatter, buildifier
 http_archive(
     name = "com_github_bazelbuild_buildtools",
     # Note, this commit matches the version of buildifier in angular/ngcontainer
@@ -18,32 +8,29 @@ http_archive(
     sha256 = "dad19224258ed67cbdbae9b7befb785c3b966e5a33b04b3ce58ddb7824b97d73",
 )
 
-
-####################################
-# Fetch and install the NodeJS rules
 http_archive(
     name = "build_bazel_rules_nodejs",
-    url = "https://github.com/bazelbuild/rules_nodejs/archive/0.4.1.zip",
-    strip_prefix = "rules_nodejs-0.4.1",
-    sha256 = "e9bc013417272b17f302dc169ad597f05561bb277451f010043f4da493417607",
+    url = "https://github.com/bazelbuild/rules_nodejs/archive/0.5.1.zip",
+    strip_prefix = "rules_nodejs-0.5.1",
+    sha256 = "dabd1a596a6f00939875762dcb1de93b5ada0515069244198aa6792bc37bb92a",
 )
 
 load("@build_bazel_rules_nodejs//:defs.bzl", "node_repositories", "yarn_install")
-
 node_repositories(package_json = ["//:package.json"])
 
 
-####################################
-# Fetch and install the TypeScript rules
-http_archive(
+# http_archive(
+#     name = "build_bazel_rules_typescript",
+#     url = "https://github.com/bazelbuild/rules_typescript/archive/0.11.1.zip",
+#     strip_prefix = "rules_typescript-0.11.1",
+#     sha256 = "7406bea7954e1c906f075115dfa176551a881119f6820b126ea1eacb09f34a1a",
+#)
+local_repository(
     name = "build_bazel_rules_typescript",
-    url = "https://github.com/bazelbuild/rules_typescript/archive/0.10.1.zip",
-    strip_prefix = "rules_typescript-0.10.1",
-    sha256 = "a2c81776a4a492ff9f878f9705639f5647bef345f7f3e1da09c9eeb8dec80485",
+    path = "node_modules/@bazel/typescript",
 )
 
 load("@build_bazel_rules_typescript//:defs.bzl", "ts_setup_workspace")
-
 ts_setup_workspace()
 
 # Some of the TypeScript is written in Go.
@@ -55,18 +42,18 @@ http_archive(
 )
 
 load("@io_bazel_rules_go//go:def.bzl", "go_rules_dependencies", "go_register_toolchains")
-
 go_rules_dependencies()
-
 go_register_toolchains()
 
 
 ####################################
 # Tell Bazel about some workspaces that were installed from npm.
+
 local_repository(
     name = "angular",
     path = "node_modules/@angular/bazel",
 )
+
 
 local_repository(
     name = "rxjs",

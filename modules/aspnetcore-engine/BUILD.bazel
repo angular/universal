@@ -1,15 +1,20 @@
-load("//tools:defaults.bzl", "ts_library")
+load("//tools:defaults.bzl", "ts_library", "ng_module", "ng_package")
 load("@build_bazel_rules_nodejs//:defs.bzl", "jasmine_node_test")
 
-ts_library(
-    name = "aspnetcore-engine",
+ng_module(
+    name = "aspnetcore-engine_module",
     srcs = glob([
         "*.ts",
         "src/**/*.ts",
     ]),
-    module_name = "@nguniversal/aspnetcore-engine",
-    visibility = ["//visibility:public"],
     deps = ["@rxjs"],
+)
+
+ng_package(
+    name = "@nguniversal/aspnetcore-engine",
+    srcs = [":package.json"],
+    entry_point = "index.js",
+    deps = [":aspnetcore-engine_module"],
 )
 
 ts_library(
@@ -19,7 +24,7 @@ ts_library(
     ]),
     testonly=True,
     deps = [
-      ":aspnetcore-engine"
+      ":aspnetcore-engine_module"
     ],
 )
 

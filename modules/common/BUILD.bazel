@@ -1,17 +1,21 @@
-load("//tools:defaults.bzl", "ts_library")
+load("//tools:defaults.bzl", "ts_library", "ng_module", "ng_package")
 load("@build_bazel_rules_nodejs//:defs.bzl", "jasmine_node_test")
 
-ts_library(
-    name = "common",
+ng_module(
+    name = "common_module",
     srcs = glob([
         "*.ts",
         "src/**/*.ts",
     ]),
-    module_name = "@nguniversal/common",
-    visibility = ["//visibility:public"],
-    deps = ["@rxjs"],
+    deps = [],
 )
 
+ng_package(
+    name = "@nguniversal/common",
+    srcs = [":package.json"],
+    entry_point = "index.js",
+    deps = [":common_module"],
+)
 ts_library(
     name = "unit_test_lib",
     srcs = glob([
@@ -19,7 +23,7 @@ ts_library(
     ]),
     testonly=True,
     deps = [
-      ":common"
+      ":common_module"
     ],
 )
 

@@ -1,15 +1,20 @@
-load("//tools:defaults.bzl", "ts_library")
+load("//tools:defaults.bzl", "ts_library", "ng_module", "ng_package")
 load("@build_bazel_rules_nodejs//:defs.bzl", "jasmine_node_test")
 
-ts_library(
-    name = "module-map-ngfactory-loader",
+ng_module(
+    name = "module-map-ngfactory-loader_module",
     srcs = glob([
         "*.ts",
         "src/**/*.ts",
     ]),
-    module_name = "@nguniversal/module-map-ngfactory-loader",
-    visibility = ["//visibility:public"],
-    deps = ["@rxjs"],
+    deps = [],
+)
+
+ng_package(
+    name = "@nguniversal/module-map-ngfactory-loader",
+    srcs = [":package.json"],
+    entry_point = "index.js",
+    deps = [":module-map-ngfactory-loader_module"],
 )
 
 ts_library(
@@ -19,7 +24,7 @@ ts_library(
     ]),
     testonly=True,
     deps = [
-      ":module-map-ngfactory-loader"
+      ":module-map-ngfactory-loader_module"
     ],
 )
 

@@ -1,15 +1,20 @@
-load("//tools:defaults.bzl", "ts_library")
+load("//tools:defaults.bzl", "ts_library", "ng_module", "ng_package")
 load("@build_bazel_rules_nodejs//:defs.bzl", "jasmine_node_test")
 
-ts_library(
-    name = "hapi-engine",
+ng_module(
+    name = "hapi-engine_module",
     srcs = glob([
         "*.ts",
         "src/**/*.ts",
     ]),
-    module_name = "@nguniversal/hapi-engine",
-    visibility = ["//visibility:public"],
     deps = ["@rxjs"],
+)
+
+ng_package(
+    name = "@nguniversal/hapi-engine",
+    srcs = [":package.json"],
+    entry_point = "index.js",
+    deps = [":hapi-engine_module"],
 )
 
 ts_library(
@@ -19,7 +24,7 @@ ts_library(
     ]),
     testonly=True,
     deps = [
-      ":hapi-engine"
+      ":hapi-engine_module"
     ],
 )
 
