@@ -1,0 +1,19 @@
+{
+  "extends": "./tsconfig.lib",
+  "compilerOptions": {
+    "importHelpers": false,
+    "module": "commonjs",
+    "target": "es5",
+    "types": ["jasmine"]
+  },
+  "angularCompilerOptions": {
+    "strictMetadataEmit": true,
+    "skipTemplateCodegen": true,
+    "emitDecoratorMetadata": true,
+    "fullTemplateTypeCheck": true
+  },
+  "include": [
+    "**/*.spec.ts",
+    "index.ts"
+  ]
+}

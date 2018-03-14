@@ -21,5 +21,6 @@ def ng_package(globals = None, **kwargs):
       "rxjs/operators/filter": "Rx.Observable.prototype",
       "rxjs/operators/take": "Rx.Observable.prototype",
       "rxjs/operators/tap": "Rx.Observable.prototype",
+      "@nguniversal/module-map-ngfactory-loader": "nguniversal.module-map-ngfactory-loader"
     }
   _ng_package(globals = globals, **kwargs)

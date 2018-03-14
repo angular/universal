@@ -5,6 +5,8 @@ export const rollupGlobals = {
   // See rollup/rollup/wiki/JavaScript-API#globals for more.
   '@angular/animations': 'ng.animations',
   '@angular/core': 'ng.core',
+  '@angular/core/testing': 'ng.core.testing',
+  '@angular/router': 'ng.router',
   '@angular/common': 'ng.common',
   '@angular/common/http': 'ng.common.http',
   '@angular/compiler': 'ng.compiler',
@@ -12,12 +14,14 @@ export const rollupGlobals = {
   '@angular/platform-browser': 'ng.platformBrowser',
   '@angular/platform-server': 'ng.platformServer',
   '@angular/platform-browser-dynamic': 'ng.platformBrowserDynamic',
+  '@nguniversal/module-map-ngfactory-loader': 'nguniversal.moduleMapNgfactoryLoader',
   'rxjs/Observable': 'Rx',
   'rxjs/operators/filter': 'Rx.operators',
   'rxjs/operators/map': 'Rx.operators',
   'rxjs/operators/take': 'Rx.operators',
   'rxjs/operators/tap': 'Rx.operators',
   'rxjs/observable/of': 'Rx.Observable',
+  'zone.js/dist/zone-node': 'zone.js.zone-node',
   'fs': 'fs',
   'express': 'express',
   'hapi': 'hapi'

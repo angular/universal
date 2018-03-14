@@ -101,6 +101,7 @@
     "karma-typescript": "^3.0.12",
     "minimatch": "^3.0.4",
     "protractor": "^5.2.0",
+    "replace-in-file": "^3.1.1",
     "rimraf": "^2.6.1",
     "rollup": "~0.41.6",
     "rollup-plugin-alias": "^1.4.0",
@@ -109,14 +110,17 @@
     "rollup-plugin-sourcemaps": "^0.4.2",
     "rollup-plugin-uglify": "^2.0.1",
     "rxjs": "^5.5.6",
+    "standard-version": "^4.3.0",
     "systemjs": "0.19.43",
     "ts-node": "^3.0.4",
     "tsconfig-paths": "^2.3.0",
     "tslint": "^5.9.1",
     "tsutils": "^2.21.2",
     "typescript": "~2.6.2",
-    "standard-version": "^4.3.0",
-    "replace-in-file": "^3.1.1",
     "zone.js": "^0.8.12"
+  },
+  "dependencies": {
+    "@angular/router": "^5.2.7",
+    "@angular/upgrade": "^5.2.8"
   }
 }

@@ -16,6 +16,9 @@
     "typeRoots": [
       "node_modules/@types"
     ],
+    "paths": {
+      "@nguniversal/*": ["dist/bin/modules/*"]
+    },
     "lib": [
       "dom",
       "es6",
@@ -37,6 +40,6 @@
     "rewriteTsconfig": false
   },
   "bazelOptions": {
-    "suppressTsconfigOverrideWarnings": true
+    "suppressTsconfigOverrideWarnings": false
   }
 }
