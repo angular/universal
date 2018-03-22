@@ -1,5 +1,9 @@
 {
   "extends": "./tsconfig.lib.json",
+  "compilerOptions": {
+    "module": "commonjs",
+    "target": "es5"
+  },
   "files": [
     "./index.ts",
     "./tokens.ts"
