@@ -7,7 +7,7 @@
     "importHelpers": false,
     "module": "commonjs",
     "target": "es5",
-    "types": ["jasmine"]
+    "types": ["tslib", "jasmine"]
   },
   "angularCompilerOptions": {
     "strictMetadataEmit": false, // Workaround for Angular #22210

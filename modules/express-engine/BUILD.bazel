@@ -1,20 +1,32 @@
-load("//tools:defaults.bzl", "ts_library", "ng_module", "ng_package")
+package(default_visibility = ["//visibility:public"])
+
 load("@build_bazel_rules_nodejs//:defs.bzl", "jasmine_node_test")
+load("@angular//:index.bzl", "ng_module", "ng_package")
+load("@build_bazel_rules_typescript//:defs.bzl", "ts_library")
+load("//modules/express-engine:rollup_globals.bzl", "EXPRESS_ROLLUP_GLOBALS")
 
 ng_module(
-    name = "express-engine_module",
-    srcs = glob([
-        "*.ts",
-        "src/**/*.ts",
-    ]),
-    deps = ["@rxjs"],
+    name = "express-engine",
+    srcs = glob(
+        ["**/*.ts"],
+        exclude = ["spec/**/*.spec.ts"],
+    ),
+    module_name = "@nguniversal/express-engine",
+    tsconfig = "//modules:tsconfig.lib.json",
+    deps = [
+        "//modules/express-engine/tokens",
+    ],
 )
 
 ng_package(
-    name = "@nguniversal/express-engine",
-    srcs = [":package.json"],
-    entry_point = "index.js",
-    deps = [":express-engine_module"],
+    name = "npm_package",
+    srcs = ["package.json"],
+    entry_point = "modules/express-engine/public_api.js",
+    globals = EXPRESS_ROLLUP_GLOBALS,
+    deps = [
+        ":express-engine",
+        "//modules/express-engine/tokens",
+    ],
 )
 
 ts_library(
@@ -24,11 +36,12 @@ ts_library(
         "spec/**/*.spec.ts",
     ]),
     deps = [
-        ":express-engine_module",
+        ":express-engine",
     ],
 )
 
 jasmine_node_test(
     name = "unit_test",
-    srcs = [":unit_test_lib"],
+    timeout = "short",
+    deps = [":unit_test_lib"],
 )

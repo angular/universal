@@ -40,3 +40,9 @@ test --test_output=errors
 # Helps to demonstrate that bazel uses all the cores on the machine.
 build --experimental_ui
 test --experimental_ui
+
+########################
+# Building Releases    #
+# use --config=release #
+########################
+build:release --workspace_status_command=./tools/bazel_stamp_vars.sh

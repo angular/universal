@@ -13,9 +13,7 @@
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
     "sourceMap": true,
-    "typeRoots": [
-      "node_modules/@types"
-    ],
+    "types": ["jasmine", "tslib"],
     "lib": [
       "dom",
       "es6",
@@ -25,19 +23,13 @@
     "baseUrl": "./",
     "rootDir": "./",
     "paths": {
-      "@nguniversal/common/*": ["./modules/common/*"],
-      "@nguniversal/aspnetcore-engine/*": ["./modules/aspnetcore-engine/*"],
-      "@nguniversal/express-engine/*": ["./modules/express-engine/*"],
-      "@nguniversal/hapi-engine/*": ["./modules/hapi-engine/*"],
-      "@nguniversal/module-map-ngfactory-loader/*": ["./modules/module-map-ngfactory-loader/*"]
+      "@nguniversal/common/*": ["./common/*"],
+      "@nguniversal/aspnetcore-engine/*": ["./aspnetcore-engine/*"],
+      "@nguniversal/express-engine/*": ["./express-engine/*"],
+      "@nguniversal/hapi-engine/*": ["./hapi-engine/*"],
+      "@nguniversal/module-map-ngfactory-loader/*": ["./module-map-ngfactory-loader/*"]
     }
   },
-  "exclude": [
-    "bazel-out",
-    "dist",
-    "node_modules",
-    "**/*/node_modules"
-  ],
   "compileOnSave": false,
   "buildOnSave": false,
   "atom": {

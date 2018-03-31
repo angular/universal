@@ -1,0 +1,10 @@
+package(default_visibility = ["//visibility:public"])
+
+load("@angular//:index.bzl", "ng_module")
+
+ng_module(
+    name = "tokens",
+    srcs = glob(["**/*.ts"]),
+    module_name = "@nguniversal/aspnetcore-engine/tokens",
+    tsconfig = "//modules:tsconfig.lib.json",
+)
