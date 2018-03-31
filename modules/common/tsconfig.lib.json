@@ -1,5 +1,6 @@
 {
   "compilerOptions": {
+    "baseUrl": ".",
     "declaration": true,
     "stripInternal": false,
     "experimentalDecorators": true,
@@ -20,8 +21,7 @@
     "target": "es2015",
     "lib": ["es2015", "dom"],
     "skipLibCheck": true,
-    "types": [],
-    "baseUrl": ".",
+    "types": ["jasmine", "tslib"],
     "paths": {
       "@nguniversal/common/*": ["../../dist/packages/common/*"]
     }

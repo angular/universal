@@ -1,34 +1,48 @@
-load("//tools:defaults.bzl", "ts_library", "ng_module", "ng_package")
+package(default_visibility = ["//visibility:public"])
+load("@angular//:index.bzl", "ng_module", "ng_package")
+load("@build_bazel_rules_typescript//:defs.bzl", "ts_library", "ts_web_test")
 load("@build_bazel_rules_nodejs//:defs.bzl", "jasmine_node_test")
+load("//modules/common:rollup_globals.bzl", "COMMON_ROLLUP_GLOBALS")
 
 ng_module(
-    name = "common_module",
-    srcs = glob([
-        "*.ts",
-        "src/**/*.ts",
-    ]),
+    name = "common",
+    srcs = glob(["**/*.ts"], exclude=["spec/**/*.spec.ts"]),
+    module_name = "@nguniversal/common",
+    tsconfig = "//modules:tsconfig.lib.json",
     deps = [],
 )
 
 ng_package(
     name = "@nguniversal/common",
-    srcs = [":package.json"],
-    entry_point = "index.js",
-    deps = [":common_module"],
+    srcs = ["package.json"],
+    entry_point = "modules/common/public_api.js",
+    globals = COMMON_ROLLUP_GLOBALS,
+    deps = [":common"],
 )
 
 ts_library(
     name = "unit_test_lib",
-    testonly = True,
-    srcs = glob([
-        "spec/**/*.spec.ts",
-    ]),
+    testonly = 1,
+    srcs = glob(["spec/**/*.spec.ts"]),
     deps = [
-        ":common_module",
+        ":common"
     ],
+    tsconfig = "//modules:tsconfig.lib.json",
 )
 
-jasmine_node_test(
-    name = "unit_test",
-    srcs = [":unit_test_lib"],
+# Disabled due to an issue with HTTP_INTERCEPTORS import
+# jasmine_node_test(
+#    name = "unit_test",
+#     deps = [
+#       ":unit_test_lib",
+#     ],
+#     timeout="short",
+# )
+
+ts_web_test(
+  name = "unit_test",
+  deps = [
+    ":unit_test_lib",
+  ],
+  timeout="short",
 )

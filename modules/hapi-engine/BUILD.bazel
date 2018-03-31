@@ -1,20 +1,31 @@
-load("//tools:defaults.bzl", "ts_library", "ng_module", "ng_package")
+package(default_visibility = ["//visibility:public"])
 load("@build_bazel_rules_nodejs//:defs.bzl", "jasmine_node_test")
+load("@angular//:index.bzl", "ng_module", "ng_package")
+load("@build_bazel_rules_typescript//:defs.bzl", "ts_library")
+load("//modules/hapi-engine:rollup_globals.bzl", "HAPI_ROLLUP_GLOBALS")
 
 ng_module(
-    name = "hapi-engine_module",
+    name = "hapi-engine",
     srcs = glob([
         "*.ts",
         "src/**/*.ts",
     ]),
-    deps = ["@rxjs"],
+    module_name = "@nguniversal/hapi-engine",
+    tsconfig = "//modules:tsconfig.lib.json",
+    deps = [
+        "//modules/hapi-engine/tokens",
+    ],
 )
 
 ng_package(
-    name = "@nguniversal/hapi-engine",
-    srcs = [":package.json"],
-    entry_point = "index.js",
-    deps = [":hapi-engine_module"],
+    name = "npm_package",
+    srcs = ["package.json"],
+    entry_point = "modules/hapi-engine/public_api.js",
+    globals = HAPI_ROLLUP_GLOBALS,
+    deps = [
+        ":hapi-engine",
+        "//modules/hapi-engine/tokens",
+    ],
 )
 
 ts_library(
@@ -24,11 +35,12 @@ ts_library(
         "spec/**/*.spec.ts",
     ]),
     deps = [
-        ":hapi-engine_module",
+        ":hapi-engine",
     ],
 )
 
 jasmine_node_test(
     name = "unit_test",
-    srcs = [":unit_test_lib"],
+    deps = [":unit_test_lib"],
+    timeout="short",
 )

@@ -6,16 +6,15 @@
  * found in the LICENSE file at https://angular.io/license
  */
 import {
-  HTTP_INTERCEPTORS,
   HttpEvent,
   HttpHandler,
   HttpHeaders,
   HttpInterceptor,
   HttpRequest,
-  HttpResponse
+  HttpResponse,
 } from '@angular/common/http';
-import {ApplicationRef, Injectable, NgModule} from '@angular/core';
-import {BrowserTransferStateModule, TransferState, makeStateKey} from '@angular/platform-browser';
+import {ApplicationRef, Injectable} from '@angular/core';
+import {TransferState, makeStateKey} from '@angular/platform-browser';
 import {Observable, of as observableOf} from 'rxjs';
 import {tap, take, filter} from 'rxjs/operators';
 
@@ -101,16 +100,3 @@ export class TransferHttpCacheInterceptor implements HttpInterceptor {
     }
   }
 }
-
-/**
- * An NgModule used in conjunction with `ServerTransferHttpCacheModule` to transfer cached HTTP
- * calls from the server to the client application.
- */
-@NgModule({
-  imports: [BrowserTransferStateModule],
-  providers: [
-    TransferHttpCacheInterceptor,
-    {provide: HTTP_INTERCEPTORS, useExisting: TransferHttpCacheInterceptor, multi: true},
-  ],
-})
-export class TransferHttpCacheModule {}

@@ -1,20 +1,23 @@
-load("//tools:defaults.bzl", "ts_library", "ng_module", "ng_package")
+package(default_visibility = ["//visibility:public"])
+load("@angular//:index.bzl", "ng_module", "ng_package")
+load("@build_bazel_rules_typescript//:defs.bzl", "ts_library")
 load("@build_bazel_rules_nodejs//:defs.bzl", "jasmine_node_test")
+load("//modules/module-map-ngfactory-loader:rollup_globals.bzl", "MODULEMAP_ROLLUP_GLOBALS")
 
 ng_module(
-    name = "module-map-ngfactory-loader_module",
-    srcs = glob([
-        "*.ts",
-        "src/**/*.ts",
-    ]),
+    name = "module-map-ngfactory-loader",
+    srcs = glob(["**/*.ts"], exclude=["spec/**/*.spec.ts"]),
+    module_name = "@nguniversal/module-map-ngfactory-loader",
+    tsconfig = "//modules:tsconfig.lib.json",
     deps = [],
 )
 
 ng_package(
-    name = "@nguniversal/module-map-ngfactory-loader",
-    srcs = [":package.json"],
-    entry_point = "index.js",
-    deps = [":module-map-ngfactory-loader_module"],
+    name = "@nguniversal/common",
+    srcs = ["package.json"],
+    entry_point = "modules/module-map-ngfactory-loader/public_api.js",
+    globals = MODULEMAP_ROLLUP_GLOBALS,
+    deps = [":module-map-ngfactory-loader"],
 )
 
 ts_library(
@@ -24,11 +27,12 @@ ts_library(
         "spec/**/*.spec.ts",
     ]),
     deps = [
-        ":module-map-ngfactory-loader_module",
+        ":module-map-ngfactory-loader",
     ],
 )
 
 jasmine_node_test(
     name = "unit_test",
-    srcs = [":unit_test_lib"],
+    deps = [":unit_test_lib"],
+    timeout="short",
 )
