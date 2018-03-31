@@ -2,6 +2,10 @@
 # yarn lockfile v1
 
 
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+>>>>>>> chore: upgrade to v6
 "@angular/animations@6.0.0-rc.1":
   version "6.0.0-rc.1"
   resolved "https://registry.yarnpkg.com/@angular/animations/-/animations-6.0.0-rc.1.tgz#fefd83733d4ffcf93eff137e5460412ed88dcd0e"
@@ -11,6 +15,20 @@
 "@angular/bazel@6.0.0-rc.1":
   version "6.0.0-rc.1"
   resolved "https://registry.yarnpkg.com/@angular/bazel/-/bazel-6.0.0-rc.1.tgz#8adcd16be933e368d2012eb741f28cf7c7476df7"
+<<<<<<< HEAD
+=======
+=======
+"@angular/animations@6.0.0-rc.0":
+  version "6.0.0-rc.0"
+  resolved "https://registry.yarnpkg.com/@angular/animations/-/animations-6.0.0-rc.0.tgz#8e22f0075d4e78d9e7714b526cb50fa695f5859f"
+  dependencies:
+    tslib "^1.9.0"
+
+"@angular/bazel@6.0.0-rc.0":
+  version "6.0.0-rc.0"
+  resolved "https://registry.yarnpkg.com/@angular/bazel/-/bazel-6.0.0-rc.0.tgz#a729be982b42b2d189de143f6ad23d186dfaeb83"
+>>>>>>> 5973e7b... build: add secondary entrypoints for tokens
+>>>>>>> chore: upgrade to v6
   dependencies:
     "@bazel/typescript" "^0.11.1"
     "@types/node" "6.0.84"
@@ -18,6 +36,10 @@
     protobufjs "5.0.0"
     shelljs "0.7.8"
 
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+>>>>>>> chore: upgrade to v6
 "@angular/common@6.0.0-rc.1":
   version "6.0.0-rc.1"
   resolved "https://registry.yarnpkg.com/@angular/common/-/common-6.0.0-rc.1.tgz#dc45ad017fe0eb2d3c4325580f5428b51dbc71f8"
@@ -27,12 +49,27 @@
 "@angular/compiler-cli@6.0.0-rc.1":
   version "6.0.0-rc.1"
   resolved "https://registry.yarnpkg.com/@angular/compiler-cli/-/compiler-cli-6.0.0-rc.1.tgz#3803501e19f70ba9337293ea756e87087c2aded7"
+<<<<<<< HEAD
+=======
+=======
+"@angular/common@6.0.0-rc.0":
+  version "6.0.0-rc.0"
+  resolved "https://registry.yarnpkg.com/@angular/common/-/common-6.0.0-rc.0.tgz#7ff0ba47c0548b8cdfacde9288b4ba8fb26308ce"
+  dependencies:
+    tslib "^1.9.0"
+
+"@angular/compiler-cli@6.0.0-rc.0":
+  version "6.0.0-rc.0"
+  resolved "https://registry.yarnpkg.com/@angular/compiler-cli/-/compiler-cli-6.0.0-rc.0.tgz#92efa9a5bf5d2876c95f8078a4fb7821aabdf3ca"
+>>>>>>> 5973e7b... build: add secondary entrypoints for tokens
+>>>>>>> chore: upgrade to v6
   dependencies:
     chokidar "^1.4.2"
     minimist "^1.2.0"
     reflect-metadata "^0.1.2"
     tsickle "^0.27.2"
 
+<<<<<<< HEAD
 "@angular/compiler@6.0.0-rc.1":
   version "6.0.0-rc.1"
   resolved "https://registry.yarnpkg.com/@angular/compiler/-/compiler-6.0.0-rc.1.tgz#cb3451b25e4c77ad3b4a55bff29d65833ac1dbab"
@@ -66,6 +103,77 @@
 "@angular/platform-server@6.0.0-rc.1":
   version "6.0.0-rc.1"
   resolved "https://registry.yarnpkg.com/@angular/platform-server/-/platform-server-6.0.0-rc.1.tgz#a626e455d35c3218c3930494b160eefbc20d6f1a"
+=======
+<<<<<<< HEAD
+"@angular/compiler@6.0.0-rc.1":
+  version "6.0.0-rc.1"
+  resolved "https://registry.yarnpkg.com/@angular/compiler/-/compiler-6.0.0-rc.1.tgz#cb3451b25e4c77ad3b4a55bff29d65833ac1dbab"
+  dependencies:
+    tslib "^1.9.0"
+
+"@angular/core@6.0.0-rc.1":
+  version "6.0.0-rc.1"
+  resolved "https://registry.yarnpkg.com/@angular/core/-/core-6.0.0-rc.1.tgz#1c57db9aa46991a8f75dcef38dc4ca63bd1b7fec"
+  dependencies:
+    tslib "^1.9.0"
+
+"@angular/http@6.0.0-rc.1":
+  version "6.0.0-rc.1"
+  resolved "https://registry.yarnpkg.com/@angular/http/-/http-6.0.0-rc.1.tgz#4294be3edaa28a26655d7c298ffd36b0796b9455"
+  dependencies:
+    tslib "^1.9.0"
+
+"@angular/platform-browser-dynamic@6.0.0-rc.1":
+  version "6.0.0-rc.1"
+  resolved "https://registry.yarnpkg.com/@angular/platform-browser-dynamic/-/platform-browser-dynamic-6.0.0-rc.1.tgz#94de105d372edeca8345b2f1987cde526536ec70"
+  dependencies:
+    tslib "^1.9.0"
+
+"@angular/platform-browser@6.0.0-rc.1":
+  version "6.0.0-rc.1"
+  resolved "https://registry.yarnpkg.com/@angular/platform-browser/-/platform-browser-6.0.0-rc.1.tgz#d67f14f3bc4236b3a5a763cf447834f03ed2d5e9"
+  dependencies:
+    tslib "^1.9.0"
+
+"@angular/platform-server@6.0.0-rc.1":
+  version "6.0.0-rc.1"
+  resolved "https://registry.yarnpkg.com/@angular/platform-server/-/platform-server-6.0.0-rc.1.tgz#a626e455d35c3218c3930494b160eefbc20d6f1a"
+=======
+"@angular/compiler@6.0.0-rc.0":
+  version "6.0.0-rc.0"
+  resolved "https://registry.yarnpkg.com/@angular/compiler/-/compiler-6.0.0-rc.0.tgz#9c6a8b3d60f53f4a00426a3ea18a8edbf9d13ef1"
+  dependencies:
+    tslib "^1.9.0"
+
+"@angular/core@6.0.0-rc.0":
+  version "6.0.0-rc.0"
+  resolved "https://registry.yarnpkg.com/@angular/core/-/core-6.0.0-rc.0.tgz#8cf9eb1f1fa43d58ee42ea0f399187deea0c0047"
+  dependencies:
+    tslib "^1.9.0"
+
+"@angular/http@6.0.0-rc.0":
+  version "6.0.0-rc.0"
+  resolved "https://registry.yarnpkg.com/@angular/http/-/http-6.0.0-rc.0.tgz#7dab369539cc9936326b10411b72fa7ce2a62c30"
+  dependencies:
+    tslib "^1.9.0"
+
+"@angular/platform-browser-dynamic@6.0.0-rc.0":
+  version "6.0.0-rc.0"
+  resolved "https://registry.yarnpkg.com/@angular/platform-browser-dynamic/-/platform-browser-dynamic-6.0.0-rc.0.tgz#4d030bddf76f138a138f879550338adb31eedbc1"
+  dependencies:
+    tslib "^1.9.0"
+
+"@angular/platform-browser@6.0.0-rc.0":
+  version "6.0.0-rc.0"
+  resolved "https://registry.yarnpkg.com/@angular/platform-browser/-/platform-browser-6.0.0-rc.0.tgz#9d7e434e4c50d63f35b75175841d1a566a7df052"
+  dependencies:
+    tslib "^1.9.0"
+
+"@angular/platform-server@6.0.0-rc.0":
+  version "6.0.0-rc.0"
+  resolved "https://registry.yarnpkg.com/@angular/platform-server/-/platform-server-6.0.0-rc.0.tgz#8519c66a13dcf88279d98a0f04b55eaa3339ace8"
+>>>>>>> 5973e7b... build: add secondary entrypoints for tokens
+>>>>>>> chore: upgrade to v6
   dependencies:
     domino "^2.0.1"
     tslib "^1.9.0"
@@ -4393,9 +4501,21 @@ rollup@^0.56.5:
   version "0.56.5"
   resolved "https://registry.yarnpkg.com/rollup/-/rollup-0.56.5.tgz#40fe3cf0cd1659d469baad11f4d5b6336c14ce84"
 
+<<<<<<< HEAD
 rxjs@^6.0.0-rc.0:
   version "6.0.0-rc.0"
   resolved "https://registry.yarnpkg.com/rxjs/-/rxjs-6.0.0-rc.0.tgz#3fed5454dfaf5a01005c973de857f860826d3eac"
+=======
+<<<<<<< HEAD
+rxjs@^6.0.0-rc.0:
+  version "6.0.0-rc.0"
+  resolved "https://registry.yarnpkg.com/rxjs/-/rxjs-6.0.0-rc.0.tgz#3fed5454dfaf5a01005c973de857f860826d3eac"
+=======
+rxjs@^6.0.0-beta.0:
+  version "6.0.0-beta.1"
+  resolved "https://registry.yarnpkg.com/rxjs/-/rxjs-6.0.0-beta.1.tgz#ac6b181251ece21051435c3da2538444b43a37c1"
+>>>>>>> 5973e7b... build: add secondary entrypoints for tokens
+>>>>>>> chore: upgrade to v6
   dependencies:
     tslib "^1.9.0"
 
