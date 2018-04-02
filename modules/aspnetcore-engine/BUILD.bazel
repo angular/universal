@@ -1,20 +1,29 @@
-load("//tools:defaults.bzl", "ts_library", "ng_module", "ng_package")
+package(default_visibility = ["//visibility:public"])
 load("@build_bazel_rules_nodejs//:defs.bzl", "jasmine_node_test")
+load("@angular//:index.bzl", "ng_module", "ng_package")
+load("@build_bazel_rules_typescript//:defs.bzl", "ts_library")
+load("//modules/aspnetcore-engine:rollup_globals.bzl", "ASPNET_ROLLUP_GLOBALS")
 
 ng_module(
-    name = "aspnetcore-engine_module",
-    srcs = glob([
-        "*.ts",
-        "src/**/*.ts",
-    ]),
-    deps = ["@rxjs"],
+    name = "aspnetcore-engine",
+    srcs = glob(["**/*.ts"], exclude=["spec/**/*.spec.ts"]),
+    module_name = "@nguniversal/aspnetcore-engine",
+    tsconfig = "//modules:tsconfig.lib.json",
+    deps = [
+        "@rxjs",
+        "//modules/aspnetcore-engine/tokens",
+    ],
 )
 
 ng_package(
-    name = "@nguniversal/aspnetcore-engine",
-    srcs = [":package.json"],
-    entry_point = "index.js",
-    deps = [":aspnetcore-engine_module"],
+    name = "npm_package",
+    srcs = ["package.json"],
+    entry_point = "modules/aspnetcore-engine/public_api.js",
+    globals = ASPNET_ROLLUP_GLOBALS,
+    deps = [
+        ":aspnetcore-engine",
+        "//modules/aspnetcore-engine/tokens",
+    ],
 )
 
 ts_library(
@@ -24,11 +33,12 @@ ts_library(
         "spec/**/*.spec.ts",
     ]),
     deps = [
-        ":aspnetcore-engine_module",
+        ":aspnetcore-engine",
     ],
 )
 
 jasmine_node_test(
     name = "unit_test",
-    srcs = [":unit_test_lib"],
+    deps = [":unit_test_lib"],
+    timeout="short",
 )

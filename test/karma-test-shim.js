@@ -51,9 +51,12 @@ System.config({
 
     // Path mappings for local packages that can be imported inside of tests.
     '@nguniversal/aspnetcore-engine': 'dist/packages/aspnetcore-engine/public-api.js',
+    '@nguniversal/aspnetcore-engine/tokens': 'dist/packages/aspnetcore-engine/tokens/public-api.js',
     '@nguniversal/common': 'dist/packages/common/public-api.js',
     '@nguniversal/express-engine': 'dist/packages/express-engine/public-api.js',
+    '@nguniversal/express-engine/tokens': 'dist/packages/express-engine/tokens/public-api.js',
     '@nguniversal/hapi-engine': 'dist/packages/hapi-engine/public-api.js',
+    '@nguniversal/hapi-engine/tokens': 'dist/packages/hapi-engine/tokens/public-api.js',
     '@nguniversal/module-map-ngfactory-loader': 'dist/packages/module-map-ngfactory-loader/public-api.js'
   },
   packages: {
