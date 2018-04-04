@@ -38,6 +38,7 @@ GLOBALS = {
       "@nguniversal/aspnetcore-engine/tokens": "nguniversal.aspnetcoreEngine.tokens",
       "@nguniversal/express-engine/tokens": "nguniversal.expressEngine.tokens",
       "@nguniversal/hapi-engine/tokens": "nguniversal.hapiEngine.tokens",
+      'tslib': 'tslib',
       "rxjs": "Rx",
       "rxjs/operators": "Rx.operators",
       "fs": "fs",
