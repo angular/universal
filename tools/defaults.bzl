@@ -46,6 +46,7 @@ GLOBALS = {
       "hapi": "hapi"
     }
 
+// TODO: when a better api for defaults is avilable use that isntead of these macros
 def ts_test_library(node_modules=None, **kwargs):
     ts_library(testonly=1, **kwargs)
 
