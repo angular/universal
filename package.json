@@ -82,6 +82,8 @@
     "@angular/platform-browser": "^6.0.0",
     "@angular/platform-browser-dynamic": "^6.0.0",
     "@angular/platform-server": "^6.0.0",
+    "@angular/router": "^6.0.0",
+    "@angular/upgrade": "^6.0.0",
     "@bazel/ibazel": "^0.3.1",
     "@types/express": "^4.0.39",
     "@types/fs-extra": "^4.0.5",
@@ -119,6 +121,6 @@
     "tsutils": "^2.21.2",
     "typescript": "~2.7.2",
     "uglify-js": "^2.8.14",
-    "zone.js": "^0.8.12"
+    "zone.js": "^0.8.26"
   }
 }
