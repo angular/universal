@@ -71,7 +71,7 @@ The 1.x packages work with Angular 4.x while the 5.x packages will work with Ang
 # Getting Started
 
 [* **NodeJS** :: Example repo](https://github.com/angular/universal-starter)
-  - Minimal webpack & universal example with Angular 5.0
+  - Minimal webpack & universal example with Angular 6.0
 
 [* ASP.NET Core :: Universal Starter repo](https://github.com/MarkPieszak/aspnetcore-angular2-universal)
   - **Installation**: Clone the above repo, `npm i && dotnet restore` *(VStudio will run these automatically when opening the project)*
