@@ -14,7 +14,7 @@ import {
     HttpRequest,
     HttpResponse
 } from '@angular/common/http';
-import { ApplicationRef, Injectable, NgModule, InjectionToken, Inject, ModuleWithProviders } from '@angular/core';
+import { ApplicationRef, Injectable, NgModule } from '@angular/core';
 import { BrowserTransferStateModule, TransferState, makeStateKey, StateKey } from '@angular/platform-browser';
 import { Observable, of as observableOf } from 'rxjs';
 import { tap, take, filter } from 'rxjs/operators';
@@ -35,19 +35,13 @@ function getHeadersMap(headers: HttpHeaders) {
     return headersMap;
 }
 
-export const TRANSFER_STATE_CACHE_OPTIONS = new InjectionToken('TRANSFER_STATE_CACHE_OPTIONS');
-
 @Injectable()
 export class TransferHttpCacheInterceptor implements HttpInterceptor {
 
     private isCacheActive = true;
     private hashSeparator = '::';
 
-    constructor(
-        appRef: ApplicationRef,
-        private transferState: TransferState,
-        @Inject(TRANSFER_STATE_CACHE_OPTIONS) private options: ITransferStateoptions
-    ) {
+    constructor(appRef: ApplicationRef, private transferState: TransferState) {
         // Stop using the cache if the application has stabilized, indicating initial rendering is
         // complete.
         appRef.isStable
@@ -68,7 +62,7 @@ export class TransferHttpCacheInterceptor implements HttpInterceptor {
             this.invalidateCacheEntry(storeKey);
         }
 
-        if (!this.isCacheActive && !this.transferState.hasKey(storeKey) || !this.isPostRequestAllowed(req, storeKey)) {
+        if (!this.isCacheActive && !this.transferState.hasKey(storeKey)) {
             // Cache is no longer active. Pass the request through.
             return next.handle(req);
         }
@@ -106,11 +100,7 @@ export class TransferHttpCacheInterceptor implements HttpInterceptor {
     }
 
     private isAllowedRequestMethod(req: HttpRequest<any>) {
-        return req.method === 'GET' || req.method === 'HEAD' || req.method === 'POST';
-    }
-
-    private isPostRequestAllowed(req: HttpRequest<any>, storeKey: string) {
-        return req.method === 'POST' && this.options.cachePOSTFilter && this.options.cachePOSTFilter(req, storeKey);
+        return req.method === 'GET' || req.method === 'HEAD';
     }
 
     private invalidateCacheEntry(key: StateKey<TransferHttpResponse>) {
@@ -121,23 +111,16 @@ export class TransferHttpCacheInterceptor implements HttpInterceptor {
 
     private constructCacheKey(req: HttpRequest<any>) {
         let key = `${req.method[0]}_${req.url}`;
-        key = this.options.cacheKeyTransformer
-            ? this.options.cacheKeyTransformer(key)
-            : key;
 
         key = key
             .replace(/[^\w\s]/gi, '_');
 
-        if (req.method === 'POST') {
-            key += this.hashSeparator + this.hashParams(req.body);
-        }
-
         if (req.method === 'GET') {
-            const hashedParams = req.params.keys().map((param: string) => {
-                return { key: req.params.get(param) };
+            const hashedParams = req.params.keys().map((key: string) => {
+                return { key: req.params.get(key) };
             });
 
-            key += this.hashSeparator + hashedParams;
+            key += this.hashSeparator + this.hashParams(hashedParams);
         }
 
         return key;
@@ -166,22 +149,11 @@ export class TransferHttpCacheInterceptor implements HttpInterceptor {
  * calls from the server to the client application.
  */
 @NgModule({
-    imports: [BrowserTransferStateModule]
+    imports: [BrowserTransferStateModule],
+    providers: [
+        TransferHttpCacheInterceptor,
+        { provide: HTTP_INTERCEPTORS, useExisting: TransferHttpCacheInterceptor, multi: true }
+    ]
 })
 export class TransferHttpCacheModule {
-    static forRoot(options: ITransferStateoptions): ModuleWithProviders {
-        return {
-            ngModule: TransferHttpCacheModule,
-            providers: [
-                TransferHttpCacheInterceptor,
-                { provide: TRANSFER_STATE_CACHE_OPTIONS, useValue: options ? options : {} },
-                { provide: HTTP_INTERCEPTORS, useExisting: TransferHttpCacheInterceptor, multi: true },
-            ],
-        };
-    }
-}
-
-export interface ITransferStateoptions {
-    cacheKeyTransformer?: (key: string) => string;
-    cachePOSTFilter?: (req: HttpRequest<any>, storeKey: string) => boolean;
 }
