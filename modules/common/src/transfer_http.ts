@@ -116,6 +116,7 @@ export class TransferHttpCacheInterceptor implements HttpInterceptor {
             .replace(/[^\w\s]/gi, '_');
 
         if (req.method === 'GET') {
+            // TODO: case sensetive params sorting needs to be done in order to avoid getting different hassh for same request
             const hashedParams = req.params.keys().map((key: string) => {
                 return { key: req.params.get(key) };
             });
