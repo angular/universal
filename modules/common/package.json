@@ -9,7 +9,8 @@
   ],
   "peerDependencies": {
     "@angular/common": "NG_VERSION",
-    "@angular/core": "NG_VERSION"
+    "@angular/core": "NG_VERSION",
+    "@angular/platform-server": "NG_VERSION"
   },
   "ng-update": {
     "packageGroup": "NG_UPDATE_PACKAGE_GROUP"
@@ -20,6 +21,5 @@
   },
   "bugs": {
     "url": "https://github.com/angular/universal/issues"
-  },
-  "homepage": "https://github.com/angular/universal"
+  }
 }

@@ -325,7 +325,7 @@ ORIGIN_URL
 REQUEST
 
 // imported 
-import { ORIGIN_URL, REQUEST } from '@nguniversal/aspnetcore-engine';
+import { ORIGIN_URL, REQUEST } from '@nguniversal/common';
 ```
 
 Make sure in your BrowserModule you provide these tokens as well, if you're going to use them!
@@ -361,7 +361,7 @@ Don't forget that the server needs Absolute URLs for paths when doing Http reque
 As for the REQUEST object, you'll find Cookies, Headers, and Host (from .NET that we passed down in our HomeController. They'll all be accessible from that Injection Token as well.
 
 ```typescript
-  import { REQUEST } from '@nguniversal/aspnetcore-engine/tokens';
+  import { REQUEST } from '@nguniversal/common';
 
   constructor(@Inject(REQUEST) private request) {
     // this.request.cookies
