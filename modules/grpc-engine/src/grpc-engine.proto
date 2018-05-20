@@ -1,0 +1,24 @@
+package grpcengine;
+syntax = "proto3";
+
+
+service SSR {
+  rpc render(RenderOptions) returns (RenderResponse) {}
+}
+
+message RenderOptions {
+  int32 id = 1;
+  string document = 2;
+  string documentFilename = 3;
+}
+
+message RenderResponse {
+  int32 id = 1;
+  string html = 2;
+  optional Error error = 3;
+}
+
+message Error {
+  string message = 1;
+  string stack = 2;
+}

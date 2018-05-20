@@ -1,0 +1,28 @@
+{
+  "name": "@nguniversal/grpc-engine",
+  "version": "0.0.0-PLACEHOLDER",
+  "description": "gRPC engine for running server Angular applications",
+  "license": "MIT",
+  "keywords": [
+    "grpc",
+    "ssr",
+    "universal"
+  ],
+  "peerDependencies": {
+    "@angular/common": "NG_VERSION",
+    "@angular/core": "NG_VERSION",
+    "@angular/platform-server": "NG_VERSION",
+    "grpc": "^1.11.3"
+  },
+  "ng-update": {
+    "packageGroup": "NG_UPDATE_PACKAGE_GROUP"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/angular/universal"
+  },
+  "bugs": {
+    "url": "https://github.com/angular/universal/issues"
+  },
+  "homepage": "https://github.com/angular/universal"
+}
