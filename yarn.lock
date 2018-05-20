@@ -71,6 +71,18 @@
     tslib "^1.9.0"
     xhr2 "^0.1.4"
 
+"@angular/router@^6.0.4":
+  version "6.0.4"
+  resolved "https://registry.yarnpkg.com/@angular/router/-/router-6.0.4.tgz#81c96dfa42a8c4a218cbd450b1e8959a76ea9595"
+  dependencies:
+    tslib "^1.9.0"
+
+"@angular/upgrade@^6.0.4":
+  version "6.0.4"
+  resolved "https://registry.yarnpkg.com/@angular/upgrade/-/upgrade-6.0.4.tgz#b12a016bab98db77bacbe9b1a83c4c2a47e5baf5"
+  dependencies:
+    tslib "^1.9.0"
+
 "@bazel/ibazel@^0.3.1":
   version "0.3.1"
   resolved "https://registry.yarnpkg.com/@bazel/ibazel/-/ibazel-0.3.1.tgz#5f02f208f138e581bbdb1534d5c013d7a0ac9799"

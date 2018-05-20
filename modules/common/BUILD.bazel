@@ -13,6 +13,7 @@ ng_module(
     deps = [
         "//modules/common/engine",
         "//modules/common/tokens",
+        "//modules/common/ls-routes",
     ],
 )
 
@@ -25,6 +26,7 @@ ng_package(
         ":common",
         "//modules/common/engine",
         "//modules/common/tokens",
+        "//modules/common/ls-routes",
     ],
 )
 

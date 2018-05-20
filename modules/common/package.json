@@ -9,7 +9,9 @@
   ],
   "peerDependencies": {
     "@angular/common": "NG_VERSION",
-    "@angular/core": "NG_VERSION"
+    "@angular/core": "NG_VERSION",
+    "@angular/router": "NG_VERSION",
+    "@nguniversal/module-map-ngfactory-loader": "0.0.0-PLACEHOLDER"
   },
   "ng-update": {
     "packageGroup": "NG_UPDATE_PACKAGE_GROUP"

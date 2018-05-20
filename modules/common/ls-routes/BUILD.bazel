@@ -1,0 +1,35 @@
+package(default_visibility = ["//visibility:public"])
+
+load("//tools:defaults.bzl", "ts_library", "ng_module")
+load("@build_bazel_rules_nodejs//:defs.bzl", "jasmine_node_test")
+
+ng_module(
+    name = "ls-routes",
+    srcs = glob([
+        "src/*.ts",
+        "*.ts",
+    ]),
+    deps = [
+      "//modules/common/engine",
+      "//modules/module-map-ngfactory-loader",
+    ],
+    module_name = "@nguniversal/common/ls-routes",
+)
+
+ts_library(
+    name = "unit_test_lib",
+    testonly = True,
+    srcs = glob([
+        "spec/**/*.spec.ts",
+    ]),
+    deps = [
+        "//modules/common/engine",
+        "//modules/module-map-ngfactory-loader",
+        ":ls-routes",
+    ],
+)
+
+jasmine_node_test(
+    name = "unit_test",
+    srcs = [":unit_test_lib"],
+)

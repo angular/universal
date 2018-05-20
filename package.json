@@ -82,6 +82,8 @@
     "@angular/platform-browser": "^6.0.4",
     "@angular/platform-browser-dynamic": "^6.0.4",
     "@angular/platform-server": "^6.0.4",
+    "@angular/upgrade": "^6.0.4",
+    "@angular/router": "^6.0.4",
     "@bazel/ibazel": "^0.3.1",
     "@types/express": "^4.0.39",
     "@types/fs-extra": "^4.0.5",
