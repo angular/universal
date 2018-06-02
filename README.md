@@ -26,6 +26,16 @@ This repository will host the various tools like engines to integrate with vario
 
 The Universal project is driven by community contributions. Please send us your Pull Requests!
 
+# Getting Started
+
+[* **NodeJS** :: Example repo](https://github.com/angular/universal-starter)
+  - Minimal universal example
+
+[* ASP.NET Core :: Universal Starter repo](https://github.com/MarkPieszak/aspnetcore-angular2-universal)
+  - **Installation**: Clone the above repo, `npm i && dotnet restore` *(VStudio will run these automatically when opening the project)*
+  - Launch files included for both VSCode & VStudio to run/debug automatically (press F5).
+
+
 # Packages
 The packages from this repo are published as scoped packages under [@nguniversal](https://www.npmjs.com/search?q=%40nguniversal)
 
@@ -35,12 +45,8 @@ The packages from this repo are published as scoped packages under [@nguniversal
 - [@nguniversal/hapi-engine](/modules/hapi-engine/README.md)
 - [@nguniversal/module-map-ngfactory-loader](/master/modules/module-map-ngfactory-loader)
 
-# Upgrading from Angular2-Universal
-If you're coming from the original `angular2-universal` (2.x) here are some helpful steps for porting your application to Angular 4 & platform-server.
-
-[Go here to find the guide](/docs/angular2-universal-migration.md)
-
-----
+# Universal "Gotchas"
+Moved to [/docs/gotchas.md](/docs/gotchas.md)
 
 # Roadmap
 
@@ -66,19 +72,10 @@ If you're coming from the original `angular2-universal` (2.x) here are some help
 ## Planning
 - Full client rehydration strategy that reuses DOM elements/CSS rendered on the server
 
-# Getting Started
+# Upgrading from Angular2-Universal
+If you're coming from the original `angular2-universal` (2.x) here are some helpful steps for porting your application to Angular 4 & platform-server.
 
-[* **NodeJS** :: Example repo](https://github.com/angular/universal-starter)
-  - Minimal webpack & universal example
-
-[* ASP.NET Core :: Universal Starter repo](https://github.com/MarkPieszak/aspnetcore-angular2-universal)
-  - **Installation**: Clone the above repo, `npm i && dotnet restore` *(VStudio will run these automatically when opening the project)*
-  - Launch files included for both VSCode & VStudio to run/debug automatically (press F5).
-
----- 
-
-# Universal "Gotchas"
-Moved to [/docs/gotchas.md](/docs/gotchas.md)
+[Go here to find the guide](/docs/angular2-universal-migration.md)
 
 # Preboot
 > Control server-rendered page and transfer state before client-side web app loads to the client-side-app. [Repo](https://github.com/angular/preboot)
