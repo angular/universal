@@ -2,7 +2,7 @@
 [![Join the chat at https://gitter.im/angular/universal](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/angular/universal?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
 # Angular Universal
-![Image of Yaktocat](https://angular.io/assets/images/logos/concept-icons/universal.png)
+![Angular Universal](https://angular.io/assets/images/logos/concept-icons/universal.png)
 
 # Table of Contents
 * [Introduction](#introduction)
