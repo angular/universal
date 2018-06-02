@@ -9,4 +9,4 @@ The package can be installed using:
 
 ## TransferHttpCacheModule
 
-Move to [/docs/transfer-http.md](/docs/transfer-http.md)
+Moved to [/docs/transfer-http.md](https://github.com/angular/universal/tree/master/docs/transfer-http.md)
