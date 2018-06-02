@@ -79,7 +79,7 @@ If you're coming from the original `angular2-universal` (2.x) here are some help
 [Go here to find the guide](/docs/angular2-universal-migration.md)
 
 # Preboot
-> Control server-rendered page and transfer state before client-side web app loads to the client-side-app. [Repo](https://github.com/angular/preboot)
+Control server-rendered page and transfer state before client-side web app loads to the client-side-app. [Repo](https://github.com/angular/preboot)
 
 # What's in a name?
 We believe that using the word "universal" is correct when referring to a JavaScript Application that runs in more environments than the browser. (inspired by [Universal JavaScript](https://medium.com/@mjackson/universal-javascript-4761051b7ae9))
