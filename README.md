@@ -29,14 +29,14 @@ The Universal project is driven by community contributions. Please send us your 
 # Packages
 The packages from this repo are published as scoped packages under [@nguniversal](https://www.npmjs.com/search?q=%40nguniversal)
 
-- [@nguniversal/common](https://github.com/angular/universal/blob/master/modules/common/README.md)
-- [@nguniversal/express-engine](https://github.com/angular/universal/blob/master/modules/express-engine/README.md)
-- [@nguniversal/aspnetcore-engine](https://github.com/angular/universal/blob/master/modules/aspnetcore-engine/README.md)
-- [@nguniversal/hapi-engine](https://github.com/angular/universal/blob/master/modules/hapi-engine/README.md)
-- [@nguniversal/module-map-ngfactory-loader](https://github.com/angular/universal/tree/master/modules/module-map-ngfactory-loader) (for handling lazy loaded modules on the server).
+- [@nguniversal/common](/modules/common/README.md)
+- [@nguniversal/express-engine](/modules/express-engine/README.md)
+- [@nguniversal/aspnetcore-engine](/modules/aspnetcore-engine/README.md)
+- [@nguniversal/hapi-engine](/modules/hapi-engine/README.md)
+- [@nguniversal/module-map-ngfactory-loader](/master/modules/module-map-ngfactory-loader)
 
 # Upgrading from Angular2-Universal
-> If you're coming from the original `angular2-universal` (2.x) here are some helpful steps for porting your application to Angular 4 & platform-server.
+If you're coming from the original `angular2-universal` (2.x) here are some helpful steps for porting your application to Angular 4 & platform-server.
 
 [Go here to find the guide](/docs/angular2-universal-migration.md)
 
