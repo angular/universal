@@ -1,4 +1,6 @@
-> When building Universal components in Angular there are a few things to keep in mind.
+# Universal "Gotchas"
+
+When building Universal components in Angular there are a few things to keep in mind.
 
  - **`window`**, **`document`**, **`navigator`**, and other browser types - _do not exist on the server_ - so using them, or any library that uses them (jQuery for example) will not work. You do have some options, if you truly need some of this functionality:
     - If you need to use them, consider limiting them to only your client and wrapping them situationally. You can use the Object injected using the PLATFORM_ID token to check whether the current platform is browser or server. 
