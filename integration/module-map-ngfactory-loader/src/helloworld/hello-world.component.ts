@@ -9,7 +9,7 @@
 import {Component} from '@angular/core';
 
 @Component({
-  selector: 'hello-world-app',
+  selector: 'hello-world-component',
   template: `
     <div>Hello {{ name }}!</div>
   `,

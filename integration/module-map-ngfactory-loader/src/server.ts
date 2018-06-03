@@ -13,7 +13,8 @@ require('zone.js/dist/zone-node.js');
 import {enableProdMode} from '@angular/core';
 import * as express from 'express';
 
-import {HelloWorldServerModuleNgFactory, LAZY_MODULE_MAP} from './helloworld/app.server.ngfactory';
+import {HelloWorldServerModuleNgFactory} from './helloworld/app.server.ngfactory';
+import {LazyModuleNgFactory} from './helloworld/lazy.module.ngfactory';
 import {provideModuleMap} from '@nguniversal/module-map-ngfactory-loader';
 const helloworld = require('raw-loader!./helloworld/index.html');
 
@@ -29,14 +30,26 @@ app.get('/favicon.ico', (req, res) => { res.send(''); });
 
 //-----------ADD YOUR SERVER SIDE RENDERED APP HERE ----------------------
 // All regular routes use the Universal engine
-app.get('*', (req, res) =>
+app.get('/helloworld', (req, res) =>
   ngExpressEngine({bootstrap: HelloWorldServerModuleNgFactory})('built/src/index.html', {
     bootstrap: HelloWorldServerModuleNgFactory,
     req,
     document: helloworld,
     url: req.url,
     providers: [
-      provideModuleMap(LAZY_MODULE_MAP)
+      provideModuleMap({ './lazy.module#LazyModule': LazyModuleNgFactory })
+    ]
+  }, (err, html) => res.send(html))
+);
+
+app.get('/helloworld/lazy', (req, res) =>
+  ngExpressEngine({bootstrap: HelloWorldServerModuleNgFactory})('built/src/index.html', {
+    bootstrap: HelloWorldServerModuleNgFactory,
+    req,
+    document: helloworld,
+    url: req.url,
+    providers: [
+      provideModuleMap({ './lazy.module#LazyModule': LazyModuleNgFactory })
     ]
   }, (err, html) => res.send(html))
 );

@@ -9,12 +9,11 @@
 import {NgModule} from '@angular/core';
 import {ServerModule} from '@angular/platform-server';
 
-import {HelloWorldModule} from './app';
-import {HelloWorldComponent} from './hello-world.component';
+import {HelloWorldModule, AppComponent} from './app';
 import {ModuleMapLoaderModule} from '@nguniversal/module-map-ngfactory-loader';
 
 @NgModule({
-  bootstrap: [HelloWorldComponent],
+  bootstrap: [AppComponent],
   imports: [HelloWorldModule, ServerModule, ModuleMapLoaderModule],
 })
 export class HelloWorldServerModule {
