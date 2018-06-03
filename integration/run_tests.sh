@@ -15,7 +15,8 @@ if $CI; then
   # We don't install this by default because it contains some broken Bazel setup
   # and also it's a very big dependency that we never use except when publishing
   # payload sizes on CI.
-  yarn add --silent -D firebase-tools@3.12.0
+  echo ""
+  # yarn add --silent -D firebase-tools@3.12.0
   # source ${basedir}/scripts/ci/payload-size.sh
 
   # NB: we don't run build-modules-dist.sh because we expect that it was done

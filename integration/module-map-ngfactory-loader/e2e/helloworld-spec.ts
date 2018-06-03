@@ -45,7 +45,7 @@ describe('Hello world E2E Tests', function() {
 
     // Test the contents from the server.
     const serverDiv = browser.driver.findElement(by.css('h3'));
-    expect(serverDiv.getText()).toEqual('i\'m lazy');
+    expect(serverDiv.getText()).toEqual('im lazy');
 
     // Bootstrap the client side app.
     browser.executeScript('doBootstrap()');

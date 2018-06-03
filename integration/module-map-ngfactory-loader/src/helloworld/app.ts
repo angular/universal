@@ -6,21 +6,30 @@
  * found in the LICENSE file at https://angular.io/license
  */
 
-import {NgModule} from '@angular/core';
+import {NgModule, Component} from '@angular/core';
 import {BrowserModule} from '@angular/platform-browser';
 
-import {HelloWorldComponent} from './hello-world.component';
 import {RouterModule} from '@angular/router';
+import { HelloWorldComponent } from './hello-world.component';
+
+@Component({
+  selector: 'hello-world-app',
+  template: `
+    <router-outlet></router-outlet>
+  `,
+})
+export class AppComponent {
+}
+
 
 @NgModule({
-  declarations: [HelloWorldComponent],
-  bootstrap: [HelloWorldComponent],
+  declarations: [AppComponent, HelloWorldComponent],
+  bootstrap: [AppComponent],
   imports: [
     BrowserModule.withServerTransition({appId: 'hlw'}),
     RouterModule.forRoot([
-      { path: '', component: HelloWorldComponent, pathMatch: 'full'},
-      { path: 'lazy', loadChildren: './lazy/lazy.module#LazyModule'},
-      { path: 'lazy/nested', loadChildren: './lazy/lazy.module#LazyModule'}
+      { path: 'helloworld', component: HelloWorldComponent, pathMatch: 'full'},
+      { path: 'helloworld/lazy', loadChildren: './lazy.module#LazyModule'}
     ]),
   ],
 })
