@@ -5,7 +5,7 @@ import {RouterModule} from '@angular/router';
   selector: 'app-lazy-view',
   template: `<h3>im lazy</h3>`,
   styles: [`
-    div {
+    h3 {
       font-weight: bold;
     }
   `]
