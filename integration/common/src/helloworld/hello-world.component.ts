@@ -23,14 +23,13 @@ import {HttpClient} from '@angular/common/http';
 })
 export class HelloWorldComponent implements OnInit {
   name: string = 'world';
-  // TODO(CaerusKaru): set this to 0 once the Http is back
-  counter = 1;
+  counter = 0;
 
-  // constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) {}
 
   ngOnInit() {
-    // this.http.get('http://localhost:9876/counter').subscribe(d => {
-    //   this.counter = d['counter'];
-    // });
+    this.http.get('http://localhost:9876/counter').subscribe(d => {
+      this.counter = d['counter'];
+    });
   }
 }

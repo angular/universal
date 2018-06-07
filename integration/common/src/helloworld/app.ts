@@ -11,11 +11,16 @@ import {BrowserModule} from '@angular/platform-browser';
 
 import {HelloWorldComponent} from './hello-world.component';
 import {TransferHttpCacheModule} from '@nguniversal/common';
+import {HttpClientModule} from '@angular/common/http';
 
 @NgModule({
   declarations: [HelloWorldComponent],
   bootstrap: [HelloWorldComponent],
-  imports: [BrowserModule.withServerTransition({appId: 'hlw'}), TransferHttpCacheModule],
+  imports: [
+    HttpClientModule,
+    BrowserModule.withServerTransition({appId: 'hlw'}),
+    TransferHttpCacheModule,
+  ],
 })
 export class HelloWorldModule {
 }

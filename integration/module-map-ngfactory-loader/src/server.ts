@@ -30,20 +30,8 @@ app.get('/favicon.ico', (req, res) => { res.send(''); });
 
 //-----------ADD YOUR SERVER SIDE RENDERED APP HERE ----------------------
 // All regular routes use the Universal engine
-app.get('/helloworld', (req, res) =>
-  ngExpressEngine({bootstrap: HelloWorldServerModuleNgFactory})('built/src/index.html', {
-    bootstrap: HelloWorldServerModuleNgFactory,
-    req,
-    document: helloworld,
-    url: req.url,
-    providers: [
-      provideModuleMap({ './lazy.module#LazyModule': LazyModuleNgFactory })
-    ]
-  }, (err, html) => res.send(html))
-);
-
-app.get('/helloworld/lazy', (req, res) =>
-  ngExpressEngine({bootstrap: HelloWorldServerModuleNgFactory})('built/src/index.html', {
+app.get('*', (req, res) =>
+  ngExpressEngine({bootstrap: HelloWorldServerModuleNgFactory})('', {
     bootstrap: HelloWorldServerModuleNgFactory,
     req,
     document: helloworld,

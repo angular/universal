@@ -36,7 +36,7 @@ describe('Hello world E2E Tests', function() {
     verifyNoBrowserErrors();
   });
 
-  it('should display: i\'m lazy', function() {
+  it('should display: im lazy', function() {
     // Load the page without waiting for Angular since it is not bootstrapped automatically.
     browser.driver.get(browser.baseUrl + 'helloworld/lazy');
 
@@ -51,7 +51,7 @@ describe('Hello world E2E Tests', function() {
     browser.executeScript('doBootstrap()');
 
     // Retest the contents after the client bootstraps.
-    expect(element(by.css('h3')).getText()).toEqual('i\'m lazy');
+    expect(element(by.css('h3')).getText()).toEqual('im lazy');
 
     // Make sure the server styles got replaced by client side ones.
     expect(element(by.css('style[ng-transition="hlw"]')).isPresent()).toBe(false);
