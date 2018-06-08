@@ -58,7 +58,7 @@ local_repository(
 
 load("@build_bazel_rules_nodejs//:defs.bzl", "check_bazel_version", "node_repositories", "yarn_install")
 
-check_bazel_version("0.13.1")
+check_bazel_version("0.13.0")
 node_repositories(package_json = ["//:package.json"])
 
 
