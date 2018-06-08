@@ -1,5 +1,4 @@
 workspace(name = "nguniversal")
-
 http_archive(
     name = "build_bazel_rules_nodejs",
     url = "https://github.com/bazelbuild/rules_nodejs/archive/0.9.1.zip",
