@@ -22,7 +22,6 @@ ts_library(
         "spec/**/*.spec.ts",
     ]),
     deps = [
-        "//modules/common/engine",
         "//modules/module-map-ngfactory-loader",
         ":ls-routes",
     ],
