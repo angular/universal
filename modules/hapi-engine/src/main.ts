@@ -6,7 +6,7 @@
  * found in the LICENSE file at https://angular.io/license
  */
 import * as fs from 'fs';
-import { Request, Response } from 'hapi';
+import { Request, ResponseToolkit } from 'hapi';
 
 import { NgModuleFactory, Type, CompilerFactory, Compiler, StaticProvider } from '@angular/core';
 import { ResourceLoader } from '@angular/compiler';
@@ -32,7 +32,7 @@ export interface NgSetupOptions {
  */
 export interface RenderOptions extends NgSetupOptions {
   req: Request;
-  res?: Response;
+  res?: ResponseToolkit;
   url?: string;
   document?: string;
 }
@@ -96,8 +96,10 @@ export function ngHapiEngine(options: RenderOptions) {
         });
       })
       .then((html: string) => {
+        console.log('html', html);
         resolve(html);
       }, (err) => {
+        console.error('err', err);
         reject(err);
       });
   });
