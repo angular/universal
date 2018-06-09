@@ -188,8 +188,8 @@
   resolved "https://registry.yarnpkg.com/@types/minimatch/-/minimatch-3.0.3.tgz#3dca0e3f33b200fc7d1139c0cd96c1268cadfd9d"
 
 "@types/node@*":
-  version "10.3.1"
-  resolved "https://registry.yarnpkg.com/@types/node/-/node-10.3.1.tgz#51092fbacaed768a122a293814474fbf6e5e8b6d"
+  version "10.3.2"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-10.3.2.tgz#3840ec6c12556fdda6e0e6d036df853101d732a4"
 
 "@types/node@6.0.84":
   version "6.0.84"
@@ -200,8 +200,8 @@
   resolved "https://registry.yarnpkg.com/@types/node/-/node-6.0.112.tgz#0f37473b1d1ecd30c8bf57215ef4fb558f99cc86"
 
 "@types/node@^9.4.6":
-  version "9.6.20"
-  resolved "https://registry.yarnpkg.com/@types/node/-/node-9.6.20.tgz#b59a1bd357ae2df7d44d5ac98e9b64eb96ea1fef"
+  version "9.6.21"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-9.6.21.tgz#4563c26a53531c5aca943065fcdf2dd562f63cd4"
 
 "@types/podium@*":
   version "1.0.0"
