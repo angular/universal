@@ -13,6 +13,7 @@ ng_module(
     module_name = "@nguniversal/common",
     deps = [
         "//modules/common/tokens",
+        "//modules/common/engine",
     ],
 )
 
@@ -24,6 +25,7 @@ ng_package(
     deps = [
         ":common",
         "//modules/common/tokens",
+        "//modules/common/engine",
     ],
 )
 
