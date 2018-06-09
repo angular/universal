@@ -6,7 +6,6 @@
  * found in the LICENSE file at https://angular.io/license
  */
 
-import 'zone.js/dist/zone-node';
 import { NgModuleFactoryLoader,
   NgModuleFactory, Injector, NgZone } from '@angular/core';
 import { platformServer } from '@angular/platform-server';

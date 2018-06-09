@@ -10,7 +10,6 @@ ng_module(
         "*.ts",
     ]),
     deps = [
-      "//modules/common/engine",
       "//modules/module-map-ngfactory-loader",
     ],
     module_name = "@nguniversal/common/ls-routes",
