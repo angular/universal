@@ -90,18 +90,8 @@ export function ngHapiEngine(options: RenderOptions) {
       ]);
 
     getFactory(moduleOrFactory, compiler)
-      .then(factory => {
-        return renderModuleFactory(factory, {
-          extraProviders
-        });
-      })
-      .then((html: string) => {
-        console.log('html', html);
-        resolve(html);
-      }, (err) => {
-        console.error('err', err);
-        reject(err);
-      });
+      .then(factory => renderModuleFactory(factory, {extraProviders}))
+      .then(resolve, reject);
   });
 }
 
@@ -130,9 +120,7 @@ function getFactory(
         .then((factory) => {
           factoryCacheMap.set(moduleOrFactory, factory);
           resolve(factory);
-        }, (err => {
-          reject(err);
-        }));
+        }, reject);
     }
   });
 }
