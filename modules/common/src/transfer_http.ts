@@ -16,8 +16,12 @@ import {
   HttpParams
 } from '@angular/common/http';
 import {ApplicationRef, Injectable, NgModule} from '@angular/core';
-import {BrowserTransferStateModule, TransferState,
-   makeStateKey, StateKey} from '@angular/platform-browser';
+import {
+  BrowserTransferStateModule,
+  TransferState,
+  makeStateKey,
+  StateKey
+} from '@angular/platform-browser';
 import {Observable, of as observableOf} from 'rxjs';
 import {tap, take, filter} from 'rxjs/operators';
 
