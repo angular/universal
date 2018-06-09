@@ -139,6 +139,8 @@ jobs:
           <<: *post_checkout
       - attach_workspace:
           at: dist
+      - restore_cache:
+          key: *cache_key
       - run: xvfb-run --auto-servernum ./integration/run_tests.sh
 
 workflows:
