@@ -1,4 +1,5 @@
 package(default_visibility = ["//visibility:public"])
+
 load("//tools:defaults.bzl", "ng_module")
 
 ng_module(
