@@ -9,7 +9,7 @@ This is a Hapi Engine for running Angular Apps on the server for server side ren
 To use it, set the engine and then route requests to it
 
 ```ts
-import { ResponseToolkit, Request, Server } from 'hapi';
+import { Request, Server } from 'hapi';
 import { ngHapiEngine } from '@nguniversal/hapi-engine';
 
 const server = new Server();
@@ -21,7 +21,7 @@ server.connection({
 server.route({
   method: 'GET',
   path: '/{path*}',
-  handler: (req: Request, h: ResponseToolkit) => ngHapiEngine({req, bootstrap: ServerAppModule})
+  handler: (req: Request) => ngHapiEngine({req, bootstrap: ServerAppModule})
 });
 ```
 
@@ -34,7 +34,7 @@ is called. To do so, simply pass in a `url` and/or `document` string to the rend
 server.route({
   method: 'GET',
   path: '/{path*}',
-  handler: (req: Request, h: ResponseToolkit) => {
+  handler: (req: Request) => {
     const url = 'http://someurl.com';
     const document = '<html><head><title>New doc</title></head></html>';
     return ngHapiEngine({
@@ -69,7 +69,7 @@ The Bootstrap module as well as more providers can be passed on request
 server.route({
   method: 'GET',
   path: '/{path*}',
-  handler: (req: Request, h: ResponseToolkit) => 
+  handler: (req: Request) => 
     ngHapiEngine({
       bootstrap: OtherServerAppModule,
       providers: [
