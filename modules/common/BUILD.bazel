@@ -12,8 +12,8 @@ ng_module(
     ]),
     module_name = "@nguniversal/common",
     deps = [
-        "//modules/common/tokens",
         "//modules/common/engine",
+        "//modules/common/tokens",
     ],
 )
 
@@ -24,8 +24,8 @@ ng_package(
     readme_md = ":README.md",
     deps = [
         ":common",
-        "//modules/common/tokens",
         "//modules/common/engine",
+        "//modules/common/tokens",
     ],
 )
 
