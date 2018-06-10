@@ -20,17 +20,17 @@ describe('Hello world E2E Tests', function() {
 
     // Test the contents from the server.
     const serverDiv = browser.driver.findElement(by.css('div'));
-    expect(serverDiv.getText()).toEqual('Hello world!');
+    expect(serverDiv.getText()).toMatch('Hello world!');
 
     // Bootstrap the client side app.
     browser.executeScript('doBootstrap()');
 
     // Retest the contents after the client bootstraps.
-    expect(element(by.css('div')).getText()).toEqual('Hello world!');
+    expect(element(by.css('div')).getText()).toMatch('Hello world!');
 
     // Make sure the server styles got replaced by client side ones.
-    expect(element(by.css('style[ng-transition="hlw"]')).isPresent()).toBe(false);
-    expect(element(by.css('style')).getText()).toBe('');
+    expect(element(by.css('style[ng-transition="hlw"]')).isPresent()).toBeFalsy();
+    expect(element(by.css('style')).getText()).toMatch('');
 
     // Make sure there were no client side errors.
     verifyNoBrowserErrors();
@@ -45,17 +45,17 @@ describe('Hello world E2E Tests', function() {
 
     // Test the contents from the server.
     const serverDiv = browser.driver.findElement(by.css('h3'));
-    expect(serverDiv.getText()).toEqual('im lazy');
+    expect(serverDiv.getText()).toMatch('im lazy');
 
     // Bootstrap the client side app.
     browser.executeScript('doBootstrap()');
 
     // Retest the contents after the client bootstraps.
-    expect(element(by.css('h3')).getText()).toEqual('im lazy');
+    expect(element(by.css('h3')).getText()).toMatch('im lazy');
 
     // Make sure the server styles got replaced by client side ones.
-    expect(element(by.css('style[ng-transition="hlw"]')).isPresent()).toBe(false);
-    expect(element(by.css('style')).getText()).toBe('');
+    expect(element(by.css('style[ng-transition="hlw"]')).isPresent()).toBeFalsy();
+    expect(element(by.css('style')).getText()).toMatch('');
 
     // Make sure there were no client side errors.
     verifyNoBrowserErrors();

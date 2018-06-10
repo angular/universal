@@ -21,22 +21,22 @@ describe('Hello world E2E Tests', function() {
 
     // Test the contents from the server.
     const serverDiv = browser.driver.findElement(by.css('div#name'));
-    expect(serverDiv.getText()).toEqual('Hello world!');
+    expect(serverDiv.getText()).toMatch('Hello world!');
 
     // Test the contents from the server.
     const counterDiv = browser.driver.findElement(by.css('div#counter'));
-    expect(counterDiv.getText()).toEqual('Counter: 1');
+    expect(counterDiv.getText()).toMatch('Counter: 1');
 
     // Bootstrap the client side app.
     browser.executeScript('doBootstrap()');
 
     // Retest the contents after the client bootstraps.
-    expect(element(by.css('div#name')).getText()).toEqual('Hello world!');
-    expect(element(by.css('div#counter')).getText()).toEqual('Counter: 1');
+    expect(element(by.css('div#name')).getText()).toMatch('Hello world!');
+    expect(element(by.css('div#counter')).getText()).toMatch('Counter: 1');
 
     // Make sure the server styles got replaced by client side ones.
-    expect(element(by.css('style[ng-transition="hlw"]')).isPresent()).toBe(false);
-    expect(element(by.css('style')).getText()).toBe('');
+    expect(element(by.css('style[ng-transition="hlw"]')).isPresent()).toBeFalsy();
+    expect(element(by.css('style')).getText()).toMatch('');
 
     // Make sure there were no client side errors.
     verifyNoBrowserErrors();
