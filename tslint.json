@@ -100,7 +100,7 @@
   "linterOptions": {
     "exclude": [
       // Exclude schematic template files that can't be linted.
-      "src/lib/schematics/**/files/**/*"
+      "**/schematics/**/files/**/*"
     ]
   }
 }
