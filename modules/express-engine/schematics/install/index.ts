@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright Google Inc. All Rights Reserved.
+ * Copyright Google LLC All Rights Reserved.
  *
  * Use of this source code is governed by an MIT-style license that can be
  * found in the LICENSE file at https://angular.io/license
@@ -29,8 +29,11 @@ import {
 } from '@angular-devkit/schematics';
 import {NodePackageInstallTask} from '@angular-devkit/schematics/tasks';
 import * as ts from 'typescript';
-import {findNode, getDecoratorMetadata} from '@schematics/angular/utility/ast-utils'
-import {findBootstrapModuleCall, findBootstrapModulePath} from '@schematics/angular/utility/ng-ast-utils';
+import {findNode, getDecoratorMetadata} from '@schematics/angular/utility/ast-utils';
+import {
+  findBootstrapModuleCall,
+  findBootstrapModulePath
+} from '@schematics/angular/utility/ng-ast-utils';
 import {InsertChange} from '@schematics/angular/utility/change';
 import {getWorkspace} from '@schematics/angular/utility/config';
 import {Schema as UniversalOptions} from './schema';
@@ -193,7 +196,8 @@ function addDependenciesAndScripts(options: UniversalOptions): Rule {
 
     pkg.scripts['serve:ssr'] = 'node dist/server';
     pkg.scripts['build:ssr'] = 'npm run build:client-and-server-bundles && npm run webpack:server';
-    pkg.scripts['build:client-and-server-bundles'] = `ng build --prod && ng run ${clientProject}:server:production`;
+    pkg.scripts['build:client-and-server-bundles'] =
+      `ng build --prod && ng run ${clientProject}:server:production`;
     pkg.scripts['webpack:server'] = 'webpack --config webpack.server.config.js --progress --colors';
 
     host.overwrite(pkgPath, JSON.stringify(pkg, null, 2));
