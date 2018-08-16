@@ -12,6 +12,7 @@ ng_module(
     module_name = "@nguniversal/hapi-engine",
     deps = [
         "//modules/hapi-engine/tokens",
+        "@angular//packages/platform-server",
     ],
 )
 
@@ -36,6 +37,9 @@ ts_library(
     ]),
     deps = [
         ":hapi-engine",
+        "@angular//packages/core",
+        "@angular//packages/platform-browser",
+        "@angular//packages/platform-server",
     ],
 )
 

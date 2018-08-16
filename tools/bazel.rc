@@ -46,3 +46,6 @@ test --test_output=errors
 # Helps to demonstrate that bazel uses all the cores on the machine.
 build --experimental_ui
 test --experimental_ui
+
+# Use the Angular 6 compiler
+build --define=compile=legacy

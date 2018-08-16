@@ -37,6 +37,9 @@ ts_library(
     ]),
     deps = [
         ":socket-engine",
+        "@angular//packages/core",
+        "@angular//packages/platform-browser",
+        "@angular//packages/platform-server",
     ],
 )
 

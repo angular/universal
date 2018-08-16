@@ -12,6 +12,7 @@ ng_module(
     module_name = "@nguniversal/express-engine",
     deps = [
         "//modules/express-engine/tokens",
+        "@angular//packages/platform-server",
     ],
 )
 
@@ -37,6 +38,10 @@ ts_library(
     deps = [
         ":express-engine",
         "//modules/express-engine/tokens",
+        "@angular//packages/compiler",
+        "@angular//packages/core",
+        "@angular//packages/platform-browser",
+        "@angular//packages/platform-server",
     ],
 )
 

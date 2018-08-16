@@ -9,4 +9,8 @@ ng_module(
         "*.ts",
     ]),
     module_name = "@nguniversal/common/engine",
+    deps = [
+      "@angular//packages/core",
+      "@angular//packages/platform-server",
+    ],
 )

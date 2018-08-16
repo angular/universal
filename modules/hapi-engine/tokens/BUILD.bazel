@@ -8,4 +8,5 @@ ng_module(
         "*.ts",
     ]),
     module_name = "@nguniversal/hapi-engine/tokens",
+    deps = ["@angular//packages/core"],
 )

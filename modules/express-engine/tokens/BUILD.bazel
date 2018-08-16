@@ -10,4 +10,5 @@ ng_module(
         "*.ts",
     ]),
     module_name = "@nguniversal/express-engine/tokens",
+    deps = ["@angular//packages/core"],
 )

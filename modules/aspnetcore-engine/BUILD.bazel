@@ -12,6 +12,9 @@ ng_module(
     module_name = "@nguniversal/aspnetcore-engine",
     deps = [
         "//modules/aspnetcore-engine/tokens",
+        "@angular//packages/common",
+        "@angular//packages/platform-browser",
+        "@angular//packages/platform-server",
         "@rxjs",
     ],
 )

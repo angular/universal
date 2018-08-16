@@ -11,19 +11,32 @@ alias(
     actual = "@yarn//:yarn",
 )
 
-node_modules_filegroup(
+filegroup(
     name = "node_modules",
-    packages = [
+    srcs = glob(["/".join(["node_modules", pkg, "**", ext]) for pkg in [
+        "bytebuffer",
+        "protobufjs",
         "express",
         "hapi",
         "jasmine",
-        "rxjs",
+        "reflect-metadata",
         "tsickle",
         "tslib",
+        "tslint",
         "tsutils",
         "typescript",
         "zone.js",
-        "@angular",
         "@types",
-    ],
+        "@schematics",
+        "@angular-devkit",
+    ] for ext in [
+        "*.js",
+        "*.json",
+        "*.d.ts",
+    ]]
+    ) + ["@build_bazel_rules_typescript//:node_modules"],
+    # "@build_bazel_rules_typescript//:node_modules" is incluced
+    # in `//:node_modules` so that npm dependencies that are hoisted to
+    # node_modules/@bazel/typescript/node_modules because of conflicting
+    # versions can be resolved correctly
 )

@@ -9,4 +9,5 @@ ng_module(
         "*.ts",
     ]),
     module_name = "@nguniversal/common/tokens",
+    deps = ["@angular//packages/core"],
 )

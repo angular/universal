@@ -25,17 +25,40 @@ http_archive(
     sha256 = "7d490aadff9b5262e5251fa69427ab2ffd1548422467cb9f9e1d110e2c36f0fa",
 )
 
+# bazel_gazelle is a transitive dep of rules_typescript and rules_webtesting
 http_archive(
-    name = "build_bazel_rules_typescript",
-    url = "https://github.com/bazelbuild/rules_typescript/archive/0.16.0.zip",
-    strip_prefix = "rules_typescript-0.16.0",
-    sha256 = "e65c5639a42e2f6d3f9d2bda62487d6b42734830dda45be1620c3e2b1115070c",
+    name = "bazel_gazelle",
+    urls = ["https://github.com/bazelbuild/bazel-gazelle/releases/download/0.13.0/bazel-gazelle-0.13.0.tar.gz"],
+    sha256 = "bc653d3e058964a5a26dcad02b6c72d7d63e6bb88d94704990b908a1445b8758",
+)
+
+# Add TypeScript rules. Use local_repository to add the rules from node_modules
+# to get all of the transitive deps for rules_typescript (such as protobufjs).
+local_repository(
+  name = "build_bazel_rules_typescript",
+  path = "node_modules/@bazel/typescript",
 )
 
 http_archive(
     name = "io_bazel_rules_go",
     url = "https://github.com/bazelbuild/rules_go/releases/download/0.10.3/rules_go-0.10.3.tar.gz",
     sha256 = "feba3278c13cde8d67e341a837f69a029f698d7a27ddbb2a202be7a10b22142a",
+)
+
+# rules_typescript depends on skydoc
+http_archive(
+  name = "io_bazel_skydoc",
+  urls = ["https://github.com/bazelbuild/skydoc/archive/0ef7695c9d70084946a3e99b89ad5a99ede79580.zip"],
+  strip_prefix = "skydoc-0ef7695c9d70084946a3e99b89ad5a99ede79580",
+  sha256 = "491f9e142b870b18a0ec8eb3d66636eeceabe5f0c73025706c86f91a1a2acb4d",
+)
+
+# The @angular repo contains rule for building Angular applications
+http_archive(
+    name = "angular",
+    url = "https://github.com/angular/angular/archive/6.1.2.zip",
+    strip_prefix = "angular-6.1.2",
+    sha256 = "e7553542cebd1113069a92d97a464a2d2aa412242926686653b8cf0101935617",
 )
 
 # This commit matches the version of buildifier in angular/ngcontainer
@@ -59,22 +82,13 @@ http_archive(
 )
 
 local_repository(
-    name = "angular",
-    path = "node_modules/@angular/bazel",
-)
-
-local_repository(
     name = "rxjs",
     path = "node_modules/rxjs/src",
 )
 
-load("@build_bazel_rules_nodejs//:defs.bzl", "check_bazel_version", "node_repositories", "yarn_install")
+load("@build_bazel_rules_nodejs//:defs.bzl", "node_repositories", "yarn_install")
 
-check_bazel_version("0.15.0")
-node_repositories(
-  package_json = ["//:package.json"],
-  preserve_symlinks = True,
-)
+node_repositories(package_json = ["//:package.json"])
 
 load("@io_bazel_rules_go//go:def.bzl", "go_rules_dependencies", "go_register_toolchains")
 go_rules_dependencies()
@@ -89,9 +103,12 @@ browser_repositories(
     firefox = True,
 )
 
-load("@build_bazel_rules_typescript//:defs.bzl", "ts_setup_workspace")
+load("@build_bazel_rules_typescript//:defs.bzl", "ts_setup_workspace", "check_rules_typescript_version")
 
 ts_setup_workspace()
+
+# 0.16.0: tsc_wrapped uses user's typescript version & check_rules_typescript_version
+check_rules_typescript_version("0.16.0")
 
 load("@angular//:index.bzl", "ng_setup_workspace")
 
