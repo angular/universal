@@ -117,7 +117,10 @@ jobs:
       - checkout:
           <<: *post_checkout
 
-      - run: bazel run @yarn//:yarn
+      # TODO: Don't do this
+      - run: yarn install --frozen-lockfile
+      # Install the dependencies from NPM
+      #- run: bazel run @yarn//:yarn install
       - run: scripts/build-modules-dist.sh
 
       # Save the npm packages from //modules/... for other workflow jobs to read
