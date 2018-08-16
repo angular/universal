@@ -13,27 +13,33 @@ alias(
 
 filegroup(
     name = "node_modules",
-    srcs = glob(["/".join(["node_modules", pkg, "**", ext]) for pkg in [
-        "bytebuffer",
-        "protobufjs",
-        "express",
-        "hapi",
-        "jasmine",
-        "reflect-metadata",
-        "tsickle",
-        "tslib",
-        "tslint",
-        "tsutils",
-        "typescript",
-        "zone.js",
-        "@types",
-        "@schematics",
-        "@angular-devkit",
-    ] for ext in [
-        "*.js",
-        "*.json",
-        "*.d.ts",
-    ]]
+    srcs = glob(
+        ["/".join([
+            "node_modules",
+            pkg,
+            "**",
+            ext,
+        ]) for pkg in [
+            "bytebuffer",
+            "protobufjs",
+            "express",
+            "hapi",
+            "jasmine",
+            "reflect-metadata",
+            "tsickle",
+            "tslib",
+            "tslint",
+            "tsutils",
+            "typescript",
+            "zone.js",
+            "@types",
+            "@schematics",
+            "@angular-devkit",
+        ] for ext in [
+            "*.js",
+            "*.json",
+            "*.d.ts",
+        ]],
     ) + ["@build_bazel_rules_typescript//:node_modules"],
     # "@build_bazel_rules_typescript//:node_modules" is incluced
     # in `//:node_modules` so that npm dependencies that are hoisted to

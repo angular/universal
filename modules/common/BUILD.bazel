@@ -11,12 +11,12 @@ ng_module(
     ]),
     module_name = "@nguniversal/common",
     deps = [
+        "//modules/common/engine",
+        "//modules/common/tokens",
         "@angular//packages/common",
         "@angular//packages/common/http",
         "@angular//packages/core",
         "@angular//packages/platform-browser",
-        "//modules/common/engine",
-        "//modules/common/tokens",
     ],
 )
 
@@ -40,8 +40,8 @@ ts_library(
     ]),
     deps = [
         ":common",
-        "@rxjs",
         "@angular//packages/common/http",
+        "@rxjs",
     ],
 )
 

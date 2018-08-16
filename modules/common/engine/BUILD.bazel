@@ -10,7 +10,7 @@ ng_module(
     ]),
     module_name = "@nguniversal/common/engine",
     deps = [
-      "@angular//packages/core",
-      "@angular//packages/platform-server",
+        "@angular//packages/core",
+        "@angular//packages/platform-server",
     ],
 )
