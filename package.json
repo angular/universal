@@ -125,5 +125,6 @@
     "typescript": "~2.7.2",
     "uglify-js": "^2.8.14",
     "zone.js": "^0.8.26"
-  }
+  },
+  "dependencies": {}
 }

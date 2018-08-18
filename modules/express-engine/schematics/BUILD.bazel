@@ -5,9 +5,8 @@ load("@build_bazel_rules_nodejs//:defs.bzl", "jasmine_node_test")
 
 filegroup(
     name = "schematics_assets",
-    srcs = glob(["**/files/**/*"]) + [
+    srcs = glob(["**/files/**/*", "**/*.json"]) + [
         "README.md",
-        "collection.json",
     ],
 )
 

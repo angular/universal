@@ -7,8 +7,8 @@ load("@build_bazel_rules_nodejs//:defs.bzl", _npm_package = "npm_package")
 DEFAULT_TS_CONFIG = "//:tsconfig.json"
 DEFAULT_NODE_MODULES = "//:node_modules"
 
-NG_VERSION = "^6.0.0-rc.0"
-RXJS_VERSION = "^6.0.0-beta.0"
+NG_VERSION = "^6.0.0"
+RXJS_VERSION = "^6.0.0"
 HAPI_VERSION = "^17.0.0"
 EXPRESS_VERSION = "^4.15.2"
 

@@ -61,12 +61,6 @@ function getClientArchitect(
 function addDependenciesAndScripts(options: UniversalOptions): Rule {
   return (host: Tree) => {
 
-    const workspace = getWorkspace(host);
-    if (!workspace.projects[options.clientProject]) {
-      throw new SchematicsException(`Client app ${options.clientProject} not found.`);
-    }
-
-    const clientProject = workspace.projects[options.clientProject];
     const pkgPath = '/package.json';
     const buffer = host.read(pkgPath);
     if (buffer === null) {
@@ -75,14 +69,14 @@ function addDependenciesAndScripts(options: UniversalOptions): Rule {
 
     const pkg = JSON.parse(buffer.toString());
 
-    pkg.dependencies['@nguniversal/module-map-ngfactory-loader'] = 'TEMP';
-    pkg.dependencies['@nguniversal/express-engine'] = 'TEMP';
-    pkg.dependencies['express'] = 'TEMP';
+    pkg.dependencies['@nguniversal/express-engine'] = '0.0.0-PLACEHOLDER';
+    pkg.dependencies['@nguniversal/module-map-ngfactory-loader'] = '6.0.0' || '0.0.0-PLACEHOLDER';
+    pkg.dependencies['express'] = 'EXPRESS_VERSION';
 
     pkg.scripts['serve:ssr'] = 'node dist/server';
     pkg.scripts['build:ssr'] = 'npm run build:client-and-server-bundles && npm run webpack:server';
     pkg.scripts['build:client-and-server-bundles'] =
-      `ng build --prod && ng run ${clientProject}:server:production`;
+      `ng build --prod && ng run ${options.clientProject}:server:production`;
     pkg.scripts['webpack:server'] = 'webpack --config webpack.server.config.js --progress --colors';
 
     host.overwrite(pkgPath, JSON.stringify(pkg, null, 2));

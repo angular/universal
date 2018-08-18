@@ -34,7 +34,7 @@
       "type": "number",
       "default": 4000,
       "description": "The port for the Express server."
-    }
+    },
     "tsconfigFileName": {
       "type": "string",
       "default": "tsconfig.server",
