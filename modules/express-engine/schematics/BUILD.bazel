@@ -20,6 +20,7 @@ ts_library(
         exclude = [
             "**/*.spec.ts",
             "**/files/**/*",
+            "test-setup/**/*",
         ],
     ),
     module_name = "@nguniversal/express-engine/schematics",
@@ -43,11 +44,8 @@ jasmine_node_test(
 
 ts_library(
     name = "schematics_test_sources",
-    testonly = True,
-    srcs = glob(
-        ["**/*.spec.ts"],
-        exclude = ["**/files/**/*"],
-    ),
-    tsconfig = ":tsconfig.json",
+    srcs = glob(["**/*.spec.ts", "test-setup/**/*.ts"], exclude=["**/files/**/*"]),
     deps = [":schematics"],
+    tsconfig = ":tsconfig.json",
+    testonly = True,
 )
