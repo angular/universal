@@ -74,10 +74,11 @@ function addDependenciesAndScripts(options: UniversalOptions): Rule {
     pkg.dependencies['express'] = 'EXPRESS_VERSION';
 
     pkg.scripts['serve:ssr'] = 'node dist/server';
-    pkg.scripts['build:ssr'] = 'npm run build:client-and-server-bundles && npm run webpack:server';
+    pkg.scripts['build:ssr'] = 'npm run build:client-and-server-bundles && npm run compile:server';
     pkg.scripts['build:client-and-server-bundles'] =
       `ng build --prod && ng run ${options.clientProject}:server:production`;
-    pkg.scripts['webpack:server'] = 'webpack --config webpack.server.config.js --progress --colors';
+    pkg.scripts['compile:server'] =
+      `tsc -p ${options.serverFileName.replace(/\.ts$/, '')}.tsconfig.json`;
 
     host.overwrite(pkgPath, JSON.stringify(pkg, null, 2));
 
