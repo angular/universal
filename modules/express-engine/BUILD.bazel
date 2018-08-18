@@ -26,6 +26,7 @@ ng_package(
         ":express-engine",
         "//modules/express-engine/tokens",
     ],
+    packages = ["//modules/express-engine/schematics:npm_package"],
 )
 
 ts_library(
