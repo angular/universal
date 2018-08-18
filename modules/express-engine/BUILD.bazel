@@ -21,12 +21,12 @@ ng_package(
         ":package.json",
     ],
     entry_point = "modules/express-engine/index.js",
+    packages = ["//modules/express-engine/schematics:npm_package"],
     readme_md = ":README.md",
     deps = [
         ":express-engine",
         "//modules/express-engine/tokens",
     ],
-    packages = ["//modules/express-engine/schematics:npm_package"],
 )
 
 ts_library(

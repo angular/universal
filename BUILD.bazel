@@ -14,13 +14,11 @@ alias(
 node_modules_filegroup(
     name = "node_modules",
     packages = [
-        "@angular-devkit",
-        "@schematics",
         "bytebuffer",
-        "protobufjs",
         "express",
         "hapi",
         "jasmine",
+        "protobufjs",
         "rxjs",
         "tsickle",
         "tslib",
@@ -28,6 +26,8 @@ node_modules_filegroup(
         "typescript",
         "zone.js",
         "@angular",
+        "@angular-devkit",
+        "@schematics",
         "@types",
     ],
 )
