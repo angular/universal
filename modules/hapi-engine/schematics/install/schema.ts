@@ -24,11 +24,11 @@ export interface Schema {
    */
   test?: string;
   /**
-   * The name of the Express server file.
+   * The name of the Hapi server file.
    */
   serverFileName?: string;
   /**
-   * The port for the Express server.
+   * The port for the Hapi server.
    */
   serverPort?: number;
   /**
@@ -56,7 +56,7 @@ export interface Schema {
    */
   skipInstall?: boolean;
   /**
-   * Skip adding Express server file.
+   * Skip adding Hapi server file.
    */
   skipServer?: boolean;
 }
