@@ -70,7 +70,7 @@ function addDependenciesAndScripts(options: UniversalOptions): Rule {
     const pkg = JSON.parse(buffer.toString());
 
     pkg.dependencies['@nguniversal/express-engine'] = '0.0.0-PLACEHOLDER';
-    pkg.dependencies['@nguniversal/module-map-ngfactory-loader'] = '6.0.0' || '0.0.0-PLACEHOLDER';
+    pkg.dependencies['@nguniversal/module-map-ngfactory-loader'] = '0.0.0-PLACEHOLDER';
     pkg.dependencies['express'] = 'EXPRESS_VERSION';
 
     pkg.scripts['serve:ssr'] = 'node dist/server';
@@ -86,24 +86,6 @@ function addDependenciesAndScripts(options: UniversalOptions): Rule {
   };
 }
 
-function getTsConfigOutDir(host: Tree, architect: experimental.workspace.WorkspaceTool): string {
-  const tsConfigPath = architect.build.options.tsConfig;
-  const tsConfigBuffer = host.read(tsConfigPath);
-  if (!tsConfigBuffer) {
-    throw new SchematicsException(`Could not read ${tsConfigPath}`);
-  }
-  const tsConfigContent = tsConfigBuffer.toString();
-  const tsConfig = parseJson(tsConfigContent);
-  if (tsConfig === null || typeof tsConfig !== 'object' || Array.isArray(tsConfig) ||
-    tsConfig.compilerOptions === null || typeof tsConfig.compilerOptions !== 'object' ||
-    Array.isArray(tsConfig.compilerOptions)) {
-    throw new SchematicsException(`Invalid tsconfig - ${tsConfigPath}`);
-  }
-  const outDir = tsConfig.compilerOptions.outDir;
-
-  return outDir as string;
-}
-
 export default function (options: UniversalOptions): Rule {
   return (host: Tree, context: SchematicContext) => {
     const clientProject = getClientProject(host, options);
@@ -111,7 +93,6 @@ export default function (options: UniversalOptions): Rule {
       throw new SchematicsException(`Universal requires a project type of "application".`);
     }
     const clientArchitect = getClientArchitect(host, options);
-    const outDir = getTsConfigOutDir(host, clientArchitect);
     const tsConfigExtends = basename(clientArchitect.build.options.tsConfig);
     const rootInSrc = clientProject.root === '';
     const tsConfigDirectory = join(normalize(clientProject.root), rootInSrc ? 'src' : '');
@@ -126,7 +107,6 @@ export default function (options: UniversalOptions): Rule {
         ...strings,
         ...options as object,
         stripTsExtension: (s: string) => { return s.replace(/\.ts$/, ''); },
-        outDir,
         tsConfigExtends,
         rootInSrc,
       }),
