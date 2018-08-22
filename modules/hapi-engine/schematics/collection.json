@@ -5,7 +5,7 @@
       "description": "Adds Angular Universal Hapi Engine to the application without affecting any templates",
       "factory": "./install",
       "schema": "./install/schema.json",
-      "aliases": ["express-engine-shell"]
+      "aliases": ["hapi-engine-shell"]
     },
   }
 }
