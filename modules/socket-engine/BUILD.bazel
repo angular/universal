@@ -27,6 +27,7 @@ ng_package(
         ":socket-engine",
         "//modules/common",
     ],
+    tags = ["release"],
 )
 
 ts_library(

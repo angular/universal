@@ -27,6 +27,7 @@ ng_package(
         ":express-engine",
         "//modules/express-engine/tokens",
     ],
+    tags = ["release"],
 )
 
 ts_library(

@@ -27,6 +27,7 @@ ng_package(
         ":aspnetcore-engine",
         "//modules/aspnetcore-engine/tokens",
     ],
+    tags = ["release"],
 )
 
 ts_library(

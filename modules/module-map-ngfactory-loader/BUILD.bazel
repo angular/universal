@@ -19,6 +19,7 @@ ng_package(
     entry_point = "modules/module-map-ngfactory-loader/index.js",
     readme_md = ":README.md",
     deps = [":module-map-ngfactory-loader"],
+    tags = ["release"],
 )
 
 ts_library(

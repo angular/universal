@@ -26,6 +26,7 @@ ng_package(
         ":hapi-engine",
         "//modules/hapi-engine/tokens",
     ],
+    tags = ["release"],
 )
 
 ts_library(

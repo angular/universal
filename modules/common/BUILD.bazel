@@ -26,6 +26,7 @@ ng_package(
         "//modules/common/engine",
         "//modules/common/tokens",
     ],
+    tags = ["release"],
 )
 
 ts_library(
