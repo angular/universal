@@ -87,6 +87,11 @@ function updateConfigFile(options: UniversalOptions): Rule {
         ]
       }
     };
+
+    if (!clientProject.architect.server) {
+      return;
+    }
+
     clientProject.architect.server.configurations = serverConfig;
 
     const workspacePath = getWorkspacePath(host);
@@ -118,7 +123,8 @@ export default function (options: UniversalOptions): Rule {
     ]);
 
     return chain([
-      externalSchematic('@schematics/angular', 'universal', options),
+      options.skipUniversal ?
+        noop() : externalSchematic('@schematics/angular', 'universal', options),
       updateConfigFile(options),
       mergeWith(rootSource),
       addDependenciesAndScripts(options),
