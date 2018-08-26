@@ -88,6 +88,9 @@ function updateConfigFile(options: UniversalOptions): Rule {
       }
     };
 
+    // We have to check if the project config has a server target, because
+    // if the Universal step in this schematic isn't run, it can't be guaranteed
+    // to exist
     if (!clientProject.architect.server) {
       return;
     }
