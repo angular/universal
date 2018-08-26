@@ -21,12 +21,12 @@ ng_package(
     srcs = [":package.json"],
     entry_point = "modules/common/index.js",
     readme_md = ":README.md",
+    tags = ["release"],
     deps = [
         ":common",
         "//modules/common/engine",
         "//modules/common/tokens",
     ],
-    tags = ["release"],
 )
 
 ts_library(

@@ -22,11 +22,11 @@ ng_package(
     ],
     entry_point = "modules/hapi-engine/index.js",
     readme_md = ":README.md",
+    tags = ["release"],
     deps = [
         ":hapi-engine",
         "//modules/hapi-engine/tokens",
     ],
-    tags = ["release"],
 )
 
 ts_library(

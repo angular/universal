@@ -23,11 +23,11 @@ ng_package(
     ],
     entry_point = "modules/socket-engine/index.js",
     readme_md = ":README.md",
+    tags = ["release"],
     deps = [
         ":socket-engine",
         "//modules/common",
     ],
-    tags = ["release"],
 )
 
 ts_library(
