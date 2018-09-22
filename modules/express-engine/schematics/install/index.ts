@@ -54,7 +54,8 @@ function addDependenciesAndScripts(options: UniversalOptions): Rule {
 
     if (options.webpack) {
       pkg.dependencies['ts-loader'] = '^5.1.1';
-      pkg.scripts['compile:server'] = 'webpack --config webpack.server.config.js --progress --colors';
+      pkg.scripts['compile:server'] =
+        'webpack --config webpack.server.config.js --progress --colors';
     } else {
       pkg.scripts['compile:server'] =
         `tsc -p ${options.serverFileName.replace(/\.ts$/, '')}.tsconfig.json`;
