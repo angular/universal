@@ -44,6 +44,22 @@ describe('Universal Schematic', () => {
     expect(contents).toMatch(/\"express\": \"/);
   });
 
+  it('should add dependency: ts-loader', () => {
+    const tree = schematicRunner.runSchematic('ng-add', defaultOptions, appTree);
+    const filePath = '/package.json';
+    const contents = tree.readContent(filePath);
+    expect(contents).toMatch(/\"ts-loader\": \"/);
+  });
+
+  it('should not add dependency: ts-loader when webpack is false', () => {
+    const noWebpack = Object.assign({}, defaultOptions);
+    noWebpack.webpack = false;
+    const tree = schematicRunner.runSchematic('ng-add', defaultOptions, appTree);
+    const filePath = '/package.json';
+    const contents = tree.readContent(filePath);
+    expect(contents).not.toMatch(/\"ts-loader\": \"/);
+  });
+
   it('should install npm dependencies', () => {
     schematicRunner.runSchematic('ng-add', defaultOptions, appTree);
     expect(schematicRunner.tasks.length).toBe(2);

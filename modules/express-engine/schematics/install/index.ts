@@ -52,12 +52,18 @@ function addDependenciesAndScripts(options: UniversalOptions): Rule {
     pkg.dependencies['@nguniversal/module-map-ngfactory-loader'] = '0.0.0-PLACEHOLDER';
     pkg.dependencies['express'] = 'EXPRESS_VERSION';
 
+    if (options.webpack) {
+      pkg.dependencies['ts-loader'] = '^5.1.1';
+      pkg.scripts['compile:server'] = 'webpack --config webpack.server.config.js --progress --colors';
+    } else {
+      pkg.scripts['compile:server'] =
+        `tsc -p ${options.serverFileName.replace(/\.ts$/, '')}.tsconfig.json`;
+    }
+
     pkg.scripts['serve:ssr'] = 'node dist/server';
     pkg.scripts['build:ssr'] = 'npm run build:client-and-server-bundles && npm run compile:server';
     pkg.scripts['build:client-and-server-bundles'] =
       `ng build --prod && ng run ${options.clientProject}:server:production`;
-    pkg.scripts['compile:server'] =
-      `tsc -p ${options.serverFileName.replace(/\.ts$/, '')}.tsconfig.json`;
 
     host.overwrite(pkgPath, JSON.stringify(pkg, null, 2));
 
@@ -109,7 +115,7 @@ export default function (options: UniversalOptions): Rule {
   return (host: Tree, context: SchematicContext) => {
     const clientProject = getClientProject(host, options);
     if (clientProject.projectType !== 'application') {
-      throw new SchematicsException(`Universal requires a project type of "application".`);
+      throw new SchematicsException(`Universal requires a project type of 'application'.`);
     }
 
     if (!options.skipInstall) {
@@ -118,6 +124,7 @@ export default function (options: UniversalOptions): Rule {
 
     const rootSource = apply(url('./files/root'), [
       options.skipServer ? filter(path => !path.startsWith('__serverFileName')) : noop(),
+      options.webpack ? noop() : filter(path => path.startsWith('webpack')),
       template({
         ...strings,
         ...options as object,
