@@ -57,7 +57,7 @@ describe('Universal Schematic', () => {
     const tree = schematicRunner.runSchematic('ng-add', defaultOptions, appTree);
     const filePath = '/package.json';
     const contents = tree.readContent(filePath);
-    expect(contents).not.toMatch(/\"ts-loader\": \"/);
+    expect(contents).not.toContain('ts-loader');
   });
 
   it('should install npm dependencies', () => {
