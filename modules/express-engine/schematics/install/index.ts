@@ -47,6 +47,7 @@ function addDependenciesAndScripts(options: UniversalOptions): Rule {
     }
 
     const pkg = JSON.parse(buffer.toString());
+    const serverFileName = options.serverFileName.replace('.ts', '');
 
     pkg.dependencies['@nguniversal/express-engine'] = '0.0.0-PLACEHOLDER';
     pkg.dependencies['@nguniversal/module-map-ngfactory-loader'] = '0.0.0-PLACEHOLDER';
@@ -58,10 +59,10 @@ function addDependenciesAndScripts(options: UniversalOptions): Rule {
         'webpack --config webpack.server.config.js --progress --colors';
     } else {
       pkg.scripts['compile:server'] =
-        `tsc -p ${options.serverFileName.replace(/\.ts$/, '')}.tsconfig.json`;
+        `tsc -p ${serverFileName}.tsconfig.json`;
     }
 
-    pkg.scripts['serve:ssr'] = 'node dist/server';
+    pkg.scripts['serve:ssr'] = `node dist/${serverFileName}`;
     pkg.scripts['build:ssr'] = 'npm run build:client-and-server-bundles && npm run compile:server';
     pkg.scripts['build:client-and-server-bundles'] =
       `ng build --prod && ng run ${options.clientProject}:server:production`;
