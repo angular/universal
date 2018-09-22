@@ -116,7 +116,7 @@ export default function (options: UniversalOptions): Rule {
   return (host: Tree, context: SchematicContext) => {
     const clientProject = getClientProject(host, options);
     if (clientProject.projectType !== 'application') {
-      throw new SchematicsException(`Universal requires a project type of 'application'.`);
+      throw new SchematicsException(`Universal requires a project type of "application".`);
     }
 
     if (!options.skipInstall) {
@@ -125,7 +125,8 @@ export default function (options: UniversalOptions): Rule {
 
     const rootSource = apply(url('./files/root'), [
       options.skipServer ? filter(path => !path.startsWith('__serverFileName')) : noop(),
-      options.webpack ? noop() : filter(path => path.startsWith('webpack')),
+      options.webpack ?
+        filter(path => !path.includes('tsconfig')) : filter(path => !path.startsWith('webpack')),
       template({
         ...strings,
         ...options as object,

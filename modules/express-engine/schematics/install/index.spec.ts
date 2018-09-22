@@ -54,7 +54,7 @@ describe('Universal Schematic', () => {
   it('should not add dependency: ts-loader when webpack is false', () => {
     const noWebpack = Object.assign({}, defaultOptions);
     noWebpack.webpack = false;
-    const tree = schematicRunner.runSchematic('ng-add', defaultOptions, appTree);
+    const tree = schematicRunner.runSchematic('ng-add', noWebpack, appTree);
     const filePath = '/package.json';
     const contents = tree.readContent(filePath);
     expect(contents).not.toContain('ts-loader');
