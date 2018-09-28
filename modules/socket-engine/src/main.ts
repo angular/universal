@@ -7,7 +7,7 @@
  */
 import { ɵCommonEngine as CommonEngine,
   ɵRenderOptions as RenderOptions } from '@nguniversal/common/engine';
-import { NgModuleFactory, Type } from '@angular/core';
+import { NgModuleFactory, Type, StaticProvider } from '@angular/core';
 import * as net from 'net';
 
 export interface SocketEngineServer {
