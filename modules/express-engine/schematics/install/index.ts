@@ -47,17 +47,25 @@ function addDependenciesAndScripts(options: UniversalOptions): Rule {
     }
 
     const pkg = JSON.parse(buffer.toString());
+    const serverFileName = options.serverFileName.replace('.ts', '');
 
     pkg.dependencies['@nguniversal/express-engine'] = '0.0.0-PLACEHOLDER';
     pkg.dependencies['@nguniversal/module-map-ngfactory-loader'] = '0.0.0-PLACEHOLDER';
     pkg.dependencies['express'] = 'EXPRESS_VERSION';
 
-    pkg.scripts['serve:ssr'] = 'node dist/server';
+    if (options.webpack) {
+      pkg.dependencies['ts-loader'] = '^5.1.1';
+      pkg.scripts['compile:server'] =
+        'webpack --config webpack.server.config.js --progress --colors';
+    } else {
+      pkg.scripts['compile:server'] =
+        `tsc -p ${serverFileName}.tsconfig.json`;
+    }
+
+    pkg.scripts['serve:ssr'] = `node dist/${serverFileName}`;
     pkg.scripts['build:ssr'] = 'npm run build:client-and-server-bundles && npm run compile:server';
     pkg.scripts['build:client-and-server-bundles'] =
       `ng build --prod && ng run ${options.clientProject}:server:production`;
-    pkg.scripts['compile:server'] =
-      `tsc -p ${options.serverFileName.replace(/\.ts$/, '')}.tsconfig.json`;
 
     host.overwrite(pkgPath, JSON.stringify(pkg, null, 2));
 
@@ -118,6 +126,8 @@ export default function (options: UniversalOptions): Rule {
 
     const rootSource = apply(url('./files/root'), [
       options.skipServer ? filter(path => !path.startsWith('__serverFileName')) : noop(),
+      options.webpack ?
+        filter(path => !path.includes('tsconfig')) : filter(path => !path.startsWith('webpack')),
       template({
         ...strings,
         ...options as object,
