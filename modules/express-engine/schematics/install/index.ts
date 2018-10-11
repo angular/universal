@@ -23,7 +23,10 @@ import {
 import {NodePackageInstallTask} from '@angular-devkit/schematics/tasks';
 import {getWorkspace, getWorkspacePath} from '@schematics/angular/utility/config';
 import {Schema as UniversalOptions} from './schema';
-import {addPackageJsonDependency, NodeDependencyType} from '@schematics/angular/utility/dependencies';
+import {
+  addPackageJsonDependency,
+  NodeDependencyType,
+} from '@schematics/angular/utility/dependencies';
 
 
 function getClientProject(
@@ -79,7 +82,8 @@ function addDependenciesAndScripts(options: UniversalOptions): Rule {
     const pkg = JSON.parse(buffer.toString());
 
     pkg.scripts['compile:server'] = options.webpack ?
-      'webpack --config webpack.server.config.js --progress --colors' : `tsc -p ${serverFileName}.tsconfig.json`;
+      'webpack --config webpack.server.config.js --progress --colors' :
+      `tsc -p ${serverFileName}.tsconfig.json`;
     pkg.scripts['serve:ssr'] = `node dist/${serverFileName}`;
     pkg.scripts['build:ssr'] = 'npm run build:client-and-server-bundles && npm run compile:server';
     pkg.scripts['build:client-and-server-bundles'] =
