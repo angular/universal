@@ -28,6 +28,9 @@ import {
   NodeDependencyType,
 } from '@schematics/angular/utility/dependencies';
 
+// TODO(CaerusKaru): make these configurable
+const BROWSER_DIST = 'dist/browser';
+const SERVER_DIST = 'dist/browser';
 
 function getClientProject(
   host: Tree, options: UniversalOptions,
@@ -127,9 +130,9 @@ function updateConfigFile(options: UniversalOptions): Rule {
 
     clientProject.architect.server.configurations = serverConfig;
     // TODO(CaerusKaru): make this configurable
-    clientProject.architect.server.options.outputPath = 'dist/server';
+    clientProject.architect.server.options.outputPath = SERVER_DIST;
     // TODO(CaerusKaru): make this configurable
-    clientProject.architect.build.options.outputPath = 'dist/browser';
+    clientProject.architect.build.options.outputPath = BROWSER_DIST;
 
     const workspacePath = getWorkspacePath(host);
 
@@ -150,10 +153,6 @@ export default function (options: UniversalOptions): Rule {
       context.addTask(new NodePackageInstallTask());
     }
 
-    console.log({clientProject});
-    const serverPath = clientProject.architect.server.options.outputPath;
-    const browserPath = clientProject.architect.build.options.outputPath;
-
     const rootSource = apply(url('./files/root'), [
       options.skipServer ? filter(path => !path.startsWith('__serverFileName')) : noop(),
       options.webpack ?
@@ -162,8 +161,8 @@ export default function (options: UniversalOptions): Rule {
         ...strings,
         ...options as object,
         stripTsExtension: (s: string) => s.replace(/\.ts$/, ''),
-        getBrowserDistDirectory: () => browserPath,
-        getServerDistDirectory: () => serverPath,
+        getBrowserDistDirectory: () => BROWSER_DIST,
+        getServerDistDirectory: () => SERVER_DIST,
       })
     ]);
 
