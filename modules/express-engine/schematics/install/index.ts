@@ -150,6 +150,9 @@ export default function (options: UniversalOptions): Rule {
       context.addTask(new NodePackageInstallTask());
     }
 
+    const serverPath = clientProject.architect.server.options.outputPath;
+    const browserPath = clientProject.architect.build.options.outputPath;
+
     const rootSource = apply(url('./files/root'), [
       options.skipServer ? filter(path => !path.startsWith('__serverFileName')) : noop(),
       options.webpack ?
@@ -158,8 +161,8 @@ export default function (options: UniversalOptions): Rule {
         ...strings,
         ...options as object,
         stripTsExtension: (s: string) => s.replace(/\.ts$/, ''),
-        getBrowserDistDirectory: () => clientProject.architect.build.options.outputPath,
-        getServerDistDirectory: () => clientProject.architect.server.options.outputPath,
+        getBrowserDistDirectory: () => browserPath,
+        getServerDistDirectory: () => serverPath,
       })
     ]);
 
