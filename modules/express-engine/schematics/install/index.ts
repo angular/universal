@@ -150,6 +150,7 @@ export default function (options: UniversalOptions): Rule {
       context.addTask(new NodePackageInstallTask());
     }
 
+    console.log({clientProject});
     const serverPath = clientProject.architect.server.options.outputPath;
     const browserPath = clientProject.architect.build.options.outputPath;
 
