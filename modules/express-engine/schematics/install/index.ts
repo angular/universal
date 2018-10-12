@@ -30,7 +30,7 @@ import {
 
 // TODO(CaerusKaru): make these configurable
 const BROWSER_DIST = 'dist/browser';
-const SERVER_DIST = 'dist/browser';
+const SERVER_DIST = 'dist/server';
 
 function getClientProject(
   host: Tree, options: UniversalOptions,
