@@ -126,6 +126,10 @@ function updateConfigFile(options: UniversalOptions): Rule {
     }
 
     clientProject.architect.server.configurations = serverConfig;
+    // TODO(CaerusKaru): make this configurable
+    clientProject.architect.server.options.outputPath = 'dist/server';
+    // TODO(CaerusKaru): make this configurable
+    clientProject.architect.build.options.outputPath = 'dist/browser';
 
     const workspacePath = getWorkspacePath(host);
 
@@ -153,7 +157,9 @@ export default function (options: UniversalOptions): Rule {
       template({
         ...strings,
         ...options as object,
-        stripTsExtension: (s: string) => { return s.replace(/\.ts$/, ''); }
+        stripTsExtension: (s: string) => s.replace(/\.ts$/, ''),
+        getBrowserDistDirectory: () => clientProject.architect.build.options.outputPath,
+        getServerDistDirectory: () => clientProject.architect.server.options.outputPath,
       })
     ]);
 
