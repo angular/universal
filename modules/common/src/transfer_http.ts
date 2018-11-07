@@ -70,10 +70,10 @@ export class TransferHttpCacheInterceptor implements HttpInterceptor {
   }
 
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-    // Stop using the cache if there is a mutating call.
+    // Skip the cache entirely for calls that seek to mutate data.
     if (req.method !== 'GET' && req.method !== 'HEAD') {
-      this.isCacheActive = false;
       this.invalidateCacheEntry(req.url);
+      return next.handle(req);
     }
 
     if (!this.isCacheActive) {
