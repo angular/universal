@@ -77,7 +77,9 @@ export class TransferHttpCacheInterceptor implements HttpInterceptor {
     }
 
     if (!this.isCacheActive) {
-      // Cache is no longer active. Pass the request through.
+      // nested get or head calls after post call should be cached
+      this.isCacheActive = true;
+      // Cache is active only for get & head calls. Pass the request through for other calls.
       return next.handle(req);
     }
 
