@@ -1,0 +1,28 @@
+{
+  "title": "Universal Target for applications",
+  "description": "Node application build target options for Build Facade",
+  "type": "object",
+  "properties": {
+    "watch": {
+      "type": "boolean"
+    },
+    "browserTarget": {
+      "type": "string",
+      "description": "The target to build a browser bundle"
+    },
+    "universalTarget": {
+      "type": "string",
+      "description": "The target to build a universal bundle"
+    },
+    "ssrBuildTarget": {
+      "type": "string",
+      "description": "The target to build your SSR Nodejs server"
+    },
+    "ssrExecuteTarget": {
+      "type": "string",
+      "description": "The target to start your SSR Nodejs server"
+    }
+  },
+  "additionalProperties": false,
+  "required": ["buildTarget"]
+}
