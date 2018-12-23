@@ -1,5 +1,5 @@
-package grpcengine;
 syntax = "proto3";
+package grpcengine;
 
 
 service SSR {
@@ -15,7 +15,7 @@ message RenderOptions {
 message RenderResponse {
   int32 id = 1;
   string html = 2;
-  optional Error error = 3;
+  Error error = 3;
 }
 
 message Error {

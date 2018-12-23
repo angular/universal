@@ -1,0 +1,27 @@
+load("@build_bazel_rules_typescript//:defs.bzl", "ts_proto_library")
+load("//tools:defaults.bzl", "jasmine_node_test", "ts_library", "ng_package", "ng_test_library")
+package(default_visibility = ["//visibility:public"])
+
+# We get some error trying to use these: ReferenceError: define is not defined
+# proto_library(
+#    name = "engine_proto",
+#    srcs = ["grpc-engine.proto"],
+# )
+
+# ts_proto_library(
+#    name = "engine_proto_ts",
+#    deps = [":engine_proto"],
+# )
+
+ts_library(
+    name = "src",
+    srcs = glob([
+        "main.ts",
+    ]),
+    deps = [
+        "@angular//packages/core",
+        "@ngudeps//grpc",
+        "@ngudeps//@grpc/proto-loader",
+        "//modules/common/engine",
+    ],
+)

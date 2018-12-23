@@ -4,11 +4,14 @@ import 'zone.js';
 
 import { BrowserModule } from '@angular/platform-browser';
 import { startGRPCEngine } from '@nguniversal/grpc-engine';
-import {load, credentials} from 'grpc';
+import { credentials, loadPackageDefinition } from 'grpc';
+import { loadSync } from '@grpc/proto-loader';
 
 function createClient() {
-  const engineProto = load('../grpc-engine.proto').GRPCEngine;
-  const client = engineProto.SSR('localhost:9090', credentials.createInsecure());
+  const packageDefinition = loadSync('modules/grpc-engine/grpc-engine.proto', {});
+  const grpcEngineProto = loadPackageDefinition(packageDefinition).grpcengine;
+
+  const client = new grpcEngineProto.SSR('localhost:9090', credentials.createInsecure());
   return client;
 }
 
@@ -35,7 +38,7 @@ describe('test runner', () => {
     const client = createClient();
 
     client.render({id: 1, document: '<root></root>'}, async(_err: any, response: any) => {
-      expect(response.html).toContain(template);
+      expect(response).toContain(template);
       await server.close();
       done();
     });

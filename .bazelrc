@@ -1,0 +1,8 @@
+# Instead, you should run `bazel info bazel-bin` to find out where the outputs went.
+build --symlink_prefix=dist/
+
+# Display errors when tests fail
+test --test_output=errors
+
+# Git output for build stamping
+build --workspace_status_command=./tools/bazel_stamp_vars.sh
