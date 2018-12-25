@@ -24,7 +24,7 @@ import * as path from 'path';
 // if the structure of ng_package change it may break this
 //
 // also don't change the name of the file since users have to reference it by name
-GRPC_ENGINE_PROTO_FILENAME = 'grpc-engine.proto';
+const GRPC_ENGINE_PROTO_FILENAME = 'grpc-engine.proto';
 const protoPath = path.join(__dirname, '..', GRPC_ENGINE_PROTO_FILENAME);
 const packageDefinition = protoLoader.loadSync(protoPath, {});
 const grpcEngineProto = grpc.loadPackageDefinition(packageDefinition).grpcengine;
@@ -45,7 +45,8 @@ export interface GRPCEngineResponse {
 export function startGRPCEngine(
   moduleOrFactory: Type<{}> | NgModuleFactory<{}>,
   host = '0.0.0.0',
-  port = 9090
+  port = 9090,
+  creds: grpc.ServerCredentials,
 ): Promise<GRPCEngineServer> {
   // needs to be a directory up so it lines up with deployment
   return new Promise((resolve, _reject) => {
@@ -64,7 +65,7 @@ export function startGRPCEngine(
       }
     });
     // TODO(Toxicable): how to take credentials as input?
-    server.bind(`${host}:${port}`, grpc.ServerCredentials.createInsecure());
+    server.bind(`${host}:${port}`, creds);
     server.start();
 
     resolve({
