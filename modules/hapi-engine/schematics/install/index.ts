@@ -49,7 +49,7 @@ function addDependenciesAndScripts(options: UniversalOptions): Rule {
   return (host: Tree) => {
     addPackageJsonDependency(host, {
       type: NodeDependencyType.Default,
-      name: '@nguniversal/express-engine',
+      name: '@nguniversal/hapi-engine',
       version: '0.0.0-PLACEHOLDER',
     });
     addPackageJsonDependency(host, {
@@ -60,12 +60,12 @@ function addDependenciesAndScripts(options: UniversalOptions): Rule {
     addPackageJsonDependency(host, {
       type: NodeDependencyType.Default,
       name: 'hapi',
-      version: '^5.1.0',
+      version: 'HAPI_VERSION',
     });
     addPackageJsonDependency(host, {
       type: NodeDependencyType.Default,
       name: 'inert',
-      version: 'EXPRESS_VERSION',
+      version: '^5.1.0',
     });
 
     if (options.webpack) {
