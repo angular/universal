@@ -19,7 +19,6 @@ ts_library(
         exclude = [
             "**/*.spec.ts",
             "**/files/**/*",
-            "testing/**/*",
         ],
     ),
     module_name = "@nguniversal/hapi-engine/schematics",
