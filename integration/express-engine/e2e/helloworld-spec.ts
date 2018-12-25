@@ -38,8 +38,9 @@ describe('Hello world E2E Tests', function() {
   it('should populate window.location', () => {
     browser.driver.get(browser.baseUrl + 'helloworld');
 
-    browser.executeScript('return window.location;').then(location => {
-      expect(location).toEqual({});
+    browser.executeScript('return window.location;').then((location: Location) => {
+      expect(location.href).toEqual('http://localhost:9876/helloworld');
+      expect(location.origin).toEqual('http://localhost:9876');
     });
   });
 });
