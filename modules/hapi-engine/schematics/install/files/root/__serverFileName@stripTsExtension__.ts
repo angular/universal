@@ -1,5 +1,4 @@
 import 'zone.js/dist/zone-node';
-import 'reflect-metadata';
 import {enableProdMode} from '@angular/core';
 // Hapi Engine
 import {ngHapiEngine} from '@nguniversal/hapi-engine';

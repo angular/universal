@@ -72,6 +72,16 @@
       "description": "Skip adding Hapi server file.",
       "type": "boolean",
       "default": false
+    },
+    "skipUniversal": {
+      "description": "Skip the Angular Universal schematic",
+      "type": "boolean",
+      "default": false
+    },
+    "webpack": {
+      "description": "Whether to add webpack configuration files",
+      "type": "boolean",
+      "default": true
     }
   },
   "required": [

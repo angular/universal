@@ -7,7 +7,7 @@
  */
 import {SchematicTestRunner} from '@angular-devkit/schematics/testing';
 import {Schema as UniversalOptions} from './schema';
-import {collectionPath, createTestApp} from '../test-setup/test-app';
+import {collectionPath, createTestApp} from '../testing/test-app';
 import {Tree} from '@angular-devkit/schematics';
 
 describe('Universal Schematic', () => {
@@ -44,10 +44,52 @@ describe('Universal Schematic', () => {
     expect(contents).toMatch(/\"hapi\": \"/);
   });
 
+  it('should add dependency: ts-loader', () => {
+    const tree = schematicRunner.runSchematic('ng-add', defaultOptions, appTree);
+    const filePath = '/package.json';
+    const contents = tree.readContent(filePath);
+    expect(contents).toMatch(/\"ts-loader\": \"/);
+  });
+
+  it('should add dependency: webpack-cli', () => {
+    const tree = schematicRunner.runSchematic('ng-add', defaultOptions, appTree);
+    const filePath = '/package.json';
+    const contents = tree.readContent(filePath);
+    expect(contents).toMatch(/\"webpack-cli\": \"/);
+  });
+
+  it('should not add dependency: ts-loader when webpack is false', () => {
+    const noWebpack = Object.assign({}, defaultOptions);
+    noWebpack.webpack = false;
+    const tree = schematicRunner.runSchematic('ng-add', noWebpack, appTree);
+    const filePath = '/package.json';
+    const contents = tree.readContent(filePath);
+    expect(contents).not.toContain('ts-loader');
+  });
+
+  it('should not add dependency: webpack-cli when webpack is false', () => {
+    const noWebpack = Object.assign({}, defaultOptions);
+    noWebpack.webpack = false;
+    const tree = schematicRunner.runSchematic('ng-add', noWebpack, appTree);
+    const filePath = '/package.json';
+    const contents = tree.readContent(filePath);
+    expect(contents).not.toContain('webpack-cli');
+  });
+
   it('should install npm dependencies', () => {
     schematicRunner.runSchematic('ng-add', defaultOptions, appTree);
     expect(schematicRunner.tasks.length).toBe(2);
     expect(schematicRunner.tasks[0].name).toBe('node-package');
     expect((schematicRunner.tasks[0].options as {command: string}).command).toBe('install');
+  });
+
+  it('should not add Universal files', () => {
+    const noUniversal = Object.assign({}, defaultOptions);
+    noUniversal.skipUniversal = true;
+
+    const tree = schematicRunner.runSchematic('ng-add', noUniversal, appTree);
+    const filePath = '/src/server.main.ts';
+    const contents = tree.readContent(filePath);
+    expect(contents).toMatch('');
   });
 });

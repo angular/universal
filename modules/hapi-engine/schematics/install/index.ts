@@ -23,7 +23,12 @@ import {
 import {NodePackageInstallTask} from '@angular-devkit/schematics/tasks';
 import {getWorkspace, getWorkspacePath} from '@schematics/angular/utility/config';
 import {Schema as UniversalOptions} from './schema';
+import {BrowserBuilderOptions} from '@schematics/angular/utility/workspace-models';
+import {addPackageJsonDependency, NodeDependencyType} from '@schematics/angular/utility/dependencies';
 
+// TODO(CaerusKaru): make these configurable
+const BROWSER_DIST = 'dist/browser';
+const SERVER_DIST = 'dist/server';
 
 function getClientProject(
   host: Tree, options: UniversalOptions,
@@ -39,7 +44,41 @@ function getClientProject(
 
 function addDependenciesAndScripts(options: UniversalOptions): Rule {
   return (host: Tree) => {
+    addPackageJsonDependency(host, {
+      type: NodeDependencyType.Default,
+      name: '@nguniversal/express-engine',
+      version: '0.0.0-PLACEHOLDER',
+    });
+    addPackageJsonDependency(host, {
+      type: NodeDependencyType.Default,
+      name: '@nguniversal/module-map-ngfactory-loader',
+      version: '0.0.0-PLACEHOLDER',
+    });
+    addPackageJsonDependency(host, {
+      type: NodeDependencyType.Default,
+      name: 'hapi',
+      version: '^5.1.0',
+    });
+    addPackageJsonDependency(host, {
+      type: NodeDependencyType.Default,
+      name: 'inert',
+      version: 'EXPRESS_VERSION',
+    });
 
+    if (options.webpack) {
+      addPackageJsonDependency(host, {
+        type: NodeDependencyType.Dev,
+        name: 'ts-loader',
+        version: '^5.2.0',
+      });
+      addPackageJsonDependency(host, {
+        type: NodeDependencyType.Dev,
+        name: 'webpack-cli',
+        version: '^3.1.0',
+      });
+    }
+
+    const serverFileName = options.serverFileName.replace('.ts', '');
     const pkgPath = '/package.json';
     const buffer = host.read(pkgPath);
     if (buffer === null) {
@@ -48,17 +87,13 @@ function addDependenciesAndScripts(options: UniversalOptions): Rule {
 
     const pkg = JSON.parse(buffer.toString());
 
-    pkg.dependencies['@nguniversal/hapi-engine'] = '0.0.0-PLACEHOLDER';
-    pkg.dependencies['@nguniversal/module-map-ngfactory-loader'] = '0.0.0-PLACEHOLDER';
-    pkg.dependencies['hapi'] = 'HAPI_VERSION';
-    pkg.dependencies['inert'] = '^5.1.0';
-
-    pkg.scripts['serve:ssr'] = 'node dist/server';
+    pkg.scripts['compile:server'] = options.webpack ?
+      'webpack --config webpack.server.config.js --progress --colors' :
+      `tsc -p ${serverFileName}.tsconfig.json`;
+    pkg.scripts['serve:ssr'] = `node dist/${serverFileName}`;
     pkg.scripts['build:ssr'] = 'npm run build:client-and-server-bundles && npm run compile:server';
     pkg.scripts['build:client-and-server-bundles'] =
       `ng build --prod && ng run ${options.clientProject}:server:production`;
-    pkg.scripts['compile:server'] =
-      `tsc -p ${options.serverFileName.replace(/\.ts$/, '')}.tsconfig.json`;
 
     host.overwrite(pkgPath, JSON.stringify(pkg, null, 2));
 
@@ -78,7 +113,14 @@ function updateConfigFile(options: UniversalOptions): Rule {
       throw new Error('Client project architect not found.');
     }
 
-    const serverConfig: JsonObject = {
+    // We have to check if the project config has a server target, because
+    // if the Universal step in this schematic isn't run, it can't be guaranteed
+    // to exist
+    if (!clientProject.architect.server) {
+      return;
+    }
+
+    clientProject.architect.server.configurations = {
       production: {
         fileReplacements: [
           {
@@ -88,7 +130,10 @@ function updateConfigFile(options: UniversalOptions): Rule {
         ]
       }
     };
-    clientProject.architect.server.configurations = serverConfig;
+    // TODO(CaerusKaru): make this configurable
+    clientProject.architect.server.options.outputPath = SERVER_DIST;
+    // TODO(CaerusKaru): make this configurable
+    (clientProject.architect.build.options as BrowserBuilderOptions).outputPath = BROWSER_DIST;
 
     const workspacePath = getWorkspacePath(host);
 
@@ -111,15 +156,20 @@ export default function (options: UniversalOptions): Rule {
 
     const rootSource = apply(url('./files/root'), [
       options.skipServer ? filter(path => !path.startsWith('__serverFileName')) : noop(),
+      options.webpack ?
+        filter(path => !path.includes('tsconfig')) : filter(path => !path.startsWith('webpack')),
       template({
         ...strings,
         ...options as object,
-        stripTsExtension: (s: string) => { return s.replace(/\.ts$/, ''); },
-      }),
+        stripTsExtension: (s: string) => s.replace(/\.ts$/, ''),
+        getBrowserDistDirectory: () => BROWSER_DIST,
+        getServerDistDirectory: () => SERVER_DIST,
+      })
     ]);
 
     return chain([
-      externalSchematic('@schematics/angular', 'universal', options),
+      options.skipUniversal ?
+        noop() : externalSchematic('@schematics/angular', 'universal', options),
       updateConfigFile(options),
       mergeWith(rootSource),
       addDependenciesAndScripts(options),

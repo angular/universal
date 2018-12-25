@@ -20,7 +20,7 @@ ts_library(
         exclude = [
             "**/*.spec.ts",
             "**/files/**/*",
-            "test-setup/**/*",
+            "testing/**/*",
         ],
     ),
     module_name = "@nguniversal/hapi-engine/schematics",
@@ -48,7 +48,7 @@ ts_library(
     srcs = glob(
         [
             "**/*.spec.ts",
-            "test-setup/**/*.ts",
+            "testing/**/*.ts",
         ],
         exclude = ["**/files/**/*"],
     ),

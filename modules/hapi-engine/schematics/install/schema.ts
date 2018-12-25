@@ -59,4 +59,12 @@ export interface Schema {
    * Skip adding Hapi server file.
    */
   skipServer?: boolean;
+  /**
+   * Skip the Angular Universal schematic
+   */
+  skipUniversal?: boolean;
+  /**
+   * Whether to add webpack configuration files
+   */
+  webpack?: boolean;
 }
