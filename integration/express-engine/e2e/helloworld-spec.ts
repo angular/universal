@@ -35,4 +35,11 @@ describe('Hello world E2E Tests', function() {
     // Make sure there were no client side errors.
     verifyNoBrowserErrors();
   });
+  it('should populate window.location', () => {
+    browser.driver.get(browser.baseUrl + 'helloworld');
+
+    browser.executeScript('return window.location;').then(location => {
+      expect(location).toEqual({});
+    });
+  });
 });
