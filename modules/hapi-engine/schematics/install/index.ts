@@ -24,7 +24,10 @@ import {NodePackageInstallTask} from '@angular-devkit/schematics/tasks';
 import {getWorkspace, getWorkspacePath} from '@schematics/angular/utility/config';
 import {Schema as UniversalOptions} from './schema';
 import {BrowserBuilderOptions} from '@schematics/angular/utility/workspace-models';
-import {addPackageJsonDependency, NodeDependencyType} from '@schematics/angular/utility/dependencies';
+import {
+  addPackageJsonDependency,
+  NodeDependencyType,
+} from '@schematics/angular/utility/dependencies';
 
 // TODO(CaerusKaru): make these configurable
 const BROWSER_DIST = 'dist/browser';
