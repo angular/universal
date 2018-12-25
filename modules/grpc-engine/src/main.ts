@@ -12,8 +12,21 @@ import {
 import {NgModuleFactory, Type} from '@angular/core';
 import * as grpc from 'grpc';
 import * as protoLoader from '@grpc/proto-loader';
+import * as path from 'path';
 
-const packageDefinition = protoLoader.loadSync('modules/grpc-engine/grpc-engine.proto', {});
+// don't move this file without understanding the below reasoning
+//
+// we assume the dir structure between this file and grpc-engine.proto
+// this is handled by including the file into unit tests with `data = []`
+// for publishing we understand that:
+// - fesm5, fesm2015 will all work
+// - but esm5 and esm2015 will be broken
+// if the structure of ng_package change it may break this
+//
+// also don't change the name of the file since users have to reference it by name
+GRPC_ENGINE_PROTO_FILENAME = 'grpc-engine.proto';
+const protoPath = path.join(__dirname, '..', GRPC_ENGINE_PROTO_FILENAME);
+const packageDefinition = protoLoader.loadSync(protoPath, {});
 const grpcEngineProto = grpc.loadPackageDefinition(packageDefinition).grpcengine;
 
 export interface GRPCEngineServer {
