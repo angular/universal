@@ -12,6 +12,7 @@ import {Component} from '@angular/core';
   selector: 'hello-world-app',
   template: `
     <div>Hello {{ name }}!</div>
+    <span class="href-check">{{href}}</span>
   `,
   styles: [`
     div {
@@ -21,4 +22,5 @@ import {Component} from '@angular/core';
 })
 export class HelloWorldComponent {
   name: string = 'world';
+  href = window.location.href;
 }
