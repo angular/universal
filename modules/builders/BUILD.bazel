@@ -1,6 +1,16 @@
-load("//tools:defaults.bzl", "npm_package")
+load("//tools:defaults.bzl", "npm_package", "ts_library")
 
 exports_files(["builders.json", "package.json"])
+
+ts_library(
+  name = "ssr",
+  srcs = glob(["**/*.ts"]),
+  deps = [
+    "@rxjs",
+    "@rxjs//operators",
+    "@ngudeps//@angular-devkit/architect",
+  ]
+)
 
 npm_package(
   name = "package",
@@ -10,6 +20,6 @@ npm_package(
     "//modules/builders/src/ssr:schema.json",
   ],
   deps = [
-    "//modules/builders/src/ssr",
+    ":ssr",
   ]
 )
