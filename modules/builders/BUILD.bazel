@@ -1,0 +1,15 @@
+load("//tools:defaults.bzl", "npm_package")
+
+exports_files(["builders.json", "package.json"])
+
+npm_package(
+  name = "package",
+  srcs = [
+    "//modules/builders:builders.json",
+    "//modules/builders:package.json",
+    "//modules/builders/src/ssr:schema.json",
+  ],
+  deps = [
+    "//modules/builders/src/ssr",
+  ]
+)
