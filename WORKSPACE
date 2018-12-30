@@ -10,6 +10,7 @@ http_archive(
     # our CI is not flaky until there is a new version of the NodeJS rules. See commit:
     # https://github.com/bazelbuild/rules_nodejs/commit/c40ceb960af4213164d4299d8fbc8220ebdd727f
     url = "https://github.com/bazelbuild/rules_nodejs/archive/c40ceb960af4213164d4299d8fbc8220ebdd727f.zip",
+    sha256 = "fcb9a3af382f22ef5d5f0103e043b6b26f171a53b00efffd581e379840980212",
 )
 
 # Add TypeScript rules
@@ -17,6 +18,7 @@ http_archive(
     name = "build_bazel_rules_typescript",
     strip_prefix = "rules_typescript-0.22.0",
     url = "https://github.com/bazelbuild/rules_typescript/archive/0.22.0.zip",
+    sha256 = "136ba6be39b4ff934cc0f41f043912305e98cb62254d9e6af467e247daafcd34",
 )
 
 # Add Angular source and Bazel rules.
@@ -24,6 +26,7 @@ http_archive(
     name = "angular",
     strip_prefix = "angular-7.1.3",
     url = "https://github.com/angular/angular/archive/7.1.3.zip",
+    sha256 = "c480904802d62ce63a4955fd8679371a0d9620131c1c424c8786429f4e8ac77e"
 )
 
 # Add RxJS as repository because those are needed in order to build Angular from source.

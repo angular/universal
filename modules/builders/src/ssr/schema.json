@@ -4,7 +4,8 @@
   "type": "object",
   "properties": {
     "watch": {
-      "type": "boolean"
+      "type": "boolean",
+      "default": true
     },
     "browserTarget": {
       "type": "string",
@@ -14,15 +15,11 @@
       "type": "string",
       "description": "The target to build a universal bundle"
     },
-    "ssrBuildTarget": {
-      "type": "string",
-      "description": "The target to build your SSR Nodejs server"
-    },
     "ssrExecuteTarget": {
       "type": "string",
       "description": "The target to start your SSR Nodejs server"
     }
   },
   "additionalProperties": false,
-  "required": ["buildTarget"]
+  "required": ["browserTarget", "universalTarget", "ssrExecuteTarget"]
 }

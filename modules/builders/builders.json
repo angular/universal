@@ -1,0 +1,11 @@
+
+{
+  "$schema": "@angular-devkit/architect/src/builders-schema.json",
+  "builders": {
+    "ssr": {
+      "class": "./src/ssr/ssr.builder",
+      "schema": "./src/ssr/schema.json",
+      "description": "erm, ssr app"
+    }
+  }
+}
