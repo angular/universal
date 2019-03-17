@@ -29,10 +29,7 @@ import {
 } from '@schematics/angular/utility/dependencies';
 import {BrowserBuilderOptions} from '@schematics/angular/utility/workspace-models';
 import {getProject} from '@schematics/angular/utility/project';
-import {
-  getProjectTargets,
-  targetBuildNotFoundError,
-} from '@schematics/angular/utility/project-targets';
+import {getProjectTargets} from '@schematics/angular/utility/project-targets';
 import {InsertChange} from '@schematics/angular/utility/change';
 import {addSymbolToNgModuleMetadata, insertImport} from '@schematics/angular/utility/ast-utils';
 import * as ts from 'typescript';
