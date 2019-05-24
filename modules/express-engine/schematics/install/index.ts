@@ -29,14 +29,16 @@ import {
 } from '@schematics/angular/utility/dependencies';
 import {BrowserBuilderOptions} from '@schematics/angular/utility/workspace-models';
 import {getProject} from '@schematics/angular/utility/project';
-import {
-  getProjectTargets,
-  targetBuildNotFoundError,
-} from '@schematics/angular/utility/project-targets';
+import {getProjectTargets} from '@schematics/angular/utility/project-targets';
 import {InsertChange} from '@schematics/angular/utility/change';
-import {addSymbolToNgModuleMetadata, insertImport} from '@schematics/angular/utility/ast-utils';
+import {
+  addSymbolToNgModuleMetadata,
+  findNodes,
+  insertAfterLastOccurrence,
+  insertImport
+} from '@schematics/angular/utility/ast-utils';
 import * as ts from 'typescript';
-import {findAppServerModulePath} from './utils';
+import {findAppServerModulePath, generateExport, getTsSourceFile, getTsSourceText} from './utils';
 
 // TODO(CaerusKaru): make these configurable
 const BROWSER_DIST = 'dist/browser';
@@ -100,7 +102,7 @@ function addDependenciesAndScripts(options: UniversalOptions): Rule {
     pkg.scripts['serve:ssr'] = `node dist/${serverFileName}`;
     pkg.scripts['build:ssr'] = 'npm run build:client-and-server-bundles && npm run compile:server';
     pkg.scripts['build:client-and-server-bundles'] =
-      `ng build --prod && ng run ${options.clientProject}:server:production`;
+      `ng build --prod && ng run ${options.clientProject}:server:production --bundleDependencies all`;
 
     host.overwrite(pkgPath, JSON.stringify(pkg, null, 2));
 
@@ -160,6 +162,23 @@ function addModuleMapLoader(options: UniversalOptions): Rule {
       return;
     }
     const mainPath = normalize('/' + clientTargets.server.options.main);
+    const mainSourceFile = getTsSourceFile(host, mainPath);
+    let mainText = getTsSourceText(host, mainPath);
+    const mainRecorder = host.beginUpdate(mainPath);
+    const expressEngineExport = generateExport(mainSourceFile, ['ngExpressEngine'], '@nguniversal/express-engine');
+    const moduleMapExport = generateExport(mainSourceFile, ['provideModuleMap'], '@nguniversal/module-map-ngfactory-loader');
+
+    const exports = findNodes(mainSourceFile, ts.SyntaxKind.ExportDeclaration);
+
+    const expressEngineChange = insertAfterLastOccurrence(exports, expressEngineExport, mainText, 0) as InsertChange;
+    mainRecorder.insertLeft(expressEngineChange.pos, expressEngineChange.toAdd);
+    host.commitUpdate(mainRecorder);
+
+    mainText = getTsSourceText(host, mainPath);
+
+    const moduleMapChange = insertAfterLastOccurrence(exports, moduleMapExport, mainText, 0) as InsertChange;
+    mainRecorder.insertLeft(moduleMapChange.pos, moduleMapChange.toAdd);
+    host.commitUpdate(mainRecorder);
 
     const appServerModuleRelativePath = findAppServerModulePath(host, mainPath);
     const modulePath = normalize(
@@ -190,17 +209,6 @@ function addModuleMapLoader(options: UniversalOptions): Rule {
       host.commitUpdate(recorder);
     }
   };
-}
-
-function getTsSourceFile(host: Tree, path: string): ts.SourceFile {
-  const buffer = host.read(path);
-  if (!buffer) {
-    throw new SchematicsException(`Could not read file (${path}).`);
-  }
-  const content = buffer.toString();
-  const source = ts.createSourceFile(path, content, ts.ScriptTarget.Latest, true);
-
-  return source;
 }
 
 export default function (options: UniversalOptions): Rule {
