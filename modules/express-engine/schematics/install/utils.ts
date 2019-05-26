@@ -55,7 +55,7 @@ export function findAppServerModulePath(host: Tree, mainPath: string): string {
     throw new SchematicsException('Could not find app server module export');
   }
 
-  const moduleSpecifier = exportDeclaration.moduleSpecifier.getText();
+  const moduleSpecifier = exportDeclaration.moduleSpecifier!.getText();
   return moduleSpecifier.substring(1, moduleSpecifier.length - 1);
 }
 
