@@ -81,7 +81,7 @@ jobs:
     - *restore_cache
     - *copy_bazel_config
 
-    - run: bazel test //...
+    - run: yarn bazel test //...
 
     # Note: We want to save the cache in this job because the workspace cache also
     # includes the Bazel repository cache that will be updated in this job.
