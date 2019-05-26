@@ -59,12 +59,16 @@ export function findAppServerModulePath(host: Tree, mainPath: string): string {
   return moduleSpecifier.substring(1, moduleSpecifier.length - 1);
 }
 
-export function generateExport(sourceFile: ts.SourceFile, elements: string[], module: string): string {
+export function generateExport(sourceFile: ts.SourceFile,
+                               elements: string[],
+                               module: string): string {
   const printer = ts.createPrinter();
-  const exports = elements.map(element => ts.createExportSpecifier(undefined, element));
+  const exports = elements.map(element =>
+    ts.createExportSpecifier(undefined, element));
   const namedExports = ts.createNamedExports(exports);
   const moduleSpecifier = ts.createStringLiteral(module);
-  const exportDeclaration = ts.createExportDeclaration(undefined, undefined, namedExports, moduleSpecifier);
+  const exportDeclaration = ts.createExportDeclaration(undefined, undefined,
+    namedExports, moduleSpecifier);
 
   return printer.printNode(ts.EmitHint.Unspecified, exportDeclaration, sourceFile)
 }

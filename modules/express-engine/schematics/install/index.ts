@@ -102,6 +102,7 @@ function addDependenciesAndScripts(options: UniversalOptions): Rule {
     pkg.scripts['serve:ssr'] = `node dist/${serverFileName}`;
     pkg.scripts['build:ssr'] = 'npm run build:client-and-server-bundles && npm run compile:server';
     pkg.scripts['build:client-and-server-bundles'] =
+      // tslint:disable:max-line-length
       `ng build --prod && ng run ${options.clientProject}:server:production --bundleDependencies all`;
 
     host.overwrite(pkgPath, JSON.stringify(pkg, null, 2));
@@ -203,11 +204,14 @@ function addExports(options: UniversalOptions): Rule {
     const mainSourceFile = getTsSourceFile(host, mainPath);
     let mainText = getTsSourceText(host, mainPath);
     const mainRecorder = host.beginUpdate(mainPath);
-    const expressEngineExport = generateExport(mainSourceFile, ['ngExpressEngine'], '@nguniversal/express-engine');
-    const moduleMapExport = generateExport(mainSourceFile, ['provideModuleMap'], '@nguniversal/module-map-ngfactory-loader');
+    const expressEngineExport = generateExport(mainSourceFile, ['ngExpressEngine'],
+      '@nguniversal/express-engine');
+    const moduleMapExport = generateExport(mainSourceFile, ['provideModuleMap'],
+      '@nguniversal/module-map-ngfactory-loader');
     const exports = findNodes(mainSourceFile, ts.SyntaxKind.ExportDeclaration);
     const addedExports = `\n${expressEngineExport}\n${moduleMapExport}\n`;
-    const exportChange = insertAfterLastOccurrence(exports, addedExports, mainText, 0) as InsertChange;
+    const exportChange = insertAfterLastOccurrence(exports, addedExports, mainText,
+      0) as InsertChange;
 
     mainRecorder.insertLeft(exportChange.pos, exportChange.toAdd);
     host.commitUpdate(mainRecorder);
