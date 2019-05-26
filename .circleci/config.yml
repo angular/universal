@@ -80,6 +80,7 @@ jobs:
     - *checkout_code
     - *restore_cache
     - *copy_bazel_config
+    - *yarn_install
 
     - run: yarn bazel test //...
 
