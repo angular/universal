@@ -70,5 +70,5 @@ export function generateExport(sourceFile: ts.SourceFile,
   const exportDeclaration = ts.createExportDeclaration(undefined, undefined,
     namedExports, moduleSpecifier);
 
-  return printer.printNode(ts.EmitHint.Unspecified, exportDeclaration, sourceFile)
+  return printer.printNode(ts.EmitHint.Unspecified, exportDeclaration, sourceFile);
 }
