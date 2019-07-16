@@ -15,7 +15,7 @@ import {
   HttpResponse,
   HttpParams
 } from '@angular/common/http';
-import {ApplicationRef, Injectable, NgModule} from '@angular/core';
+import {ApplicationRef, Injectable, NgModule, InjectionToken, Optional, Inject} from '@angular/core';
 import {
   BrowserTransferStateModule,
   TransferState,
@@ -41,6 +41,11 @@ function getHeadersMap(headers: HttpHeaders) {
   return headersMap;
 }
 
+export const TransferHttpFilter = new InjectionToken<TransferHttpFilter>('TransferHttpFilter');
+export type TransferHttpFilter = (req: HttpRequest<any>) => boolean;
+
+export const defaultTransferHttpFilter: TransferHttpFilter = req => req.method === 'GET' || req.method === 'HEAD';
+
 @Injectable()
 export class TransferHttpCacheInterceptor implements HttpInterceptor {
 
@@ -58,7 +63,7 @@ export class TransferHttpCacheInterceptor implements HttpInterceptor {
     return makeStateKey<TransferHttpResponse>(key);
   }
 
-  constructor(appRef: ApplicationRef, private transferState: TransferState) {
+  constructor(appRef: ApplicationRef, private transferState: TransferState, @Optional() @Inject(TransferHttpFilter) private requestFilter: TransferHttpFilter = defaultTransferHttpFilter) {
     // Stop using the cache if the application has stabilized, indicating initial rendering is
     // complete.
     appRef.isStable
@@ -71,7 +76,7 @@ export class TransferHttpCacheInterceptor implements HttpInterceptor {
 
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
     // Stop using the cache if there is a mutating call.
-    if (req.method !== 'GET' && req.method !== 'HEAD') {
+    if (!this.requestFilter(req)) {
       this.isCacheActive = false;
       this.invalidateCacheEntry(req.url);
     }

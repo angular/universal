@@ -1,4 +1,4 @@
-import { ɵTransferHttpCacheInterceptor as TransferHttpCacheInterceptor } from '@nguniversal/common';
+import { ɵTransferHttpCacheInterceptor as TransferHttpCacheInterceptor, TransferHttpFilter, defaultTransferHttpFilter } from '@nguniversal/common';
 import { of } from 'rxjs';
 import { HttpParams } from '@angular/common/http';
 
@@ -35,6 +35,27 @@ describe('TransferHttp', () => {
       const key2 = interceptor['makeCacheKey']('GET', 'https://google.com/api',
         new HttpParams().append('b', 'foo').append('a', 'bar'));
       expect(key1).toEqual(key2);
+    });
+    it('should allow other', () => {
+      const filter: TransferHttpFilter = (req) =>
+        defaultTransferHttpFilter(req)
+        || req.method === 'POST';
+      const interceptor = new TransferHttpCacheInterceptor(
+        mockAppRef(),
+        mockTransferState(),
+        filter
+      );
+      const key1 = interceptor['makeCacheKey']('GET', 'https://google.com/api',
+        new HttpParams().append('a', 'bar').append('b', 'foo'));
+      const key2 = interceptor['makeCacheKey']('GET', 'https://google.com/api',
+        new HttpParams().append('b', 'foo').append('a', 'bar'));
+      expect(key1).toEqual(key2);
+
+      const key3 = interceptor['makeCacheKey']('POST', 'https://google.com/api',
+        new HttpParams().append('a', 'bar').append('b', 'foo'));
+      const key4 = interceptor['makeCacheKey']('POST', 'https://google.com/api',
+        new HttpParams().append('b', 'foo').append('a', 'bar'));
+      expect(key3).toEqual(key4);
     });
   });
 });
