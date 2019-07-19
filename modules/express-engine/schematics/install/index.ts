@@ -99,7 +99,12 @@ function addDependenciesAndScripts(options: UniversalOptions): Rule {
     pkg.scripts['compile:server'] = options.webpack ?
       'webpack --config webpack.server.config.js --progress --colors' :
       `tsc -p ${serverFileName}.tsconfig.json`;
+
     pkg.scripts['serve:ssr'] = `node dist/${serverFileName}`;
+    pkg.scripts['build:prerender'] =
+    // tslint:disable-next-line: max-line-length
+      `npm run build:client-and-server-bundles && npm run compile:server && npm run generate:prerender`,
+    pkg.scripts['generate:prerender'] = `node dist/${options.prerenderFileName}`,
     pkg.scripts['build:ssr'] = 'npm run build:client-and-server-bundles && npm run compile:server';
     pkg.scripts['build:client-and-server-bundles'] =
       // tslint:disable:max-line-length
