@@ -16,5 +16,7 @@
       "dom"
     ]
   },
-  "include": ["<%= stripTsExtension(serverFileName) %>.ts"]
+  "include": [
+    "<%= stripTsExtension(serverFileName) %>.ts",
+    "<%= stripTsExtension(prerenderFileName) %>.ts"
 }

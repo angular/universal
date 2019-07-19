@@ -221,6 +221,7 @@ export default function (options: UniversalOptions): Rule {
 
     const rootSource = apply(url('./files/root'), [
       options.skipServer ? filter(path => !path.startsWith('__serverFileName')) : noop(),
+      options.skipPrerender ? filter(path => !path.startsWith('__prerenderFileName')) : noop(),
       options.webpack ?
         filter(path => !path.includes('tsconfig')) : filter(path => !path.startsWith('webpack')),
       template({

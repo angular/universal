@@ -25,6 +25,11 @@
       "format": "path",
       "description": "The name of the test entry-point file."
     },
+    "prerenderFileName": {
+      "type": "string",
+      "default": "prerender.ts",
+      "description": "The name of the Prerender server file."
+    },
     "serverFileName": {
       "type": "string",
       "default": "server.ts",

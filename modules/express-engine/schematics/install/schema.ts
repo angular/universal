@@ -24,6 +24,10 @@ export interface Schema {
    */
   test?: string;
   /**
+   * The name of the Prerender script file.
+   */
+  prerenderFileName?: string;
+  /**
    * The name of the Express server file.
    */
   serverFileName?: string;
@@ -55,6 +59,10 @@ export interface Schema {
    * Skip installing dependency packages.
    */
   skipInstall?: boolean;
+  /**
+   * Skip adding Prerender script file.
+   */
+  skipPrerender?: boolean;
   /**
    * Skip adding Express server file.
    */
