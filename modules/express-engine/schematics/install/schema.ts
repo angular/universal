@@ -74,7 +74,7 @@ export interface Schema {
   /**
    * Add only missing pieces for Pre-rendering to previously installed Universal Schematic
    */
-  updatePrerenderOnly?: boolean;
+  prerenderOnly?: boolean;
   /**
    * Whether to add webpack configuration files
    */

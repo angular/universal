@@ -83,7 +83,7 @@
       "type": "boolean",
       "default": false
     },
-    "updatePrerenderOnly": {
+    "prerenderOnly": {
       "description": "Add only missing pieces for Pre-rendering to previously installed Universal Schematic",
       "type": "boolean",
       "default": false

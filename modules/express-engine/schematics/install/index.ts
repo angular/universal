@@ -269,7 +269,7 @@ export default function (options: UniversalOptions): Rule {
       context.addTask(new NodePackageInstallTask());
     }
 
-    if (options.updatePrerenderOnly) {
+    if (options.prerenderOnly) {
       return updateExistingProjectPrerenderOnly(options);
     }
 
