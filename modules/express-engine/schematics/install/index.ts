@@ -199,12 +199,14 @@ function addExports(options: UniversalOptions): Rule {
     const mainSourceFile = getTsSourceFile(host, mainPath);
     let mainText = getTsSourceText(host, mainPath);
     const mainRecorder = host.beginUpdate(mainPath);
+    const renderModuleFactoryExport = generateExport(mainSourceFile, ['renderModuleFactory'],
+      '@angular/platform-server');
     const expressEngineExport = generateExport(mainSourceFile, ['ngExpressEngine'],
       '@nguniversal/express-engine');
     const moduleMapExport = generateExport(mainSourceFile, ['provideModuleMap'],
       '@nguniversal/module-map-ngfactory-loader');
     const exports = findNodes(mainSourceFile, ts.SyntaxKind.ExportDeclaration);
-    const addedExports = `\n${expressEngineExport}\n${moduleMapExport}\n`;
+    const addedExports = `\n${expressEngineExport}\n${moduleMapExport}\n${renderModuleFactoryExport}\n`;
     const exportChange = insertAfterLastOccurrence(exports, addedExports, mainText,
       0) as InsertChange;
 

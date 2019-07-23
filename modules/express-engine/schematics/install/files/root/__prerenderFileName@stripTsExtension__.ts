@@ -8,11 +8,8 @@ import {enableProdMode} from '@angular/core';
 // Faster server renders w/ Prod mode (dev mode never needed)
 enableProdMode();
 
-// Import module map for lazy loading
-import {provideModuleMap} from '@nguniversal/module-map-ngfactory-loader';
-import {renderModuleFactory} from '@angular/platform-server';
 // * NOTE :: leave this as require() since this file is built Dynamically from webpack
-const {AppServerModuleNgFactory, LAZY_MODULE_MAP} = require('./<%= getServerDistDirectory() %>/main');
+const {AppServerModuleNgFactory, LAZY_MODULE_MAP, provideModuleMap, renderModuleFactory} = require('./<%= getServerDistDirectory() %>/main');
 
 const BROWSER_FOLDER = join(process.cwd(), '<%= getBrowserDistDirectory() %>');
 
