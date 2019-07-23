@@ -58,6 +58,7 @@ function getClientProject(
 
 function addDependenciesAndScripts(options: UniversalOptions): Rule {
   return (host: Tree) => {
+
     addPackageJsonDependency(host, {
       type: NodeDependencyType.Default,
       name: '@nguniversal/express-engine',
@@ -108,6 +109,26 @@ function addDependenciesAndScripts(options: UniversalOptions): Rule {
     pkg.scripts['build:client-and-server-bundles'] =
       // tslint:disable:max-line-length
       `ng build --prod && ng run ${options.clientProject}:server:production --bundleDependencies all`;
+
+    host.overwrite(pkgPath, JSON.stringify(pkg, null, 2));
+
+    return host;
+  };
+}
+
+function existingAppUpdatePrerenderScripts(options: UniversalOptions): Rule {
+  return (host: Tree) => {
+
+    const pkgPath = '/package.json';
+    const buffer = host.read(pkgPath);
+    if (buffer === null) {
+      throw new SchematicsException('Could not find package.json');
+    }
+
+    const pkg = JSON.parse(buffer.toString());
+    pkg.scripts['build:prerender'] =
+    // tslint:disable-next-line: max-line-length
+      `npm run build:client-and-server-bundles && npm run compile:server && node dist/${options.prerenderFileName}`,
 
     host.overwrite(pkgPath, JSON.stringify(pkg, null, 2));
 
@@ -216,6 +237,27 @@ function addExports(options: UniversalOptions): Rule {
   };
 }
 
+function updateExistingProjectPrerenderOnly(options: UniversalOptions) {
+  const rootSource = apply(url('./files/root'), [
+    filter(path => !path.startsWith('__prerenderFileName')),
+    options.webpack ?
+      filter(path => !path.includes('tsconfig')) : filter(path => !path.startsWith('webpack')),
+    template({
+      ...strings,
+      ...options as object,
+      stripTsExtension: (s: string) => s.replace(/\.ts$/, ''),
+      getBrowserDistDirectory: () => BROWSER_DIST,
+      getServerDistDirectory: () => SERVER_DIST,
+    })
+  ]);
+
+  return chain([
+    mergeWith(rootSource),
+    existingAppUpdatePrerenderScripts(options),
+    addExports(options),
+  ]);
+}
+
 export default function (options: UniversalOptions): Rule {
   return (host: Tree, context: SchematicContext) => {
     const clientProject = getClientProject(host, options);
@@ -225,6 +267,10 @@ export default function (options: UniversalOptions): Rule {
 
     if (!options.skipInstall) {
       context.addTask(new NodePackageInstallTask());
+    }
+
+    if (options.updatePrerenderOnly) {
+      return updateExistingProjectPrerenderOnly(options);
     }
 
     const rootSource = apply(url('./files/root'), [
