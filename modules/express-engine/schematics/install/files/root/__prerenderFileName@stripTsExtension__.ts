@@ -4,12 +4,11 @@ import 'reflect-metadata';
 import {readFileSync, writeFileSync, existsSync, mkdirSync} from 'fs';
 import {join} from 'path';
 
-import {enableProdMode} from '@angular/core';
+// * NOTE :: leave this as require() since this file is built Dynamically from webpack
+const {AppServerModuleNgFactory, LAZY_MODULE_MAP, provideModuleMap, renderModuleFactory, enableProdMode} = require('./<%= getServerDistDirectory() %>/main');
+
 // Faster server renders w/ Prod mode (dev mode never needed)
 enableProdMode();
-
-// * NOTE :: leave this as require() since this file is built Dynamically from webpack
-const {AppServerModuleNgFactory, LAZY_MODULE_MAP, provideModuleMap, renderModuleFactory} = require('./<%= getServerDistDirectory() %>/main');
 
 const BROWSER_FOLDER = join(process.cwd(), '<%= getBrowserDistDirectory() %>');
 
