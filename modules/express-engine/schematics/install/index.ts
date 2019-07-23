@@ -103,8 +103,7 @@ function addDependenciesAndScripts(options: UniversalOptions): Rule {
     pkg.scripts['serve:ssr'] = `node dist/${serverFileName}`;
     pkg.scripts['build:prerender'] =
     // tslint:disable-next-line: max-line-length
-      `npm run build:client-and-server-bundles && npm run compile:server && npm run generate:prerender`,
-    pkg.scripts['generate:prerender'] = `node dist/${options.prerenderFileName}`,
+      `npm run build:client-and-server-bundles && npm run compile:server && node dist/${options.prerenderFileName}`,
     pkg.scripts['build:ssr'] = 'npm run build:client-and-server-bundles && npm run compile:server';
     pkg.scripts['build:client-and-server-bundles'] =
       // tslint:disable:max-line-length
