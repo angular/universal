@@ -7,10 +7,9 @@ module.exports = {
   mode: 'none',
   entry: {
     // This is our Express server for Dynamic universal
-    server: './<%= stripTsExtension(serverFileName) %>.ts',
-    <%= skipPrerender ? "" : "// This is our script for Static Prerendering" %>
-    <%= skipPrerender ? "" : "prerender: './<%= stripTsExtension(prerenderFileName) %>.ts'"
-
+    server: './<%= stripTsExtension(serverFileName) %>.ts'<% if (!skipPrerender) { %>,
+    // This is our script for Static Prerendering
+    prerender: './<%= stripTsExtension(prerenderFileName) %>'<% } %>
   },
   externals: {
     './<%= getServerDistDirectory() %>/main': 'require("./server/main")'

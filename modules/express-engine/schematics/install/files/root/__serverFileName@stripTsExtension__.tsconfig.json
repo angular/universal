@@ -17,7 +17,7 @@
     ]
   },
   "include": [
-    "<%= stripTsExtension(serverFileName) %>.ts"<%= skipPrerender ? '' : ',' %>
-    <%= skipPrerender ? '' : '"<%= stripTsExtension(prerenderFileName) %>.ts"' %>
+    "<%= stripTsExtension(serverFileName) %>.ts"<% if (!skipPrerender) { %>,
+     <%= stripTsExtension(prerenderFileName) %>.ts"<% } %>
   ]
 }
