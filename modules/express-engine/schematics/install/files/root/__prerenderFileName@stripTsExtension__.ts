@@ -20,15 +20,9 @@ const index = readFileSync(join('browser', 'index.html'), 'utf8');
 
 let previousRender = Promise.resolve();
 
-let siteMap = '';
-const siteMapBuilder = (route) => `<url>
-    <loc>${routeData.hostname ? routeData.hostname : ''}${route}</loc>
-  </url>`;
-
 // Iterate each route path
 routeData.routes.forEach(route => {
   const fullPath = join(BROWSER_FOLDER, route);
-  siteMap = siteMap + siteMapBuilder(route);
 
   // Make sure the directory structure is there
   if (!existsSync(fullPath)) {
@@ -45,11 +39,13 @@ routeData.routes.forEach(route => {
   })).then(html => writeFileSync(join(fullPath, 'index.html'), html));
 });
 
-siteMap = `<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:news="http://www.google.com/schemas/sitemap-news/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml" xmlns:mobile="http://www.google.com/schemas/sitemap-mobile/1.0" xmlns:image="http://www.google.com/schemas/sitemap-image/1.1" xmlns:video="http://www.google.com/schemas/sitemap-video/1.1">
-  ${siteMap}
+const siteMap = `<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:news="http://www.google.com/schemas/sitemap-news/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml" xmlns:mobile="http://www.google.com/schemas/sitemap-mobile/1.0" xmlns:image="http://www.google.com/schemas/sitemap-image/1.1" xmlns:video="http://www.google.com/schemas/sitemap-video/1.1">
+  ${routeData.routes.map(route => `<url>
+    <loc>${routeData.hostname ? routeData.hostname : ''}${route}</loc>
+  </url>`)}
 </urlset>`;
 
-fs.writeFile('sitemap.xml', siteMap, 'utf8', (err) => {
+fs.writeFile(join(BROWSER_FOLDER, 'sitemap.xml'), siteMap, 'utf8', (err) => {
   if (err) {
     throw err;
   }
