@@ -38,11 +38,11 @@ const templateCache: { [key: string]: string } = {};
 /**
  * This is an express engine for handling Angular Applications
  */
-export function ngExpressEngine(setupOptions: NgSetupOptions) {
+export function ngExpressEngine(setupOptions: Readonly<NgSetupOptions>) {
   const engine = new CommonEngine(setupOptions.bootstrap, setupOptions.providers);
 
   return function (filePath: string,
-                   options: RenderOptions,
+                   options: Readonly<RenderOptions>,
                    callback: (err?: Error | null, html?: string) => void) {
     try {
       if (!setupOptions.bootstrap && !options.bootstrap) {
@@ -50,13 +50,18 @@ export function ngExpressEngine(setupOptions: NgSetupOptions) {
       }
 
       const req = options.req;
-      options.url = options.url || `${req.protocol}://${(req.get('host') || '')}${req.originalUrl}`;
-      options.document = options.document || getDocument(filePath);
 
-      options.providers = options.providers || [];
-      options.providers = options.providers.concat(getReqResProviders(options.req, options.res));
+      const renderOptions: RenderOptions = Object.assign({}, options);
 
-      engine.render(options)
+      renderOptions.url =
+        options.url || `${req.protocol}://${(req.get('host') || '')}${req.originalUrl}`;
+      renderOptions.document = options.document || getDocument(filePath);
+
+      renderOptions.providers = options.providers || [];
+      renderOptions.providers =
+        renderOptions.providers.concat(getReqResProviders(options.req, options.res));
+
+      engine.render(renderOptions)
         .then(html => callback(null, html))
         .catch(callback);
     } catch (err) {

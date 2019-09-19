@@ -43,7 +43,7 @@ const commonEngine = new CommonEngine(undefined);
 /**
  * This is an express engine for handling Angular Applications
  */
-export function ngHapiEngine(options: RenderOptions) {
+export function ngHapiEngine(options: Readonly<RenderOptions>) {
   const req = options.req;
   if (req.raw.req.url === undefined) {
     return Promise.reject(new Error('url is undefined'));
@@ -52,7 +52,7 @@ export function ngHapiEngine(options: RenderOptions) {
   const protocol = req.server.info.protocol;
   const filePath = <string> req.raw.req.url;
 
-  options.providers = options.providers || [];
+  const renderOptions: RenderOptions = Object.assign({}, options);
 
   return new Promise((resolve, reject) => {
     const moduleOrFactory = options.bootstrap;
@@ -61,13 +61,13 @@ export function ngHapiEngine(options: RenderOptions) {
       return reject(new Error('You must pass in a NgModule or NgModuleFactory to be bootstrapped'));
     }
 
-    options.url = options.url || `${protocol}://${req.info.host}${req.path}`;
-    options.document = options.document || getDocument(filePath);
+    renderOptions.url = options.url || `${protocol}://${req.info.host}${req.path}`;
+    renderOptions.document = options.document || getDocument(filePath);
 
-    options.providers = options.providers || [];
-    options.providers = options.providers.concat(getReqProviders(options.req));
+    renderOptions.providers = options.providers || [];
+    renderOptions.providers = renderOptions.providers.concat(getReqProviders(options.req));
 
-    commonEngine.render(options).then(resolve, reject);
+    commonEngine.render(renderOptions).then(resolve, reject);
   });
 }
 
