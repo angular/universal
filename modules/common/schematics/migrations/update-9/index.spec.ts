@@ -6,47 +6,35 @@
  * found in the LICENSE file at https://angular.io/license
  */
 
-import { EmptyTree, callRule } from '@angular-devkit/schematics';
+import { callRule } from '@angular-devkit/schematics';
 import { SchematicTestRunner, UnitTestTree } from '@angular-devkit/schematics/testing';
 import { version9UpdateRule } from './index';
 import { of } from 'rxjs';
+import { createTestApp, collectionPath } from '../../testing/test-app';
 
 describe('Migration to version 9', () => {
   const schematicRunner = new SchematicTestRunner(
     'migrations',
-    require.resolve('../../collection.json'),
+    collectionPath,
   );
 
   let tree: UnitTestTree;
   beforeEach(async () => {
-    tree = new UnitTestTree(new EmptyTree());
-    tree = await schematicRunner
-      .runExternalSchematicAsync(
-        '@schematics/angular',
-        'ng-new',
-        {
-          name: 'migration-app',
-          version: '1.2.3',
-          directory: '.',
-          style: 'css',
-        },
-        tree,
-      )
-      .toPromise();
+    tree =  await createTestApp();
     tree = await schematicRunner
       .runExternalSchematicAsync(
         '@schematics/angular',
         'universal',
         {
-          clientProject: 'migration-app',
+          clientProject: 'test-app',
         },
         tree,
       )
       .toPromise();
 
     // create old stucture
-    tree.create('/server.ts', 'server content');
-    tree.create('/webpack.server.config.js', 'webpack config content');
+    tree.create('/projects/test-app/server.ts', 'server content');
+    tree.create('/projects/test-app/webpack.server.config.js', 'webpack config content');
 
     const pkg = JSON.parse(tree.readContent('/package.json'));
     pkg.scripts['compile:server'] = '';
@@ -60,8 +48,8 @@ describe('Migration to version 9', () => {
 
   it(`should backup old 'server.ts' and 'webpack.server.config.js'`, async () => {
     const newTree = await callRule(version9UpdateRule(''), of(tree), null!).toPromise();
-    expect(newTree.exists('/server.ts.bak')).toBeTruthy();
-    expect(newTree.exists('/webpack.server.config.js.bak')).toBeTruthy();
+    expect(newTree.exists('/projects/test-app/server.ts.bak')).toBeTruthy();
+    expect(newTree.exists('/projects/test-app/webpack.server.config.js.bak')).toBeTruthy();
   });
 
   it(`should remove dependencies on 'webpack-cli' and 'ts-loader'`, async () => {

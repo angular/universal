@@ -6,8 +6,8 @@
  * found in the LICENSE file at https://angular.io/license
  */
 
-import { EmptyTree } from '@angular-devkit/schematics';
 import { SchematicTestRunner, UnitTestTree } from '@angular-devkit/schematics/testing';
+import { createTestApp } from '../../testing/test-app';
 
 describe('Migration to version 9', () => {
   const schematicRunner = new SchematicTestRunner(
@@ -17,34 +17,21 @@ describe('Migration to version 9', () => {
 
   let tree: UnitTestTree;
   beforeEach(async () => {
-    tree = new UnitTestTree(new EmptyTree());
-    tree = await schematicRunner
-      .runExternalSchematicAsync(
-        '@schematics/angular',
-        'ng-new',
-        {
-          name: 'migration-app',
-          version: '1.2.3',
-          directory: '.',
-          style: 'css',
-        },
-        tree,
-      )
-      .toPromise();
+    tree = await createTestApp();
     tree = await schematicRunner
       .runExternalSchematicAsync(
         '@schematics/angular',
         'universal',
         {
-          clientProject: 'migration-app',
+          clientProject: 'test-app',
         },
         tree,
       )
       .toPromise();
 
     // create old stucture
-    tree.create('/server.ts', 'server content');
-    tree.create('/webpack.server.config.js', 'webpack config content');
+    tree.create('/projects/test-app/server.ts', 'server content');
+    tree.create('/projects/test-app/webpack.server.config.js', 'webpack config content');
 
     const pkg = JSON.parse(tree.readContent('/package.json'));
     pkg.scripts['compile:server'] = '';
@@ -61,16 +48,16 @@ describe('Migration to version 9', () => {
     const newTree =
       await schematicRunner.runSchematicAsync('update-9', {}, tree.branch()).toPromise();
 
-    expect(newTree.exists('/server.ts.bak')).toBeTruthy();
-    expect(newTree.exists('/webpack.server.config.js.bak')).toBeTruthy();
+    expect(newTree.exists('/projects/test-app/server.ts.bak')).toBeTruthy();
+    expect(newTree.exists('/projects/test-app/webpack.server.config.js.bak')).toBeTruthy();
   });
 
   it(`should create new 'server.ts'`, async () => {
     const newTree =
       await schematicRunner.runSchematicAsync('update-9', {}, tree.branch()).toPromise();
 
-    expect(newTree.exists('/server.ts')).toBeTruthy();
-    const serverContent = newTree.readContent('/server.ts');
+    expect(newTree.exists('/projects/test-app/server.ts')).toBeTruthy();
+    const serverContent = newTree.readContent('/projects/test-app/server.ts');
     expect(serverContent).toContain('function run()');
     expect(serverContent).toContain(`export * from './src/main.server'`);
   });
@@ -79,7 +66,7 @@ describe('Migration to version 9', () => {
     const newTree =
       await schematicRunner.runSchematicAsync('update-9', {}, tree.branch()).toPromise();
 
-    const contents = JSON.parse(newTree.readContent('/tsconfig.server.json'));
+    const contents = JSON.parse(newTree.readContent('/projects/test-app/tsconfig.server.json'));
     expect(contents.files).toEqual([
       'src/main.server.ts',
       'server.ts',
@@ -103,8 +90,8 @@ describe('Migration to version 9', () => {
     expect(scripts['build:client-and-server-bundles']).toBeUndefined();
     expect(scripts['compile:server']).toBeUndefined();
     expect(scripts['build:ssr'])
-      .toBe('ng build --prod && ng run migration-app:server:production');
-    expect(scripts['serve:ssr']).toBe('node dist/migration-app/server/main.js');
+      .toBe('ng build --prod && ng run test-app:server:production');
+    expect(scripts['serve:ssr']).toBe('node dist/test-app/server/main.js');
   });
 
   describe('mono-repo', () => {
@@ -114,7 +101,7 @@ describe('Migration to version 9', () => {
           '@schematics/angular',
           'application',
           {
-            name: 'migration-app-two',
+            name: 'test-app-two',
             version: '1.2.3',
             directory: '.',
             style: 'css',
@@ -127,23 +114,23 @@ describe('Migration to version 9', () => {
           '@schematics/angular',
           'universal',
           {
-            clientProject: 'migration-app-two',
+            clientProject: 'test-app-two',
           },
           tree,
         )
         .toPromise();
 
       // create old stucture
-      tree.create('/projects/migration-app-two/server.ts', 'server content');
-      tree.create('/projects/migration-app-two/webpack.server.config.js', 'webpack content');
+      tree.create('/projects/test-app-two/server.ts', 'server content');
+      tree.create('/projects/test-app-two/webpack.server.config.js', 'webpack content');
     });
 
     it(`should backup old 'server.ts' and 'webpack.server.config.js'`, async () => {
       const newTree =
         await schematicRunner.runSchematicAsync('update-9', {}, tree.branch()).toPromise();
 
-      expect(newTree.exists('/projects/migration-app-two/server.ts.bak')).toBeTruthy();
-      expect(newTree.exists('/projects/migration-app-two/webpack.server.config.js.bak'))
+      expect(newTree.exists('/projects/test-app-two/server.ts.bak')).toBeTruthy();
+      expect(newTree.exists('/projects/test-app-two/webpack.server.config.js.bak'))
         .toBeTruthy();
     });
 
@@ -151,8 +138,8 @@ describe('Migration to version 9', () => {
       const newTree =
         await schematicRunner.runSchematicAsync('update-9', {}, tree.branch()).toPromise();
 
-      expect(newTree.exists('/projects/migration-app-two/server.ts')).toBeTruthy();
-      const serverContent = newTree.readContent('/projects/migration-app-two/server.ts');
+      expect(newTree.exists('/projects/test-app-two/server.ts')).toBeTruthy();
+      const serverContent = newTree.readContent('/projects/test-app-two/server.ts');
       expect(serverContent).toContain('function run()');
       expect(serverContent).toContain(`export * from './src/main.server'`);
     });
@@ -162,7 +149,7 @@ describe('Migration to version 9', () => {
         await schematicRunner.runSchematicAsync('update-9', {}, tree.branch()).toPromise();
 
       const contents =
-        JSON.parse(newTree.readContent('/projects/migration-app-two/tsconfig.server.json'));
+        JSON.parse(newTree.readContent('/projects/test-app-two/tsconfig.server.json'));
       expect(contents.files).toEqual([
         'src/main.server.ts',
         'server.ts',
