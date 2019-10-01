@@ -10,7 +10,6 @@ import {
   Rule,
   SchematicsException,
   chain,
-  Tree,
   externalSchematic,
 } from '@angular-devkit/schematics';
 import {removePackageJsonDependency} from '@schematics/angular/utility/dependencies';
@@ -28,8 +27,7 @@ export function version9UpdateRule(collectionPath: string): Rule {
 
     return chain([
       removePackageScriptsRule(),
-      backupOldFilesRule(),
-      ... await updateProjectsStructureRule(host, collectionPath),
+      updateProjectsStructureRule(collectionPath),
       (tree, context) => {
         const packageChanges = tree.actions.some(a => a.path.endsWith('/package.json'));
         if (context && packageChanges) {
@@ -57,11 +55,12 @@ function removePackageScriptsRule(): Rule {
   };
 }
 
-function backupOldFilesRule(): Rule {
+function updateProjectsStructureRule(collectionPath: string): Rule {
   return async tree => {
     const workspace = await getWorkspace(tree);
+    const installRules: Rule[] = [];
 
-    for (const [, projectDefinition] of workspace.projects) {
+    for (const [projectName, projectDefinition] of workspace.projects) {
       const serverTarget = projectDefinition.targets.get('server');
       if (!serverTarget || serverTarget.builder !== Builders.Server) {
         // Only process those targets which have a known builder for the CLI
@@ -78,34 +77,20 @@ function backupOldFilesRule(): Rule {
         .map(f => join(root, f))
         .filter(f => tree.exists(f))
         .forEach(f => tree.rename(f, `${f}.bak`));
+
+      const installOptions: InstallSchema = {
+        clientProject: projectName,
+        // Skip install, so we only do one for the entire workspace at the end.
+        skipInstall: true,
+      };
+
+      if (!collectionPath) {
+        continue;
+      }
+      // Run the install schematic again so that we re-create the entire stucture.
+      installRules.push(externalSchematic(collectionPath, 'ng-add', installOptions));
     }
+
+    return chain(installRules);
   };
-}
-
-async function updateProjectsStructureRule(tree: Tree, collectionPath: string): Promise<Rule[]> {
-  if (!collectionPath) {
-    return [];
-  }
-
-  const workspace = await getWorkspace(tree);
-  const installRules: Rule[] = [];
-
-  for (const [projectName, projectDefinition] of workspace.projects) {
-    const serverTarget = projectDefinition.targets.get('server');
-    if (!serverTarget || serverTarget.builder !== Builders.Server) {
-      // Only process those targets which have a known builder for the CLI
-      continue;
-    }
-
-    const installOptions: InstallSchema = {
-      clientProject: projectName,
-      // Skip install, so we only do one for the entire workspace at the end.
-      skipInstall: true,
-    };
-
-    // Run the install schematic again so that we re-create the entire stucture.
-    installRules.push(externalSchematic(collectionPath, 'ng-add', installOptions));
-  }
-
-  return installRules;
 }

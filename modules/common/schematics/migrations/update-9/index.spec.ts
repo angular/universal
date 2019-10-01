@@ -6,10 +6,8 @@
  * found in the LICENSE file at https://angular.io/license
  */
 
-import { callRule } from '@angular-devkit/schematics';
 import { SchematicTestRunner, UnitTestTree } from '@angular-devkit/schematics/testing';
 import { version9UpdateRule } from './index';
-import { of } from 'rxjs';
 import { createTestApp, collectionPath } from '../../testing/test-app';
 
 describe('Migration to version 9', () => {
@@ -47,13 +45,13 @@ describe('Migration to version 9', () => {
   });
 
   it(`should backup old 'server.ts' and 'webpack.server.config.js'`, async () => {
-    const newTree = await callRule(version9UpdateRule(''), of(tree), null!).toPromise();
+    const newTree = await schematicRunner.callRule(version9UpdateRule(''), tree).toPromise();
     expect(newTree.exists('/projects/test-app/server.ts.bak')).toBeTruthy();
     expect(newTree.exists('/projects/test-app/webpack.server.config.js.bak')).toBeTruthy();
   });
 
   it(`should remove dependencies on 'webpack-cli' and 'ts-loader'`, async () => {
-    const newTree = await callRule(version9UpdateRule(''), of(tree), null!).toPromise();
+    const newTree = await schematicRunner.callRule(version9UpdateRule(''), tree).toPromise();
     const { devDependencies } = JSON.parse(newTree.read('/package.json')!.toString());
     expect(devDependencies['ts-loader']).toBeUndefined();
     expect(devDependencies['webpack-cli']).toBeUndefined();
