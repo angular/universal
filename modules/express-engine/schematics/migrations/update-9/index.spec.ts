@@ -34,13 +34,7 @@ describe('Migration to version 9', () => {
     tree.create('/projects/test-app/webpack.server.config.js', 'webpack config content');
 
     const pkg = JSON.parse(tree.readContent('/package.json'));
-    pkg.scripts['compile:server'] = '';
-    pkg.scripts['build:client-and-server-bundles'] = '';
-
-    pkg.devDependencies['webpack-cli'] = '0.0.0';
-    pkg.devDependencies['ts-loader'] = '0.0.0';
     pkg.devDependencies['@nguniversal/express-engine'] = '0.0.0';
-
     tree.overwrite('/package.json', JSON.stringify(pkg, null, 2));
   });
 
@@ -73,22 +67,11 @@ describe('Migration to version 9', () => {
     ]);
   });
 
-  it(`should remove dependencies on 'webpack-cli' and 'ts-loader'`, async () => {
-    const newTree =
-      await schematicRunner.runSchematicAsync('update-9', {}, tree.branch()).toPromise();
-
-    const { devDependencies } = JSON.parse(newTree.readContent('/package.json'));
-    expect(devDependencies['ts-loader']).toBeUndefined();
-    expect(devDependencies['webpack-cli']).toBeUndefined();
-  });
-
   it(`should update 'package.json' scripts`, async () => {
     const newTree =
       await schematicRunner.runSchematicAsync('update-9', {}, tree.branch()).toPromise();
 
     const { scripts } = JSON.parse(newTree.readContent('/package.json'));
-    expect(scripts['build:client-and-server-bundles']).toBeUndefined();
-    expect(scripts['compile:server']).toBeUndefined();
     expect(scripts['build:ssr'])
       .toBe('ng build --prod && ng run test-app:server:production');
     expect(scripts['serve:ssr']).toBe('node dist/test-app/server/main.js');

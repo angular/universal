@@ -12,21 +12,16 @@ import {
   chain,
   externalSchematic,
 } from '@angular-devkit/schematics';
-import {removePackageJsonDependency} from '@schematics/angular/utility/dependencies';
 import {getWorkspace} from '@schematics/angular/utility/workspace';
 import {NodePackageInstallTask} from '@angular-devkit/schematics/tasks';
 import {Builders} from '@schematics/angular/utility/workspace-models';
 import {normalize, join} from '@angular-devkit/core';
-import {Schema as InstallSchema} from '../../install/schema';
+import {Schema as UniversalOptions} from '@schematics/angular/universal/schema';
 
 export function version9UpdateRule(collectionPath: string): Rule {
   return async host => {
-    // the below dependencies are no longer needed in version 9
-    removePackageJsonDependency(host, 'ts-loader');
-    removePackageJsonDependency(host, 'webpack-cli');
-
     return chain([
-      removePackageScriptsRule(),
+      backupPackageScriptsRule(),
       updateProjectsStructureRule(collectionPath),
       (tree, context) => {
         const packageChanges = tree.actions.some(a => a.path.endsWith('/package.json'));
@@ -38,7 +33,7 @@ export function version9UpdateRule(collectionPath: string): Rule {
   };
 }
 
-function removePackageScriptsRule(): Rule {
+function backupPackageScriptsRule(): Rule {
   return tree => {
     // Remove old scripts in 'package.json'
     const pkgPath = '/package.json';
@@ -48,8 +43,26 @@ function removePackageScriptsRule(): Rule {
     }
 
     const pkg = JSON.parse(buffer.toString());
-    delete pkg.scripts['compile:server'];
-    delete pkg.scripts['build:client-and-server-bundles'];
+    const scripts = pkg.scripts;
+    if (!scripts) {
+      return;
+    }
+
+    // Backup script targets
+    [
+      'compile:server',
+      'build:ssr',
+      'serve:ssr',
+      'build:client-and-server-bundles',
+    ].forEach(key => {
+      const keyBackup = `${key}_bak`;
+      const scriptValue = scripts[key];
+      // Check if script target exists and it has not been already backed up
+      if (scriptValue && !scripts[keyBackup]) {
+        scripts[keyBackup] = scriptValue;
+        scripts[key] = undefined;
+      }
+    });
 
     tree.overwrite(pkgPath, JSON.stringify(pkg, null, 2));
   };
@@ -78,7 +91,7 @@ function updateProjectsStructureRule(collectionPath: string): Rule {
         .filter(f => tree.exists(f))
         .forEach(f => tree.rename(f, `${f}.bak`));
 
-      const installOptions: InstallSchema = {
+      const installOptions: UniversalOptions = {
         clientProject: projectName,
         // Skip install, so we only do one for the entire workspace at the end.
         skipInstall: true,

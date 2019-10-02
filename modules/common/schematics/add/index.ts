@@ -19,7 +19,7 @@ import {
   appendValueInAstArray,
 } from '@schematics/angular/utility/json-utils';
 import {Schema as UniversalOptions} from '@schematics/angular/universal/schema';
-import {stripTsExtension, getDistPaths, getClientProject} from '../utils';
+import {stripTsExtension, getDistPaths, getProject} from '../utils';
 
 export interface AddUniversalOptions extends UniversalOptions {
   serverFileName?: string;
@@ -27,7 +27,7 @@ export interface AddUniversalOptions extends UniversalOptions {
 
 export function addUniversalCommonRule(options: AddUniversalOptions): Rule {
   return async host => {
-    const clientProject = await getClientProject(host, options.clientProject);
+    const clientProject = await getProject(host, options.clientProject);
 
     return chain([
       clientProject.targets.has('server')

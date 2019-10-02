@@ -35,11 +35,10 @@ describe('Migration to version 9', () => {
     tree.create('/projects/test-app/webpack.server.config.js', 'webpack config content');
 
     const pkg = JSON.parse(tree.readContent('/package.json'));
-    pkg.scripts['compile:server'] = '';
-    pkg.scripts['build:client-and-server-bundles'] = '';
-
-    pkg.devDependencies['webpack-cli'] = '0.0.0';
-    pkg.devDependencies['ts-loader'] = '0.0.0';
+    const scripts = pkg.scripts;
+    scripts['compile:server'] = 'old compile:server';
+    scripts['serve:ssr'] = 'old serve:ssr';
+    scripts['build:client-and-server-bundles'] = 'old build:client-and-server-bundles';
 
     tree.overwrite('/package.json', JSON.stringify(pkg, null, 2));
   });
@@ -50,10 +49,24 @@ describe('Migration to version 9', () => {
     expect(newTree.exists('/projects/test-app/webpack.server.config.js.bak')).toBeTruthy();
   });
 
-  it(`should remove dependencies on 'webpack-cli' and 'ts-loader'`, async () => {
+  it(`should backup old 'package.json' scripts`, async () => {
     const newTree = await schematicRunner.callRule(version9UpdateRule(''), tree).toPromise();
-    const { devDependencies } = JSON.parse(newTree.read('/package.json')!.toString());
-    expect(devDependencies['ts-loader']).toBeUndefined();
-    expect(devDependencies['webpack-cli']).toBeUndefined();
+
+    const { scripts } = JSON.parse(newTree.read('/package.json')!.toString());
+    expect(scripts['build:client-and-server-bundles']).toBeUndefined();
+    expect(scripts['compile:server']).toBeUndefined();
+    expect(scripts['serve:ssr']).toBeUndefined();
+
+    expect(scripts['build:client-and-server-bundles_bak']).toBeDefined();
+    expect(scripts['compile:server_bak']).toBeDefined();
+    expect(scripts['serve:ssr_bak']).toBeDefined();
+  });
+
+  it(`should not backup old 'package.json' scripts when target is missing`, async () => {
+    const newTree = await schematicRunner.callRule(version9UpdateRule(''), tree).toPromise();
+
+    const { scripts } = JSON.parse(newTree.read('/package.json')!.toString());
+    expect(scripts['build:ssr']).toBeUndefined();
+    expect(scripts['build:ssr_bak']).toBeUndefined();
   });
 });
