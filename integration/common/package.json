@@ -31,7 +31,7 @@
     "babel-preset-es2015": "^6.22.0",
     "concurrently": "5.0.0",
     "protractor": "file:../../node_modules/protractor",
-    "raw-loader": "^0.5.1",
+    "raw-loader": "^4.0.0",
     "webpack": "^2.2.1"
   },
   "scripts": {
