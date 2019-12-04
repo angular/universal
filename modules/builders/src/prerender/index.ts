@@ -22,8 +22,6 @@ export type BuilderOutputWithPaths = JsonObject & BuilderOutput & {
 
 /**
  * A wrapper for import to make unit tests possible.
- *
- * @param serverBundlePath
  */
 export function _importWrapper(importPath: string) {
   return import(importPath);
@@ -32,11 +30,6 @@ export function _importWrapper(importPath: string) {
 /**
  * Renders each route in options.routes and writes them to
  * <route>/index.html for each output path in the browser result.
- *
- * @param options
- * @param context
- * @param browserResult
- * @param serverResult
  */
 export async function _renderUniversal(
   options: BuildWebpackPrerenderSchema,
@@ -44,6 +37,7 @@ export async function _renderUniversal(
   browserResult: BuilderOutputWithPaths,
   serverResult: BuilderOutputWithPaths,
 ): Promise<BuilderOutputWithPaths> {
+  // We need to render the routes for each locale from the browser output.
   for (const outputPath of browserResult.outputPaths) {
     const localeDirectory = path.relative(browserResult.baseOutputPath, outputPath);
     const browserIndexOutputPath = path.join(outputPath, 'index.html');
@@ -51,8 +45,10 @@ export async function _renderUniversal(
     const { AppServerModuleDef, renderModuleFn } =
       await exports._getServerModuleBundle(options, context, serverResult, localeDirectory);
 
-    context.logger.info(`\nPrerendering ${options.routes!.length} route(s) to ${outputPath}`);
-    for (const route of options.routes!) {
+    context.logger.info(`\nPrerendering ${options.routes.length} route(s) to ${outputPath}`);
+
+    // Render each route and write them to <route>/index.html.
+    for (const route of options.routes) {
       const renderOpts = {
         document: indexHtml,
         url: route,
@@ -86,11 +82,6 @@ export async function _renderUniversal(
  * returns its server module bundle.
  *
  * Throws if no app module bundle is found.
- *
- * @param options
- * @param context
- * @param serverResult
- * @param browserLocaleDirectory
  */
 export async function _getServerModuleBundle(
   options: BuildWebpackPrerenderSchema,
@@ -128,12 +119,15 @@ export async function _getServerModuleBundle(
   } = await exports._importWrapper(serverBundlePath);
 
   if (renderModuleFactory && AppServerModuleNgFactory) {
+    // Happens when in ViewEngine mode.
     return {
       renderModuleFn: renderModuleFactory,
       AppServerModuleDef: AppServerModuleNgFactory,
     };
   }
+
   if (renderModule && AppServerModule) {
+    // Happens when in Ivy mode.
     return {
       renderModuleFn: renderModule,
       AppServerModuleDef: AppServerModule,
@@ -146,14 +140,14 @@ export async function _getServerModuleBundle(
  * Builds the browser and server, then renders each route in options.routes
  * and writes them to prerender/<route>/index.html for each output path in
  * the browser result.
- *
- * @param options
- * @param context
  */
 export async function _prerender(
   options: JsonObject & BuildWebpackPrerenderSchema,
   context: BuilderContext
 ): Promise<BuilderOutput> {
+  if (!options.routes || options.routes.length === 0) {
+    throw new Error('No routes found. options.routes must contain at least one route to render.');
+  }
   const browserTarget = targetFromTargetString(options.browserTarget);
   const serverTarget = targetFromTargetString(options.serverTarget);
 

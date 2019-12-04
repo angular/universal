@@ -20,7 +20,7 @@
   /**
    * The routes to render.
    */
-  routes?: string[];
+  routes: string[];
   /**
    * Server target to use for prerendering the app.
    */

@@ -146,7 +146,16 @@ describe('Prerender Builder', () => {
       });
       await expectAsync(PrerenderModule._prerender(options, context)).toBeResolvedTo(expected);
     });
+
+    it('should throw if no routes are given', async () => {
+      options.routes = [];
+      const expectedError = new Error('No routes found. options.routes must contain at least one route to render.');
+      await expectAsync(
+        PrerenderModule._prerender(options, context)
+      ).toBeRejectedWith(expectedError);
+    });
   });
+
   describe('#_renderUniversal', () => {
     const INITIAL_HTML = '<html></html>';
     const RENDERED_HTML = '<html>[Rendered Content]</html>';
@@ -164,13 +173,10 @@ describe('Prerender Builder', () => {
         AppServerModuleDef: emptyFn,
       }));
       getServerModuleBundleSpy = PrerenderModule._getServerModuleBundle as jasmine.Spy;
-      // @ts-ignore
-      spyOn(fs, 'readFileSync').and.callFake(() => '<html></html>');
+      spyOn(fs, 'readFileSync').and.callFake(() => '<html></html>' as any);
       readFileSyncSpy = fs.readFileSync as jasmine.Spy;
-      // @ts-ignore
       spyOn(fs, 'mkdirSync').and.callFake(emptyFn);
       mkdirSyncSpy = fs.mkdirSync as jasmine.Spy;
-      // @ts-ignore
       spyOn(fs, 'writeFileSync').and.callFake(emptyFn);
       writeFileSyncSpy = fs.writeFileSync as jasmine.Spy;
     });
@@ -286,8 +292,7 @@ describe('Prerender Builder', () => {
     });
 
     it('should search for a bundle if options.appModuleBundle is not defined', async () => {
-      // @ts-ignore
-      spyOn(fs, 'readdirSync').and.returnValue(['main.js']);
+      spyOn(fs, 'readdirSync').and.returnValue(['main.js'] as any);
       spyOn(fs, 'existsSync').and.returnValue(true);
       delete options.appModuleBundle;
       await expectAsync(
@@ -309,7 +314,7 @@ describe('Prerender Builder', () => {
     it('should throw if outputPath does not exist', async () => {
       spyOn(fs, 'existsSync').and.returnValue(false);
       delete options.appModuleBundle;
-      const expectedError = new Error(`Could not find server output directory: dist/browser.`);
+      const expectedError = new Error('Could not find server output directory: dist/browser.');
       await expectAsync(
         PrerenderModule._getServerModuleBundle(
           options,
@@ -321,8 +326,7 @@ describe('Prerender Builder', () => {
     });
 
     it('should throw if a module bundle cannot be found', async () => {
-      // @ts-ignore
-      spyOn(fs, 'readdirSync').and.returnValue(['server.js']);
+      spyOn(fs, 'readdirSync').and.returnValue(['server.js' as any]);
       spyOn(fs, 'existsSync').and.returnValue(true);
       delete options.appModuleBundle;
       const expectedError = new Error('Could not find the main bundle.');
@@ -338,7 +342,7 @@ describe('Prerender Builder', () => {
 
     it('should throw if no serverModuleBundle is defined', async () => {
       importSpy.and.returnValue(Promise.resolve({}));
-      const expectedError = new Error(`renderModule method and/or AppServerModule were not exported from: dist/browser/main.js.`);
+      const expectedError = new Error('renderModule method and/or AppServerModule were not exported from: dist/browser/main.js.');
       await expectAsync(
         PrerenderModule._getServerModuleBundle(
           options,

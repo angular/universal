@@ -9,7 +9,7 @@
     "prerender": {
       "implementation": "./src/prerender/index",
       "schema": "./src/prerender/schema.json",
-      "description": "Prerenders static files."
+      "description": "Perform build-time prerendering of chosen routes."
     }
   }
 }

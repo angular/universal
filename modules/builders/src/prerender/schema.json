@@ -24,11 +24,12 @@
         "type": "string",
         "uniqueItems": true
       },
-      "default": ["/"]
+      "default": []
     }
   },
   "required": [
     "browserTarget",
-    "serverTarget"
+    "serverTarget",
+    "routes"
   ]
 }
