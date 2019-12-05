@@ -58,7 +58,7 @@ ng_test_library(
     srcs = glob(
         [
             "testing/*.ts",
-            "**/*.spec.ts"
+            "**/*.spec.ts",
         ],
         exclude = ["**/files/**/*"],
     ),
