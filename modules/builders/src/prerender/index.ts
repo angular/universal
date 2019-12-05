@@ -69,7 +69,7 @@ export async function _renderUniversal(
           `CREATE ${outputFolderName}/index.html (${bytes} bytes)`
         );
       } catch (e) {
-        context.logger.error(`unable to render ${route}/index.html`);
+        context.logger.error(`unable to render ${outputFolderName}/index.html`);
       }
     }
   }
