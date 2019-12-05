@@ -7,4 +7,4 @@
  */
 
 export * from './ssr-dev-server/index';
-export * from './prerender/index';
+export { } from './prerender/index';
