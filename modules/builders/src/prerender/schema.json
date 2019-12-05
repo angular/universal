@@ -13,10 +13,6 @@
       "description": "Server target to use for prerendering the app.",
       "pattern": "^[^:\\s]+:[^:\\s]+(:[^\\s]+)?$"
     },
-    "appModuleBundle": {
-      "type": "string",
-      "description": "Script that exports the Server AppModule to render. This should be the main JavaScript outputted by the server target. By default we will resolve the outputPath of the serverTarget and find a bundle named 'main' in it (whether or not there's a hash tag)."
-    },
     "routes": {
       "type": "array",
       "description": "The routes to render.",
@@ -31,5 +27,6 @@
     "browserTarget",
     "serverTarget",
     "routes"
-  ]
+  ],
+  "additionalProperties": false
 }

@@ -43,7 +43,7 @@ export async function _renderUniversal(
     const browserIndexOutputPath = path.join(outputPath, 'index.html');
     const indexHtml = fs.readFileSync(browserIndexOutputPath, 'utf8');
     const { AppServerModuleDef, renderModuleFn } =
-      await exports._getServerModuleBundle(options, context, serverResult, localeDirectory);
+      await exports._getServerModuleBundle(serverResult, localeDirectory);
 
     context.logger.info(`\nPrerendering ${options.routes.length} route(s) to ${outputPath}`);
 
@@ -66,10 +66,10 @@ export async function _renderUniversal(
         fs.writeFileSync(outputIndexPath, html);
         const bytes = Buffer.byteLength(html).toFixed(0);
         context.logger.info(
-          `CREATE ${outputFolderName}/index.html (${bytes} bytes)`
+          `CREATE ${outputIndexPath} (${bytes} bytes)`
         );
       } catch (e) {
-        context.logger.error(`unable to render ${outputFolderName}/index.html`);
+        context.logger.error(`Unable to render ${outputIndexPath}`);
       }
     }
   }
@@ -84,31 +84,14 @@ export async function _renderUniversal(
  * Throws if no app module bundle is found.
  */
 export async function _getServerModuleBundle(
-  options: BuildWebpackPrerenderSchema,
-  context: BuilderContext,
   serverResult: BuilderOutputWithPaths,
   browserLocaleDirectory: string,
 ) {
-  let serverBundlePath;
-  if (options.appModuleBundle) {
-    serverBundlePath = path.join(context.workspaceRoot, options.appModuleBundle);
-  } else {
-    const { baseOutputPath = '' } = serverResult;
-    const outputPath = path.join(baseOutputPath, browserLocaleDirectory);
+  const { baseOutputPath = '' } = serverResult;
+  const serverBundlePath = path.join(baseOutputPath, browserLocaleDirectory, 'main.js');
 
-    if (!fs.existsSync(outputPath)) {
-      throw new Error(`Could not find server output directory: ${outputPath}.`);
-    }
-
-    const files = fs.readdirSync(outputPath, 'utf8');
-    const re = /^main\.(?:[a-zA-Z0-9]{20}\.)?(?:bundle\.)?js$/;
-    const maybeMain = files.filter(x => re.test(x))[0];
-
-    if (!maybeMain) {
-      throw new Error('Could not find the main bundle.');
-    } else {
-      serverBundlePath = path.join(outputPath, maybeMain);
-    }
+  if (!fs.existsSync(serverBundlePath)) {
+    throw new Error(`Could not find the main bundle: ${serverBundlePath}`);
   }
 
   const {
