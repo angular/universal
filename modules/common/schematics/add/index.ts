@@ -117,7 +117,7 @@ function updateWorkspaceConfigRule(options: AddUniversalOptions): Rule {
         options: {
           browserTarget: `${projectName}:build:production`,
           serverTarget: `${projectName}:server:production`,
-          routes: ['/']
+          routes: []
         }
       });
     });
