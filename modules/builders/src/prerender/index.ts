@@ -32,7 +32,7 @@ export function _importWrapper(importPath: string) {
  * <route>/index.html for each output path in the browser result.
  */
 export async function _renderUniversal(
-  options: BuildWebpackSchema,
+  options: BuildWebpackPrerenderSchema,
   context: BuilderContext,
   browserResult: BuilderOutputWithPaths,
   serverResult: BuilderOutputWithPaths,
