@@ -37,8 +37,8 @@ describe('Add Schematic Rule', () => {
     expect(architect.server.options.main).toBe('projects/test-app/server.ts');
     expect(architect['serve-ssr'].options.serverTarget).toBe('test-app:server');
     expect(architect['serve-ssr'].options.browserTarget).toBe('test-app:build');
-    expect(architect['prerender'].options.serverTarget).toBe('test-app:server');
-    expect(architect['prerender'].options.browserTarget).toBe('test-app:build');
+    expect(architect['prerender'].options.serverTarget).toBe('test-app:server:production');
+    expect(architect['prerender'].options.browserTarget).toBe('test-app:build:production');
 
     const productionConfig = architect.server.configurations.production;
     expect(productionConfig.fileReplacements).toBeDefined();
