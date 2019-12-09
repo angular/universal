@@ -115,8 +115,8 @@ function updateWorkspaceConfigRule(options: AddUniversalOptions): Rule {
         name: PRERENDER_TARGET_NAME,
         builder: '@nguniversal/builders:prerender',
         options: {
-          browserTarget: `${projectName}:build`,
-          serverTarget: `${projectName}:server`,
+          browserTarget: `${projectName}:build:production`,
+          serverTarget: `${projectName}:server:production`,
           routes: ['/']
         }
       });
