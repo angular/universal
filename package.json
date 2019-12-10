@@ -1,7 +1,7 @@
 {
   "name": "nguniversal",
   "main": "index.js",
-  "version": "8.2.0",
+  "version": "8.2.1",
   "description": "Universal (isomorphic) JavaScript support for Angular",
   "homepage": "https://github.com/angular/universal",
   "license": "MIT",
@@ -85,7 +85,7 @@
     "@angular/platform-browser-dynamic": "^8.2.0",
     "@angular/platform-server": "^8.2.0",
     "rxjs": "^6.4.0",
-    "typescript": "^3.4.0"
+    "typescript": "3.5.3"
   },
   "devDependencies": {
     "@angular/bazel": "^8.2.0",
