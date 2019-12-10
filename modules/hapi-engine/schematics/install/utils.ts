@@ -7,7 +7,7 @@
  */
 import { SchematicsException, Tree } from '@angular-devkit/schematics';
 import * as ts from 'typescript';
-import {getSourceNodes} from '@schematics/angular/utility/ast-utils';
+import { findNodes } from '@schematics/angular/utility/ast-utils';
 
 export function getTsSourceText(host: Tree, path: string): string {
   const buffer = host.read(path);
@@ -22,31 +22,14 @@ export function getTsSourceFile(host: Tree, path: string): ts.SourceFile {
 }
 
 export function findAppServerModuleExport(host: Tree,
-                                          mainPath: string): ts.ExportDeclaration | null {
+  mainPath: string): ts.ExportDeclaration | null {
   const source = getTsSourceFile(host, mainPath);
-  const allNodes = getSourceNodes(source);
-
-  let exportDeclaration: ts.ExportDeclaration | null = null;
-
-  for (const node of allNodes) {
-
-    let exportDeclarationNode: ts.Node | null = node;
-
-    // Walk up the parent until ExportDeclaration is found.
-    while (exportDeclarationNode && exportDeclarationNode.parent
-    && exportDeclarationNode.parent.kind !== ts.SyntaxKind.ExportDeclaration) {
-      exportDeclarationNode = exportDeclarationNode.parent;
-    }
-
-    if (exportDeclarationNode !== null &&
-      exportDeclarationNode.parent !== undefined &&
-      exportDeclarationNode.parent.kind === ts.SyntaxKind.ExportDeclaration) {
-      exportDeclaration = exportDeclarationNode.parent as ts.ExportDeclaration;
-      break;
-    }
+  const exportNodes = findNodes(source, ts.SyntaxKind.ExportDeclaration);
+  if (exportNodes && exportNodes.length > 0) {
+    return exportNodes[0] as ts.ExportDeclaration;
+  } else {
+    return null;
   }
-
-  return exportDeclaration;
 }
 
 export function findAppServerModulePath(host: Tree, mainPath: string): string {
