@@ -176,13 +176,9 @@
         "e2e": {
           "builder": "@angular-devkit/build-angular:protractor",
           "options": {
+            "webdriverUpdate": false,
             "protractorConfig": "e2e/protractor.conf.js",
             "baseUrl": "http://localhost:3000"
-          },
-          "configurations": {
-            "production": {
-              "devServerTarget": "express-engine-ivy-prerender:serve:production"
-            }
           }
         }
       }
