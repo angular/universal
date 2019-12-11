@@ -20,8 +20,18 @@ import {
 import {Schema as UniversalOptions} from '@schematics/angular/universal/schema';
 import {updateWorkspace} from '@schematics/angular/utility/workspace';
 import {addPackageJsonDependency, NodeDependencyType} from '@schematics/angular/utility/dependencies';
+import * as ts from 'typescript';
+import {dirname, relative} from 'path';
 
-import {stripTsExtension, getOutputPath, getProject} from '../utils';
+import {
+  stripTsExtension,
+  getOutputPath,
+  getProject,
+  findImport,
+  findImportSpecifier,
+  addInitialNavigation,
+  getImportOfIdentifier,
+} from '../utils';
 
 const SERVE_SSR_TARGET_NAME = 'serve-ssr';
 const PRERENDER_TARGET_NAME = 'prerender';
@@ -44,6 +54,7 @@ export function addUniversalCommonRule(options: AddUniversalOptions): Rule {
       addScriptsRule(options),
       updateServerTsConfigRule(options),
       updateWorkspaceConfigRule(options),
+      routingInitialNavigationRule(options),
       addDependencies(),
     ]);
   };
@@ -166,6 +177,88 @@ function updateServerTsConfigRule(options: AddUniversalOptions): Rule {
 
       host.commitUpdate(recorder);
     }
+  };
+}
+
+function routingInitialNavigationRule(options: UniversalOptions): Rule {
+  return async host => {
+    const clientProject = await getProject(host, options.clientProject);
+    const serverTarget = clientProject.targets.get('server');
+    if (!serverTarget || !serverTarget.options) {
+      return;
+    }
+
+    const tsConfigPath = serverTarget.options.tsConfig;
+    if (!tsConfigPath || typeof tsConfigPath !== 'string' || !host.exists(tsConfigPath)) {
+      // No tsconfig path
+      return;
+    }
+
+    const basePath = process.cwd();
+    const {config} = ts.readConfigFile(tsConfigPath, ts.sys.readFile);
+    const parseConfigHost = {
+      useCaseSensitiveFileNames: ts.sys.useCaseSensitiveFileNames,
+      fileExists: ts.sys.fileExists,
+      readDirectory: ts.sys.readDirectory,
+      readFile: ts.sys.readFile,
+    };
+    const parsed = ts.parseJsonConfigFileContent(config, parseConfigHost, dirname(tsConfigPath),
+      {});
+    const tsHost = ts.createCompilerHost(parsed.options, true);
+
+    tsHost.readFile = fileName => {
+      const treeRelativePath = relative(basePath, fileName);
+      const buffer = host.read(treeRelativePath);
+      // Strip BOM as otherwise TSC methods (Ex: getWidth) will return an offset,
+      // which breaks the CLI UpdateRecorder.
+      // See: https://github.com/angular/angular/pull/30719
+      return buffer ? buffer.toString().replace(/^\uFEFF/, '') : undefined;
+    };
+
+    const program = ts.createProgram(parsed.fileNames, parsed.options, tsHost);
+    const typeChecker = program.getTypeChecker();
+    const printer = ts.createPrinter();
+    const sourceFiles = program.getSourceFiles().filter(
+      f => !f.isDeclarationFile && !program.isSourceFileFromExternalLibrary(f));
+    const routerModule = 'RouterModule';
+    const routerSource = '@angular/router';
+
+    // console.log('start', sourceFiles.length);
+
+    sourceFiles.forEach(sourceFile => {
+      const routerImport = findImport(sourceFile, routerSource, routerModule);
+
+      if (!routerImport) {
+        return;
+      }
+
+      let routerModuleNode: ts.CallExpression;
+      ts.forEachChild(sourceFile, function visitNode(node: ts.Node) {
+        if (ts.isCallExpression(node) && ts.isPropertyAccessExpression(node.expression) &&
+          ts.isIdentifier(node.expression.expression) && node.expression.name.text === 'forRoot') {
+          const imp = getImportOfIdentifier(typeChecker, node.expression.expression);
+
+          if (imp && imp.name === routerModule && imp.importModule === routerSource) {
+            routerModuleNode = node;
+          }
+        }
+
+        ts.forEachChild(node, visitNode);
+      });
+
+      if (routerModuleNode) {
+        const print = printer.printNode(
+          ts.EmitHint.Unspecified, addInitialNavigation(routerModuleNode),
+          sourceFile);
+        const update = host.beginUpdate(relative(basePath, sourceFile.fileName));
+
+        update.remove(routerModuleNode.getStart(), routerModuleNode.getWidth());
+        update.insertRight(
+          routerModuleNode.getStart(),
+          print);
+        host.commitUpdate(update);
+      }
+    });
   };
 }
 

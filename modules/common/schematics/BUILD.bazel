@@ -60,5 +60,7 @@ ng_test_library(
         "@npm//@angular-devkit/core",
         "@npm//@angular-devkit/schematics",
         "@npm//@schematics/angular",
+        "@npm//@types/shelljs",
+        "@npm//shelljs",
     ],
 )

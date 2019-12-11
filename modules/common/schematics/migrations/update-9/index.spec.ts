@@ -18,7 +18,7 @@ describe('Migration to version 9', () => {
 
   let tree: UnitTestTree;
   beforeEach(async () => {
-    tree =  await createTestApp();
+    tree =  await createTestApp(schematicRunner);
     tree = await schematicRunner
       .runExternalSchematicAsync(
         '@schematics/angular',
