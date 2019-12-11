@@ -168,8 +168,8 @@
         "prerender": {
           "builder": "@nguniversal/builders:prerender",
           "options": {
-            "browserTarget": "express-engine-ivy-prerender:build",
-            "serverTarget": "express-engine-ivy-prerender:server",
+            "browserTarget": "express-engine-ivy-prerender:build:production",
+            "serverTarget": "express-engine-ivy-prerender:server:production",
             "routes": []
           }
         },
