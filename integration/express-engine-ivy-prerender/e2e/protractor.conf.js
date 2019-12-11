@@ -10,7 +10,6 @@ let serverDaemon;
  * @type { import("protractor").Config }
  */
 exports.config = {
-  SELENIUM_PROMISE_MANAGER: false,
   allScriptsTimeout: 11000,
   specs: [
     './src/**/*.e2e-spec.ts'
