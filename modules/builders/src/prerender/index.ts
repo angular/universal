@@ -50,7 +50,7 @@ export async function _renderUniversal(
     // Render each route and write them to <route>/index.html.
     for (const route of options.routes) {
       const renderOpts = {
-        document: indexHtml,
+        document: indexHtml + '<p hidden>This page was prerendered with Angular Universal.</p>',
         url: route,
       };
       const html = await renderModuleFn(AppServerModuleDef, renderOpts);
