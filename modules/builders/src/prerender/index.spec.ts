@@ -158,7 +158,7 @@ describe('Prerender Builder', () => {
 
   describe('#_renderUniversal', () => {
     const INITIAL_HTML = '<html></html>';
-    const MARKED_HTML = '<html></html>' + '<p hidden>This page was prerendered with Angular Universal.</p>';
+    const MARKED_HTML = INITIAL_HTML + '<p hidden>This page was prerendered with Angular Universal.</p>';
     const RENDERED_HTML = '<html>[Rendered Content]</html>';
 
     let renderModuleFnSpy: jasmine.Spy;
