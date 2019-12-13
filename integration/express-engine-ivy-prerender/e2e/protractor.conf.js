@@ -22,7 +22,7 @@ exports.config = {
     }
   },
   directConnect: true,
-  baseUrl: 'http://localhost:4000/',
+  baseUrl: 'http://localhost:4001/',
   framework: 'jasmine',
   jasmineNodeOpts: {
     showColors: true,
@@ -38,7 +38,7 @@ exports.config = {
       'ng run express-engine-ivy-prerender:prerender --routes=/ --routes=pokemon/pikachu',
       { stdio: 'inherit' },
     );
-    serverDaemon = exec('node dist/express-engine-ivy-prerender/server/main.js');
+    serverDaemon = exec('PORT=4001 node dist/express-engine-ivy-prerender/server/main.js');
   },
   onComplete() {
     serverDaemon.kill();
