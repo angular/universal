@@ -11,7 +11,7 @@
     "ng": "ng",
     "start": "ng serve",
     "e2e": "sleep 60 && ng e2e",
-    "test": "npm run serve:test",
+    "test": "npm run e2e",
     "serve:test": "concurrently \"npm run serve:ssr:dev\" \"npm run e2e\" --kill-others --success first",
     "serve:ssr": "node dist/express-engine-ivy-prerender/server/main.js",
     "serve:ssr:dev": "ng run express-engine-ivy-prerender:serve-ssr:production",
