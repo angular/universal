@@ -5,11 +5,8 @@
  * Use of this source code is governed by an MIT-style license that can be
  * found in the LICENSE file at https://angular.io/license
  */
-import {HostTree} from '@angular-devkit/schematics';
-import {SchematicTestRunner, UnitTestTree} from '@angular-devkit/schematics/testing';
-import {getSystemPath, normalize, virtualFs} from '@angular-devkit/core';
-import {TempScopedNodeJsSyncHost} from '@angular-devkit/core/node/testing';
-import * as shx from 'shelljs';
+import {Tree} from '@angular-devkit/schematics';
+import {SchematicTestRunner} from '@angular-devkit/schematics/testing';
 
 import {collectionPath, createTestApp} from '../testing/test-app';
 
@@ -21,34 +18,21 @@ describe('Add Schematic Rule', () => {
     serverFileName: 'server.ts',
   };
 
-  let runner: SchematicTestRunner;
-  let host: TempScopedNodeJsSyncHost;
-  let tree: UnitTestTree;
-  let tmpDirPath: string;
-  let previousWorkingDir: string;
+  let schematicRunner: SchematicTestRunner;
+  let appTree: Tree;
 
   beforeEach(async () => {
-    runner = new SchematicTestRunner('schematics', collectionPath);
-    host = new TempScopedNodeJsSyncHost();
+    appTree = await createTestApp({
+      routing: true,
+    });
 
-    previousWorkingDir = shx.pwd();
-    tmpDirPath = getSystemPath(host.root);
-
-    // Switch into the temporary directory path. This allows us to run
-    // the schematic against our custom unit test tree.
-    shx.cd(tmpDirPath);
-
-    tree = await createTestApp(runner, {}, new HostTree(host));
-  });
-
-  afterEach(() => {
-    shx.cd(previousWorkingDir);
-    shx.rm('-r', tmpDirPath);
+    schematicRunner = new SchematicTestRunner('schematics', collectionPath);
   });
 
   it('should update angular.json', async () => {
-    await callRule();
-    const contents = JSON.parse(tree.readContent('angular.json'));
+    const tree = await schematicRunner
+      .callRule(addUniversalCommonRule(defaultOptions), appTree).toPromise();
+    const contents = JSON.parse(tree.read('angular.json')!.toString());
     const architect = contents.projects['test-app'].architect;
     expect(architect.build.configurations.production).toBeDefined();
     expect(architect.build.options.outputPath).toBe('dist/test-app/browser');
@@ -70,8 +54,9 @@ describe('Add Schematic Rule', () => {
   });
 
   it('should add scripts to package.json', async () => {
-    await callRule();
-    const {scripts} = JSON.parse(tree.readContent('package.json'));
+    const tree = await schematicRunner
+      .callRule(addUniversalCommonRule(defaultOptions), appTree).toPromise();
+    const {scripts} = JSON.parse(tree.read('package.json')!.toString());
     expect(scripts['build:ssr']).toBe('ng build --prod && ng run test-app:server:production');
     expect(scripts['serve:ssr']).toBe('node dist/test-app/server/main.js');
     expect(scripts['dev:ssr']).toBe('ng run test-app:serve-ssr');
@@ -79,14 +64,17 @@ describe('Add Schematic Rule', () => {
   });
 
   it('should add devDependency: @nguniversal/builders', async () => {
-    await callRule();
-    const {devDependencies} = JSON.parse(tree.readContent('package.json'));
+    const tree = await schematicRunner
+      .callRule(addUniversalCommonRule(defaultOptions), appTree).toPromise();
+    const {devDependencies} = JSON.parse(tree.read('package.json')!.toString());
     expect(Object.keys(devDependencies)).toContain('@nguniversal/builders');
   });
 
   it(`should update 'tsconfig.server.json' files with main file`, async () => {
-    await callRule();
-    const contents = JSON.parse(tree.readContent('/projects/test-app/tsconfig.server.json'));
+    const tree = await schematicRunner
+      .callRule(addUniversalCommonRule(defaultOptions), appTree).toPromise();
+
+    const contents = JSON.parse(tree.read('/projects/test-app/tsconfig.server.json')!.toString());
     expect(contents.files).toEqual([
       'src/main.server.ts',
       'server.ts',
@@ -94,39 +82,50 @@ describe('Add Schematic Rule', () => {
   });
 
   it(`should work when server target already exists`, async () => {
-    tree = await runner
-      .runExternalSchematicAsync('@schematics/angular', 'universal', defaultOptions, tree)
+    appTree = await schematicRunner
+      .runExternalSchematicAsync('@schematics/angular', 'universal', defaultOptions, appTree)
       .toPromise();
 
-    await callRule();
+    const tree = await schematicRunner
+      .callRule(addUniversalCommonRule(defaultOptions), appTree).toPromise();
 
-    const contents = JSON.parse(tree.readContent('/projects/test-app/tsconfig.server.json'));
+    const contents = JSON.parse(tree.read('/projects/test-app/tsconfig.server.json')!.toString());
     expect(contents.files).toEqual([
       'src/main.server.ts',
       'server.ts',
     ]);
   });
 
-  fit(`should set 'initialNavigation' to enabled`, async () => {
+  it(`should set 'initialNavigation' to enabled`, async () => {
     const routerPath = '/projects/test-app/src/app/app-routing.module.ts';
-    tree.files.forEach(f => writeFile(f, tree.readContent(f)));
-    await callRule();
-    expect(tree.readContent(routerPath)).toContain('initialNavigation: "enabled"');
+    const tree = await schematicRunner
+      .callRule(addUniversalCommonRule(defaultOptions), appTree).toPromise();
+    expect(tree.read(routerPath)!.toString())
+      .toMatch(/forRoot\(routes, \{\n\s*initialNavigation: 'enabled'\n\s*\}\)/);
   });
 
-  function callRule() {
-    return runner.callRule(addUniversalCommonRule(defaultOptions), tree).toPromise();
-  }
+  it(`should not set 'initialNavigation' to enabled when it's specified`, async () => {
+    const routerPath = '/projects/test-app/src/app/app-routing.module.ts';
+    const modifiedContent = appTree.read(routerPath)!.toString().replace(
+      'forRoot(routes)',
+      `forRoot(routes, { initialNavigation: 'disabled' })`,
+    );
+    appTree.overwrite(routerPath, modifiedContent);
+    const tree = await schematicRunner
+      .callRule(addUniversalCommonRule(defaultOptions), appTree).toPromise();
+    expect(tree.read(routerPath)!.toString()).toBe(modifiedContent);
+  });
 
-  function writeFile(filePath: string, content: string) {
-    // Update the temp file system host to reflect the changes in the real file system.
-    // This is still necessary since we depend on the real file system for parsing the
-    // TypeScript project.
-    host.sync.write(normalize(filePath), virtualFs.stringToFileBuffer(content));
-    if (tree.exists(filePath)) {
-      tree.overwrite(filePath, content);
-    } else {
-      tree.create(filePath, content);
-    }
-  }
+  it(`should append 'initialNavigation' when forRoot options are defined`, async () => {
+    const routerPath = '/projects/test-app/src/app/app-routing.module.ts';
+    const modifiedContent = appTree.read(routerPath)!.toString().replace(
+      'forRoot(routes)',
+      `forRoot(routes, { enableTracing: true })`,
+    );
+    appTree.overwrite(routerPath, modifiedContent);
+    const tree = await schematicRunner
+      .callRule(addUniversalCommonRule(defaultOptions), appTree).toPromise();
+      expect(tree.read(routerPath)!.toString())
+        .toContain(`RouterModule.forRoot(routes, { enableTracing: true, initialNavigation: 'enabled' })`);
+  });
 });

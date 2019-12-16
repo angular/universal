@@ -64,7 +64,6 @@
     "@types/hapi__inert": "^5.2.0",
     "@types/jasmine": "^3.4.4",
     "@types/node": "^12.11.1",
-    "@types/shelljs": "^0.8.6",
     "browser-sync": "^2.26.7",
     "domino": "^2.1.2",
     "express": "^4.15.2",

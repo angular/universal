@@ -12,23 +12,21 @@ import {
   SchematicsException,
   noop,
 } from '@angular-devkit/schematics';
-import {parseJsonAst, JsonParseMode, normalize, join} from '@angular-devkit/core';
+import { parseJsonAst, JsonParseMode, normalize, join, dirname } from '@angular-devkit/core';
 import {
   findPropertyInAstObject,
   appendValueInAstArray,
 } from '@schematics/angular/utility/json-utils';
-import {Schema as UniversalOptions} from '@schematics/angular/universal/schema';
-import {updateWorkspace} from '@schematics/angular/utility/workspace';
-import {addPackageJsonDependency, NodeDependencyType} from '@schematics/angular/utility/dependencies';
+import { Schema as UniversalOptions } from '@schematics/angular/universal/schema';
+import { updateWorkspace } from '@schematics/angular/utility/workspace';
+import { addPackageJsonDependency, NodeDependencyType } from '@schematics/angular/utility/dependencies';
 import * as ts from 'typescript';
-import {dirname, relative} from 'path';
 
 import {
   stripTsExtension,
   getOutputPath,
   getProject,
   findImport,
-  findImportSpecifier,
   addInitialNavigation,
   getImportOfIdentifier,
 } from '../utils';
@@ -194,40 +192,50 @@ function routingInitialNavigationRule(options: UniversalOptions): Rule {
       return;
     }
 
-    const basePath = process.cwd();
-    const {config} = ts.readConfigFile(tsConfigPath, ts.sys.readFile);
-    const parseConfigHost = {
+    const parseConfigHost: ts.ParseConfigHost = {
       useCaseSensitiveFileNames: ts.sys.useCaseSensitiveFileNames,
-      fileExists: ts.sys.fileExists,
       readDirectory: ts.sys.readDirectory,
-      readFile: ts.sys.readFile,
+      fileExists: function (fileName: string): boolean {
+        return host.exists(fileName);
+      },
+      readFile: function (fileName: string): string {
+        return host.read(fileName).toString();
+      },
     };
-    const parsed = ts.parseJsonConfigFileContent(config, parseConfigHost, dirname(tsConfigPath),
-      {});
+    const { config } = ts.readConfigFile(tsConfigPath, parseConfigHost.readFile);
+    const parsed = ts.parseJsonConfigFileContent(
+      config,
+      parseConfigHost,
+      dirname(normalize(tsConfigPath)),
+    );
     const tsHost = ts.createCompilerHost(parsed.options, true);
-
-    tsHost.readFile = fileName => {
-      const treeRelativePath = relative(basePath, fileName);
-      const buffer = host.read(treeRelativePath);
-      // Strip BOM as otherwise TSC methods (Ex: getWidth) will return an offset,
-      // which breaks the CLI UpdateRecorder.
-      // See: https://github.com/angular/angular/pull/30719
-      return buffer ? buffer.toString().replace(/^\uFEFF/, '') : undefined;
+    // Strip BOM as otherwise TSC methods (Ex: getWidth) will return an offset,
+    // which breaks the CLI UpdateRecorder.
+    // See: https://github.com/angular/angular/pull/30719
+    tsHost.readFile = function (fileName: string): string {
+      return host.read(fileName).toString().replace(/^\uFEFF/, '');
+    };
+    tsHost.directoryExists = function (directoryName: string): boolean {
+      const dir = host.getDir(directoryName);
+      return !!(dir.subdirs.length || dir.subfiles.length);
+    };
+    tsHost.fileExists = function (fileName: string): boolean {
+      return host.exists(fileName);
+    };
+    tsHost.getCurrentDirectory = function () {
+      return host.root.path;
     };
 
     const program = ts.createProgram(parsed.fileNames, parsed.options, tsHost);
     const typeChecker = program.getTypeChecker();
-    const printer = ts.createPrinter();
     const sourceFiles = program.getSourceFiles().filter(
       f => !f.isDeclarationFile && !program.isSourceFileFromExternalLibrary(f));
+    const printer = ts.createPrinter();
     const routerModule = 'RouterModule';
     const routerSource = '@angular/router';
 
-    // console.log('start', sourceFiles.length);
-
     sourceFiles.forEach(sourceFile => {
       const routerImport = findImport(sourceFile, routerSource, routerModule);
-
       if (!routerImport) {
         return;
       }
@@ -250,13 +258,11 @@ function routingInitialNavigationRule(options: UniversalOptions): Rule {
         const print = printer.printNode(
           ts.EmitHint.Unspecified, addInitialNavigation(routerModuleNode),
           sourceFile);
-        const update = host.beginUpdate(relative(basePath, sourceFile.fileName));
 
-        update.remove(routerModuleNode.getStart(), routerModuleNode.getWidth());
-        update.insertRight(
-          routerModuleNode.getStart(),
-          print);
-        host.commitUpdate(update);
+        const recorder = host.beginUpdate(sourceFile.fileName);
+        recorder.remove(routerModuleNode.getStart(), routerModuleNode.getWidth());
+        recorder.insertRight(routerModuleNode.getStart(), print);
+        host.commitUpdate(recorder);
       }
     });
   };

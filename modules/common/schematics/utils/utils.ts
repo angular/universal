@@ -52,14 +52,6 @@ export async function getOutputPath(
   return outputPath;
 }
 
-export function findImportSpecifier(elements: ts.NodeArray<ts.ImportSpecifier>,
-                                    importName: string) {
-  return elements.find(element => {
-    const {name, propertyName} = element;
-    return propertyName ? propertyName.text === importName : name.text === importName;
-  }) || null;
-}
-
 export function findImport(sourceFile: ts.SourceFile,
                     moduleName: string,
                     symbolName: string): ts.NamedImports | null {
@@ -76,7 +68,7 @@ export function findImport(sourceFile: ts.SourceFile,
       continue;
     }
 
-    if (findImportSpecifier(namedBindings.elements, symbolName)) {
+    if (namedBindings.elements.some(element => element.name.text === symbolName)) {
       return namedBindings;
     }
   }
@@ -123,17 +115,26 @@ export function addInitialNavigation(node: ts.CallExpression): ts.CallExpression
   const existingOptions = node.arguments[1] as ts.ObjectLiteralExpression | undefined;
 
   // If the user has explicitly set initialNavigation, we respect that
-  if (existingOptions && existingOptions.properties.find(exp =>
+  if (existingOptions && existingOptions.properties.some(exp =>
     ts.isPropertyAssignment(exp) && ts.isIdentifier(exp.name) &&
     exp.name.text === 'initialNavigation')) {
     return node;
   }
 
-  const initialNavigationProperty = ts.createPropertyAssignment('initialNavigation',
-    ts.createStringLiteral('enabled'));
-  const properties = [initialNavigationProperty];
-  const routerOptions = existingOptions ?
-    ts.updateObjectLiteral(existingOptions, properties) : ts.createObjectLiteral(properties, true);
+  const enabledLiteral = ts.createStringLiteral('enabled');
+  // TypeScript will emit the Node with double quotes.
+  // In schematics we usually write code with a single quotes
+  // tslint:disable-next-line: no-any
+  (enabledLiteral as any).singleQuote = true;
+
+  const initialNavigationProperty
+    = ts.createPropertyAssignment('initialNavigation', enabledLiteral);
+  const routerOptions = existingOptions
+    ? ts.updateObjectLiteral(existingOptions, ts.createNodeArray([
+      ...existingOptions.properties,
+      initialNavigationProperty
+    ]))
+    : ts.createObjectLiteral([initialNavigationProperty], true);
   const args = [node.arguments[0], routerOptions];
   return ts.createCall(node.expression, node.typeArguments, args);
 }
