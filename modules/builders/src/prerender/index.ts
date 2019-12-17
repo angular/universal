@@ -10,22 +10,16 @@ import { BuilderOutput, createBuilder, BuilderContext, targetFromTargetString } 
 import { JsonObject } from '@angular-devkit/core';
 import { Schema as BuildWebpackPrerenderSchema } from './schema';
 
-import { Buffer } from 'buffer';
+import { fork } from 'child_process';
 import * as fs from 'fs';
 import * as path from 'path';
+import * as os from 'os';
 
 export type BuilderOutputWithPaths = JsonObject & BuilderOutput & {
   baseOutputPath: string;
   outputPaths: string[];
   outputPath: string;
 };
-
-/**
- * A wrapper for import to make unit tests possible.
- */
-export function _importWrapper(importPath: string) {
-  return import(importPath);
-}
 
 /**
  * Renders each route in options.routes and writes them to
@@ -39,89 +33,49 @@ export async function _renderUniversal(
 ): Promise<BuilderOutputWithPaths> {
   // We need to render the routes for each locale from the browser output.
   for (const outputPath of browserResult.outputPaths) {
+    const workerFile = path.join(__dirname, 'render.js');
     const localeDirectory = path.relative(browserResult.baseOutputPath, outputPath);
     const browserIndexOutputPath = path.join(outputPath, 'index.html');
     const indexHtml = fs.readFileSync(browserIndexOutputPath, 'utf8');
-    const { AppServerModuleDef, renderModuleFn } =
-      await exports._getServerModuleBundle(serverResult, localeDirectory);
 
+    const { baseOutputPath = '' } = serverResult;
+    const serverBundlePath = path.join(baseOutputPath, localeDirectory, 'main.js');
+    if (!fs.existsSync(serverBundlePath)) {
+      throw new Error(`Could not find the main bundle: ${serverBundlePath}`);
+    }
+
+    // const numProcesses = 1;
+    const numProcesses = Math.min(os.cpus().length, options.routes.length);
     context.logger.info(`\nPrerendering ${options.routes.length} route(s) to ${outputPath}`);
 
-    // Render each route and write them to <route>/index.html.
-    for (const route of options.routes) {
-      const renderOpts = {
-        document: indexHtml + '<!-- This page was prerendered with Angular Universal -->',
-        url: route,
-      };
-      const html = await renderModuleFn(AppServerModuleDef, renderOpts);
+    const childProcesses = Array.from({ length: numProcesses }, (_, idx) => {
+      return new Promise((resolve, reject) => {
+        const child = fork(workerFile, [
+          idx.toString(),
+          numProcesses.toString(),
+          indexHtml,
+          serverBundlePath,
+          outputPath,
+          ...options.routes,
+        ]);
 
-      const outputFolderPath = path.join(outputPath, route);
-      const outputIndexPath = path.join(outputFolderPath, 'index.html');
+        child.on('message', data => {
+          if (data.success) {
+            context.logger.info(`CREATE ${data.outputIndexPath} (${data.bytes} bytes)`);
+          } else {
+            context.logger.error(`Unable to render ${data.outputIndexPath}`);
+          }
+        });
 
-      // This case happens when we are prerendering "/".
-      if (browserIndexOutputPath === outputIndexPath) {
-        const browserIndexOutputPathOriginal = path.join(outputPath, 'index.original.html');
-        fs.writeFileSync(browserIndexOutputPathOriginal, indexHtml);
-      }
+        child.on('exit', () => resolve(child));
+        child.on('error', reject);
+      });
+    });
 
-      // There will never conflicting output folders
-      // because items in options.routes must be unique.
-      try {
-        fs.mkdirSync(outputFolderPath, { recursive: true });
-        fs.writeFileSync(outputIndexPath, html);
-        const bytes = Buffer.byteLength(html).toFixed(0);
-        context.logger.info(
-          `CREATE ${outputIndexPath} (${bytes} bytes)`
-        );
-      } catch (e) {
-        context.logger.error(`Unable to render ${outputIndexPath}`);
-      }
-    }
+    // Wait for all of the forked processes to finish.
+    await Promise.all(childProcesses);
   }
   return browserResult;
-}
-
-/**
- * If the app module bundle path is not specified in options.appModuleBundle,
- * this method searches for what is usually the app module bundle file and
- * returns its server module bundle.
- *
- * Throws if no app module bundle is found.
- */
-export async function _getServerModuleBundle(
-  serverResult: BuilderOutputWithPaths,
-  browserLocaleDirectory: string,
-) {
-  const { baseOutputPath = '' } = serverResult;
-  const serverBundlePath = path.join(baseOutputPath, browserLocaleDirectory, 'main.js');
-
-  if (!fs.existsSync(serverBundlePath)) {
-    throw new Error(`Could not find the main bundle: ${serverBundlePath}`);
-  }
-
-  const {
-    AppServerModule,
-    AppServerModuleNgFactory,
-    renderModule,
-    renderModuleFactory,
-  } = await exports._importWrapper(serverBundlePath);
-
-  if (renderModuleFactory && AppServerModuleNgFactory) {
-    // Happens when in ViewEngine mode.
-    return {
-      renderModuleFn: renderModuleFactory,
-      AppServerModuleDef: AppServerModuleNgFactory,
-    };
-  }
-
-  if (renderModule && AppServerModule) {
-    // Happens when in Ivy mode.
-    return {
-      renderModuleFn: renderModule,
-      AppServerModuleDef: AppServerModule,
-    };
-  }
-  throw new Error(`renderModule method and/or AppServerModule were not exported from: ${serverBundlePath}.`);
 }
 
 /**
