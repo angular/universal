@@ -157,6 +157,13 @@
               "serverTarget": "app:server:production"
             }
           }
+        },
+        "prerender": {
+          "builder": "nguniversal/modules/builders/npm_package:prerender",
+          "options": {
+            "browserTarget": "app:build",
+            "serverTarget": "app:server"
+          }
         }
       }
     }},
