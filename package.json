@@ -37,6 +37,8 @@
   },
   "devDependencies": {
     "@angular-devkit/architect": "^0.900.0-rc.6",
+    "@angular/cli": "^9.0.0-rc.6",
+    "@angular-devkit/build-angular": "^0.900.0-rc.6",
     "@angular-devkit/core": "^9.0.0-rc.6",
     "@angular-devkit/schematics": "^9.0.0-rc.6",
     "@angular/animations": "^9.0.0-rc.6",

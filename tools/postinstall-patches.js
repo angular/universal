@@ -52,21 +52,3 @@ ls('node_modules/@types').filter(f => f.startsWith('hapi__')).forEach(pkg => {
     echo('}').toEnd(typingsFile);
   }
 });
-
-log(`\n# patch: @ngtools/webpack workaround for error 'Angular Compiler was detected but it was an instance of the wrong class.'`);
-sed(
-  '-i',
-  'resolveLoader: {',
-  'resolveLoader: { symlinks: false,',
-  'node_modules/@angular-devkit/build-angular/src/angular-cli-files/models/webpack-configs/common.js'
-);
-
-log(`\n# patch:  Cannot find module '@babel/preset-env' from`);
-sed(
-  '-i',
-  `'@babel/preset-env'`,
-  `require.resolve('@babel/preset-env')`,
-  'node_modules/@angular-devkit/build-angular/src/utils/process-bundle.js'
-);
-
-log('===== finished running the postinstall-patches.js script =====');
