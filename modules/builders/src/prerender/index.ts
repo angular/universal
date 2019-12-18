@@ -25,7 +25,7 @@ export type BuilderOutputWithPaths = JsonObject & BuilderOutput & {
  * Renders each route in options.routes and writes them to
  * <route>/index.html for each output path in the browser result.
  */
-export async function _renderUniversal(
+async function _renderUniversal(
   options: BuildWebpackPrerenderSchema,
   context: BuilderContext,
   browserResult: BuilderOutputWithPaths,
@@ -44,7 +44,6 @@ export async function _renderUniversal(
       throw new Error(`Could not find the main bundle: ${serverBundlePath}`);
     }
 
-    // const numProcesses = 1;
     const numProcesses = Math.min(os.cpus().length, options.routes.length);
     context.logger.info(`\nPrerendering ${options.routes.length} route(s) to ${outputPath}`);
 
@@ -114,7 +113,7 @@ export async function _prerender(
       return serverResult;
     }
 
-    return await exports._renderUniversal(options, context, browserResult, serverResult);
+    return await _renderUniversal(options, context, browserResult, serverResult);
   } catch (e) {
     return { success: false, error: e.message };
   } finally {
