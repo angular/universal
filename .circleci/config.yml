@@ -120,7 +120,7 @@ jobs:
     steps:
     - *checkout_code
     - *restore_cache
-    - *yarn_install
+    - *copy_bazel_config
 
     - run: scripts/build-modules-dist.sh
 
@@ -143,7 +143,6 @@ jobs:
     - *checkout_code
     - *restore_cache
     - *setup_env_variables
-    - *yarn_install
     - *attach_release_output
     - run: ./integration/run_tests.sh
 
