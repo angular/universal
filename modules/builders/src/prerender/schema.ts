@@ -12,13 +12,13 @@ export interface Schema {
    */
   browserTarget: string;
   /**
-   * The path to a file containing routes separated by newlines.
-   */
-  routeFile?: string;
-  /**
    * The routes to render.
    */
   routes?: string[];
+  /**
+   * The path to a file containing routes separated by newlines.
+   */
+  routesFile?: string;
   /**
    * Server target to use for prerendering the app.
    */

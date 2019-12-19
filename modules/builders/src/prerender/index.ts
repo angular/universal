@@ -17,19 +17,26 @@ import { getRoutes } from './utils';
 
 export type PrerenderBuilderOptions = Schema & json.JsonObject;
 
-export type PrerenderBuilderOutput = BuilderOutput & {
+export type PrerenderBuilderOutput = BuilderOutput;
+
+type BuildBuilderOutput = BuilderOutput & {
   baseOutputPath: string;
   outputPaths: string[];
   outputPath: string;
 };
 
+type ScheduleBuildsOutput = BuilderOutput & {
+  serverResult?: BuildBuilderOutput;
+  browserResult?: BuildBuilderOutput;
+};
+
 /**
  * Schedules the server and browser builds and returns their results if both builds are successful.
  */
-export async function _scheduleBuilds(
+async function _scheduleBuilds(
   options: PrerenderBuilderOptions,
   context: BuilderContext
-) {
+): Promise<ScheduleBuildsOutput> {
   const browserTarget = targetFromTargetString(options.browserTarget);
   const serverTarget = targetFromTargetString(options.serverTarget);
 
@@ -44,18 +51,15 @@ export async function _scheduleBuilds(
 
   try {
     const [browserResult, serverResult] = await Promise.all([
-      browserTargetRun.result as unknown as PrerenderBuilderOutput,
-      serverTargetRun.result as unknown as PrerenderBuilderOutput,
+      browserTargetRun.result as unknown as BuildBuilderOutput,
+      serverTargetRun.result as unknown as BuildBuilderOutput,
     ]);
 
-    if (browserResult.success === false || browserResult.baseOutputPath === undefined) {
-      return { success: false, browserResult };
-    }
-    if (serverResult.success === false) {
-      return { success: false, serverResult };
-    }
+    const success =
+      browserResult.success && serverResult.success && browserResult.baseOutputPath !== undefined;
+    const error = browserResult.error || serverResult.error as string;
 
-    return { success: true, browserResult, serverResult };
+    return { success, error, browserResult, serverResult };
   } catch (e) {
     return { success: false, error: e.message };
   } finally {
@@ -67,12 +71,12 @@ export async function _scheduleBuilds(
  * Renders each route in options.routes and writes them to
  * <route>/index.html for each output path in the browser result.
  */
-export async function _renderUniversal(
-  routes: Array<string>,
+async function _renderUniversal(
+  routes: string[],
   context: BuilderContext,
-  browserResult: PrerenderBuilderOutput,
-  serverResult: PrerenderBuilderOutput,
-): Promise<PrerenderBuilderOutput> {
+  browserResult: BuildBuilderOutput,
+  serverResult: BuildBuilderOutput,
+): Promise<BuildBuilderOutput> {
   // We need to render the routes for each locale from the browser output.
   for (const outputPath of browserResult.outputPaths) {
     const localeDirectory = path.relative(browserResult.baseOutputPath, outputPath);
@@ -123,7 +127,7 @@ export async function _renderUniversal(
  * Throws if no app module bundle is found.
  */
 async function _getServerModuleBundle(
-  serverResult: PrerenderBuilderOutput,
+  serverResult: BuildBuilderOutput,
   browserLocaleDirectory: string,
 ) {
   const { baseOutputPath = '' } = serverResult;
@@ -166,23 +170,18 @@ async function _getServerModuleBundle(
 export async function execute(
   options: PrerenderBuilderOptions,
   context: BuilderContext
-): Promise<PrerenderBuilderOutput | BuilderOutput> {
-  const routes = getRoutes(options, context);
+): Promise<PrerenderBuilderOutput> {
+  const routes = getRoutes(context.workspaceRoot, options.routesFile, options.routes);
   if (!routes.length) {
-    throw new Error(`
-      No routes found. Specify routes to render using "prerender.options.routes"
-      in angular.json or by specifying a file containing routes separated
-      by newlines using "prerender.options.routeFile" in angular.json.
-    `);
+    throw new Error('No routes found.');
   }
-  const { success, error, browserResult, serverResult } = await _scheduleBuilds(options, context);
-  if (error) {
-    return { success, error };
+  const result = await _scheduleBuilds(options, context);
+  const { success, error, browserResult, serverResult } = result;
+  if (!success || !browserResult || !serverResult) {
+    return { success, error } as BuilderOutput;
   }
-  if (!success) {
-    return browserResult || serverResult!;
-  }
-  return await _renderUniversal(routes, context, browserResult!, serverResult!);
+
+  return _renderUniversal(routes, context, browserResult, serverResult);
 }
 
 export default createBuilder(execute);

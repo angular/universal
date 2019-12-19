@@ -28,8 +28,17 @@ describe('Prerender Builder', () => {
     await host.restore().toPromise();
   });
 
-  it('fails with error when no routes are provided', async () => {
+  it('fails with error when .routes nor .routesFile are defined', async () => {
     const run = await architect.scheduleTarget(target);
+    await expectAsync(run.result)
+      .toBeRejectedWith(
+        jasmine.objectContaining({ message: jasmine.stringMatching(/Data path "" should match some schema in anyOf./) })
+      );
+    await run.stop();
+  });
+
+  it('fails with error when no routes are provided', async () => {
+    const run = await architect.scheduleTarget(target, { routes: [] });
     await expectAsync(run.result).toBeRejectedWith(
       jasmine.objectContaining({ message: jasmine.stringMatching(/No routes found/)})
     );
@@ -74,9 +83,15 @@ describe('Prerender Builder', () => {
   });
 
   it('should generate output for routes when provided with a file', async () => {
+    await host.write(
+      join(host.root(), 'routes-file.txt'),
+      virtualFs.stringToFileBuffer(
+        ['/foo', '/foo/bar'].join('\n')
+      ),
+    ).toPromise();
     const run = await architect.scheduleTarget(target, {
       routes: ['/foo', '/'],
-      routeFile: './routes-file.txt',
+      routesFile: './routes-file.txt',
     });
     const output = await run.result;
     expect(output.success).toBe(true);
@@ -105,10 +120,10 @@ describe('Prerender Builder', () => {
 
   it('should halt execution if a route file is given but does not exist.', async () => {
     const run = await architect.scheduleTarget(target, {
-      routeFile: './nonexistent-file.txt',
+      routesFile: './nonexistent-file.txt',
     });
     await expectAsync(run.result).toBeRejectedWith(
-      jasmine.objectContaining({ message: jasmine.stringMatching(/Could not find file/)})
+      jasmine.objectContaining({ message: jasmine.stringMatching(/no such file or directory/)})
     );
     await run.stop();
   });

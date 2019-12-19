@@ -6,32 +6,25 @@
  * found in the LICENSE file at https://angular.io/license
  */
 
-import { BuilderContext } from '@angular-devkit/architect';
-import { PrerenderBuilderOptions } from './index';
-
 import * as fs from 'fs';
 import * as path from 'path';
 
 /**
- * Returns the concatenation of options.routes and the contents of options.routeFile.
+ * Returns the concatenation of options.routes and the contents of options.routesFile.
  */
 export function getRoutes(
-  options: PrerenderBuilderOptions,
-  context: BuilderContext
-) {
-  let routes = options.routes || [];
-  if (options.routeFile) {
-    const routeFilePath = path.resolve(context.workspaceRoot, options.routeFile);
+  workspaceRoot: string,
+  routesFile?: string,
+  routes: string[] = [],
+): string[] {
+  let routesFileResult: string[] = [];
+  if (routesFile) {
+    const routesFilePath = path.resolve(workspaceRoot, routesFile);
 
-    // Should blow up if a route file is given and we couldn't find it.
-    if (!fs.existsSync(routeFilePath)) {
-      throw new Error(`Could not find file ${routeFilePath}`);
-    }
-
-    routes = fs.readFileSync(routeFilePath!, 'utf8')
-      .split('\n')
-      .filter(v => !!v)
-      .concat(routes);
+    routesFileResult = fs.readFileSync(routesFilePath, 'utf8')
+      .split(/\r?\n/)
+      .filter(v => !!v);
   }
-  return Array.from(new Set(routes));
+
+  return [...new Set([...routesFileResult, ...routes])];
 }
