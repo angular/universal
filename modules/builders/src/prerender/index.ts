@@ -7,15 +7,17 @@
  */
 
 import { BuilderOutput, createBuilder, BuilderContext, targetFromTargetString } from '@angular-devkit/architect';
-import { JsonObject } from '@angular-devkit/core';
-import { Schema as BuildWebpackPrerenderSchema } from './schema';
-
 import { fork } from 'child_process';
+import { json } from '@angular-devkit/core';
 import * as fs from 'fs';
 import * as path from 'path';
 import * as os from 'os';
 
-export type BuilderOutputWithPaths = JsonObject & BuilderOutput & {
+import { Schema } from './schema';
+
+export type PrerenderBuilderOptions = Schema & json.JsonObject;
+
+export type PrerenderBuilderOutput = BuilderOutput & {
   baseOutputPath: string;
   outputPaths: string[];
   outputPath: string;
@@ -43,18 +45,17 @@ function getRange(id: number, numBuckets: number, numItems: number) {
  * <route>/index.html for each output path in the browser result.
  */
 async function _renderUniversal(
-  options: BuildWebpackPrerenderSchema,
+  options: Schema,
   context: BuilderContext,
-  browserResult: BuilderOutputWithPaths,
-  serverResult: BuilderOutputWithPaths,
-): Promise<BuilderOutputWithPaths> {
+  browserResult: PrerenderBuilderOutput,
+  serverResult: PrerenderBuilderOutput,
+): Promise<PrerenderBuilderOutput> {
   // We need to render the routes for each locale from the browser output.
   for (const outputPath of browserResult.outputPaths) {
     const workerFile = path.join(__dirname, 'render.js');
     const localeDirectory = path.relative(browserResult.baseOutputPath, outputPath);
     const browserIndexOutputPath = path.join(outputPath, 'index.html');
     const indexHtml = fs.readFileSync(browserIndexOutputPath, 'utf8');
-
     const { baseOutputPath = '' } = serverResult;
     const serverBundlePath = path.join(baseOutputPath, localeDirectory, 'main.js');
     if (!fs.existsSync(serverBundlePath)) {
@@ -99,19 +100,17 @@ async function _renderUniversal(
  * and writes them to prerender/<route>/index.html for each output path in
  * the browser result.
  */
-export async function _prerender(
-  options: JsonObject & BuildWebpackPrerenderSchema,
+export async function execute(
+  options: PrerenderBuilderOptions,
   context: BuilderContext
-): Promise<BuilderOutput> {
-  if (!options.routes || options.routes.length === 0) {
-    throw new Error('No routes found. Specify routes to render using `prerender.options.routes` in angular.json.');
-  }
+): Promise<PrerenderBuilderOutput | BuilderOutput> {
   const browserTarget = targetFromTargetString(options.browserTarget);
   const serverTarget = targetFromTargetString(options.serverTarget);
 
   const browserTargetRun = await context.scheduleTarget(browserTarget, {
     watch: false,
     serviceWorker: false,
+    // todo: handle service worker augmentation
   });
   const serverTargetRun = await context.scheduleTarget(serverTarget, {
     watch: false,
@@ -119,8 +118,8 @@ export async function _prerender(
 
   try {
     const [browserResult, serverResult] = await Promise.all([
-      browserTargetRun.result as unknown as BuilderOutputWithPaths,
-      serverTargetRun.result as unknown as BuilderOutputWithPaths,
+      browserTargetRun.result as unknown as PrerenderBuilderOutput,
+      serverTargetRun.result as unknown as PrerenderBuilderOutput,
     ]);
 
     if (browserResult.success === false || browserResult.baseOutputPath === undefined) {
@@ -138,4 +137,4 @@ export async function _prerender(
   }
 }
 
-export default createBuilder(_prerender);
+export default createBuilder(execute);
