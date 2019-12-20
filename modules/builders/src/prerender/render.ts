@@ -10,29 +10,10 @@ import * as fs from 'fs';
 import * as path from 'path';
 
 const args = process.argv.slice(2);
-const pid = parseInt(args[0]);
-const numProcesses = parseInt(args[1]);
-const indexHtml = args[2];
-const serverBundlePath = args[3];
-const browserOutputPath = args[4];
-const allRoutes = args.slice(5);
-
-/**
- * Determines the range of items for the given bucket id so
- * that the number of items in each bucket is evenly distributed.
- */
-function getRange(id: number, numBuckets: number, numItems: number) {
-  const remainder = numItems % numBuckets;
-  const minBucketSize = Math.floor(numItems / numBuckets);
-
-  const startShift = id < remainder ? id : remainder;
-  const endShift = id < remainder ? (id + 1) : remainder;
-
-  const startIndex = id * minBucketSize + startShift;
-  const endIndex = (id + 1) * minBucketSize + endShift;
-
-  return { startIndex, endIndex };
-}
+const indexHtml = args[0];
+const serverBundlePath = args[1];
+const browserOutputPath = args[2];
+const routes = args.slice(3);
 
 /**
  * Handles importing the server bundle.
@@ -66,28 +47,23 @@ async function getServerBundle(bundlePath: string) {
 /**
  * Renders each route in routes and writes them to <outputPath>/<route>/index.html.
  */
-export async function renderRoutes(
-  routes: Array<string>,
-  baseHtml: string,
-  outputPath: string,
-  bundlePath: string,
-  ) {
-  const { renderModuleFn, AppServerModuleDef } = await getServerBundle(bundlePath);
-  const browserIndexOutputPath = path.join(outputPath, 'index.html');
+(async () => {
+  const { renderModuleFn, AppServerModuleDef } = await getServerBundle(serverBundlePath);
+  const browserIndexOutputPath = path.join(browserOutputPath, 'index.html');
   for (const route of routes) {
     const renderOpts = {
-      document: baseHtml + '<!-- This page was prerendered with Angular Universal -->',
+      document: indexHtml + '<!-- This page was prerendered with Angular Universal -->',
       url: route,
     };
     const html = await renderModuleFn(AppServerModuleDef, renderOpts);
 
-    const outputFolderPath = path.join(outputPath, route);
+    const outputFolderPath = path.join(browserOutputPath, route);
     const outputIndexPath = path.join(outputFolderPath, 'index.html');
 
     // This case happens when we are prerendering "/".
     if (browserIndexOutputPath === outputIndexPath) {
-      const browserIndexOutputPathOriginal = path.join(outputPath, 'index.original.html');
-      fs.writeFileSync(browserIndexOutputPathOriginal, baseHtml);
+      const browserIndexOutputPathOriginal = path.join(browserOutputPath, 'index.original.html');
+      fs.writeFileSync(browserIndexOutputPathOriginal, indexHtml);
     }
 
     try {
@@ -99,9 +75,4 @@ export async function renderRoutes(
       process.send!({ success: false, outputIndexPath });
     }
   }
-}
-
-const { startIndex: start, endIndex: end } = getRange(pid, numProcesses, allRoutes.length);
-const routeSubset = allRoutes.slice(start, end);
-
-renderRoutes(routeSubset, indexHtml, browserOutputPath, serverBundlePath);
+})();

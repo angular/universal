@@ -22,6 +22,23 @@ export type BuilderOutputWithPaths = JsonObject & BuilderOutput & {
 };
 
 /**
+ * Determines the range of items for the given bucket id so
+ * that the number of items in each bucket is evenly distributed.
+ */
+function getRange(id: number, numBuckets: number, numItems: number) {
+  const remainder = numItems % numBuckets;
+  const minBucketSize = Math.floor(numItems / numBuckets);
+
+  const startShift = id < remainder ? id : remainder;
+  const endShift = id < remainder ? (id + 1) : remainder;
+
+  const startIndex = id * minBucketSize + startShift;
+  const endIndex = (id + 1) * minBucketSize + endShift;
+
+  return { startIndex, endIndex };
+}
+
+/**
  * Renders each route in options.routes and writes them to
  * <route>/index.html for each output path in the browser result.
  */
@@ -44,18 +61,18 @@ async function _renderUniversal(
       throw new Error(`Could not find the main bundle: ${serverBundlePath}`);
     }
 
-    const numProcesses = Math.min(os.cpus().length, options.routes.length);
-    context.logger.info(`\nPrerendering ${options.routes.length} route(s) to ${outputPath}`);
+    const numProcesses = Math.min(os.cpus().length, options.routes!.length);
+    context.logger.info(`\nPrerendering ${options.routes!.length} route(s) to ${outputPath}`);
 
     const childProcesses = Array.from({ length: numProcesses }, (_, idx) => {
+      const { startIndex, endIndex } = getRange(idx, numProcesses, options.routes!.length);
+      const routes = options.routes!.slice(startIndex, endIndex);
       return new Promise((resolve, reject) => {
         const child = fork(workerFile, [
-          idx.toString(),
-          numProcesses.toString(),
           indexHtml,
           serverBundlePath,
           outputPath,
-          ...options.routes,
+          ...routes,
         ]);
 
         child.on('message', data => {
