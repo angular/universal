@@ -34,9 +34,12 @@ import {
   concatMap,
   debounce,
   debounceTime,
+  delay,
 } from 'rxjs/operators';
 import * as browserSync from 'browser-sync';
 import { join } from 'path';
+import * as url from 'url';
+import * as proxy from 'http-proxy-middleware';
 
 import { getAvailablePort, spawnAsObservable, waitUntilServerIsListening } from './utils';
 
@@ -172,8 +175,10 @@ function startNodeServer(
   const path = join(outputPath, 'main.js');
   const env = { ...process.env, PORT: '' + port };
 
-  return spawnAsObservable('node', [`"${path}"`], { env, shell: true })
+  return of(null)
     .pipe(
+      delay(0), // Avoid EADDRINUSE error since it will cause the kill event to be finish.
+      switchMap(() => spawnAsObservable('node', [`"${path}"`], { env, shell: true })),
       tap(({ stderr, stdout }) => {
         if (stderr) {
           logger.error(stderr);
@@ -198,31 +203,75 @@ async function initBrowserSync(
     return browserSyncInstance;
   }
 
-  const { port, open, host } = options;
-  const bsPort = port || await getAvailablePort();
+  const { port: browserSyncPort, open, host, publicHost } = options;
+  const bsPort = browserSyncPort || await getAvailablePort();
+  const bsOptions: browserSync.Options = {
+    proxy: {
+      target: `localhost:${nodeServerPort}`,
+      proxyRes: [
+        proxyRes => {
+          if ('headers' in proxyRes) {
+            proxyRes.headers['cache-control'] = undefined;
+          }
+        },
+      ]
+    },
+    host,
+    port: bsPort,
+    ui: false,
+    server: false,
+    notify: false,
+    ghostMode: false,
+    logLevel: 'silent',
+    open,
+    // Remove leading slash
+    scriptPath: path => path.substring(1),
+  };
+
+  const publicHostNormalized = publicHost && publicHost.endsWith('/')
+    ? publicHost.substring(0, publicHost.length - 1)
+    : publicHost;
+
+  if (publicHostNormalized) {
+    const { protocol, hostname, port, pathname } = url.parse(publicHostNormalized);
+    const defaultSocketIoPath = '/browser-sync/socket.io';
+    const defaultNamespace = '/browser-sync';
+    const hasPathname = !!(pathname && pathname !== '/');
+    const namespace = hasPathname ? pathname + defaultNamespace : defaultNamespace;
+    const path = hasPathname ? pathname + defaultSocketIoPath : defaultSocketIoPath;
+
+    bsOptions.socket = {
+        namespace,
+        path,
+        domain: url.format({
+            protocol,
+            hostname,
+            port,
+        }),
+    };
+
+    // When having a pathname we also need to create a reverse proxy because socket.io
+    // will be listening on: 'http://localhost:4200/ssr/browser-sync/socket.io'
+    // However users will typically have a reverse proxy that will redirect all matching requests
+    // ex: http://testinghost.com/ssr -> http://localhost:4200 which will result in a 404.
+    if (hasPathname) {
+      bsOptions.middleware = [
+        proxy(defaultSocketIoPath, {
+          target: url.format({
+            protocol: 'http',
+            hostname: host,
+            port: bsPort,
+            pathname: path,
+          }),
+          ws: true,
+          logLevel: 'silent',
+        }),
+      ];
+    }
+  }
 
   return new Promise((resolve, reject) => {
-    browserSyncInstance
-      .init({
-        proxy: {
-          target: `localhost:${nodeServerPort}`,
-          proxyRes: [
-            proxyRes => {
-              if ('headers' in proxyRes) {
-                proxyRes.headers['cache-control'] = undefined;
-              }
-            },
-          ]
-        },
-        host,
-        port: bsPort,
-        ui: false,
-        server: false,
-        notify: false,
-        ghostMode: false,
-        logLevel: 'silent',
-        open,
-      }, (error, bs) => {
+    browserSyncInstance.init(bsOptions, (error, bs) => {
         if (error) {
           reject(error);
         } else {
