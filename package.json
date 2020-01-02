@@ -1,7 +1,7 @@
 {
   "name": "nguniversal",
   "main": "index.js",
-  "version": "9.0.0-next.13",
+  "version": "9.0.0-next.14",
   "private": true,
   "description": "Universal (isomorphic) JavaScript support for Angular",
   "homepage": "https://github.com/angular/universal",
@@ -21,7 +21,7 @@
   },
   "scripts": {
     "postinstall": "ngc -p ./angular-metadata.tsconfig.json && node --preserve-symlinks --preserve-symlinks-main ./tools/postinstall-patches.js && yarn ngcc",
-    "lint": "tslint -c tslint.json '+(modules|tools)/**/*.ts' --exclude '**/+(node_modules|hello-world-app)/**/*'",
+    "lint": "tslint -c tslint.json '+(modules|tools)/**/*.ts' -p tsconfig.json",
     "build": "npm run bazel:build",
     "prebuildifier": "bazel build --noshow_progress @com_github_bazelbuild_buildtools//buildifier",
     "bazel:format": "find . -type f \\( -name \"*.bzl\" -or -name BUILD -or -name BUILD.bazel -or -name WORKSPACE \\) ! -path \"*/node_modules/*\" | xargs buildifier -v",
@@ -51,7 +51,7 @@
     "@angular/platform-browser-dynamic": "^9.0.0-rc.6",
     "@angular/platform-server": "^9.0.0-rc.6",
     "@angular/router": "^9.0.0-rc.6",
-    "@bazel/bazel": "1.2.0",
+    "@bazel/bazel": "2.0.0",
     "@bazel/buildifier": "^0.29.0",
     "@bazel/hide-bazel-files": "^0.42.0",
     "@bazel/ibazel": "^0.11.0",
