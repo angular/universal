@@ -79,4 +79,4 @@ async function getServerBundle(bundlePath: string) {
       }
     }
   }
-})().then();
+})().then().catch();
