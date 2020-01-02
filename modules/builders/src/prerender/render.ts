@@ -70,9 +70,13 @@ async function getServerBundle(bundlePath: string) {
       fs.mkdirSync(outputFolderPath, { recursive: true });
       fs.writeFileSync(outputIndexPath, html);
       const bytes = Buffer.byteLength(html).toFixed(0);
-      process.send!({ success: true, outputIndexPath, bytes });
+      if (process.send) {
+        process.send({ success: true, outputIndexPath, bytes });
+      }
     } catch (e) {
-      process.send!({ success: false, outputIndexPath });
+      if (process.send) {
+        process.send({ success: false, error: e, outputIndexPath });
+      }
     }
   }
-})();
+})().then();

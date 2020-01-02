@@ -28,3 +28,18 @@ export function getRoutes(
 
   return [...new Set([...routesFileResult, ...routes])];
 }
+
+/**
+ * Evenly groups items in an array.
+ * e.g. groupArray([1, 2, 3, 4], 2) => [[1, 2], [3, 4]]
+ */
+export function groupArray(array: any[], numGroups: number) {
+  const groupedArray = [];
+  for (let i = 0; i < numGroups; i++) {
+    groupedArray.push(
+      array.filter((_, index) => index % numGroups === i)
+    );
+  }
+
+  return groupedArray;
+}

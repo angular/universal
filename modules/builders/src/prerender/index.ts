@@ -7,14 +7,15 @@
  */
 
 import { BuilderContext, BuilderOutput, createBuilder, targetFromTargetString } from '@angular-devkit/architect';
-import { fork } from 'child_process';
 import { json } from '@angular-devkit/core';
+import { fork } from 'child_process';
+
 import * as fs from 'fs';
-import * as path from 'path';
 import * as os from 'os';
+import * as path from 'path';
 
 import { Schema } from './schema';
-import { getRoutes } from './utils';
+import { getRoutes, groupArray } from './utils';
 
 export type PrerenderBuilderOptions = Schema & json.JsonObject;
 
@@ -68,21 +69,40 @@ async function _scheduleBuilds(
   }
 }
 
-/**
- * Determines the range of items for the given bucket id so
- * that the number of items in each bucket is evenly distributed.
- */
-function getRange(id: number, numBuckets: number, numItems: number) {
-  const remainder = numItems % numBuckets;
-  const minBucketSize = Math.floor(numItems / numBuckets);
+async function _parallelRenderRoutes(
+  groupedRoutes: string[][],
+  context: BuilderContext,
+  indexHtml: string,
+  outputPath: string,
+  serverBundlePath: string,
+  ) {
+  const workerFile = path.join(__dirname, 'render.js');
+  const childProcesses = Array.from({ length: groupedRoutes.length }, (_, i) => {
+    const routes = groupedRoutes[i];
 
-  const startShift = id < remainder ? id : remainder;
-  const endShift = id < remainder ? (id + 1) : remainder;
+    return new Promise((resolve, reject) => {
+      const child = fork(workerFile, [
+        indexHtml,
+        serverBundlePath,
+        outputPath,
+        ...routes,
+      ]);
 
-  const startIndex = id * minBucketSize + startShift;
-  const endIndex = (id + 1) * minBucketSize + endShift;
+      child.on('message', data => {
+        if (data.success) {
+          context.logger.info(`CREATE ${data.outputIndexPath} (${data.bytes} bytes)`);
+        } else {
+          context.logger.error(`Error: ${data.error.message}`);
+          context.logger.error(`Unable to render ${data.outputIndexPath}`);
+        }
+      });
 
-  return { startIndex, endIndex };
+      child.on('exit', () => resolve(child));
+      child.on('error', reject);
+    });
+  });
+
+  return childProcesses;
 }
 
 /**
@@ -97,46 +117,31 @@ async function _renderUniversal(
 ): Promise<BuildBuilderOutput> {
   // We need to render the routes for each locale from the browser output.
   for (const outputPath of browserResult.outputPaths) {
-    const workerFile = path.join(__dirname, 'render.js');
-    const localeDirectory = path.relative(browserResult.baseOutputPath, outputPath);
     const browserIndexOutputPath = path.join(outputPath, 'index.html');
     const indexHtml = fs.readFileSync(browserIndexOutputPath, 'utf8');
+
     const { baseOutputPath = '' } = serverResult;
+    const localeDirectory = path.relative(browserResult.baseOutputPath, outputPath);
     const serverBundlePath = path.join(baseOutputPath, localeDirectory, 'main.js');
     if (!fs.existsSync(serverBundlePath)) {
       throw new Error(`Could not find the main bundle: ${serverBundlePath}`);
     }
 
-    const numProcesses = Math.min(os.cpus().length, routes!.length);
-    context.logger.info(`\nPrerendering ${routes!.length} route(s) to ${outputPath}`);
+    const numProcesses = Math.min(os.cpus().length - 1, routes.length);
+    const groupedRoutes = groupArray(routes, numProcesses);
+    context.logger.info(`\nPrerendering ${routes.length} route(s) to ${outputPath}`);
 
-    const childProcesses = Array.from({ length: numProcesses }, (_, idx) => {
-      const { startIndex, endIndex } = getRange(idx, numProcesses, routes!.length);
-      const routesSubset = routes!.slice(startIndex, endIndex);
-      return new Promise((resolve, reject) => {
-        const child = fork(workerFile, [
-          indexHtml,
-          serverBundlePath,
-          outputPath,
-          ...routesSubset,
-        ]);
-
-        child.on('message', data => {
-          if (data.success) {
-            context.logger.info(`CREATE ${data.outputIndexPath} (${data.bytes} bytes)`);
-          } else {
-            context.logger.error(`Unable to render ${data.outputIndexPath}`);
-          }
-        });
-
-        child.on('exit', () => resolve(child));
-        child.on('error', reject);
-      });
-    });
-
-    // Wait for all of the forked processes to finish.
-    await Promise.all(childProcesses);
+    await Promise.all(
+      await _parallelRenderRoutes(
+        groupedRoutes,
+        context,
+        indexHtml,
+        outputPath,
+        serverBundlePath,
+      )
+    );
   }
+
   return browserResult;
 }
 
