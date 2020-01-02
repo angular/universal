@@ -111,6 +111,7 @@ async function _parallelRenderRoutes(
  */
 async function _renderUniversal(
   routes: string[],
+  numProcesses: number,
   context: BuilderContext,
   browserResult: BuildBuilderOutput,
   serverResult: BuildBuilderOutput,
@@ -127,7 +128,6 @@ async function _renderUniversal(
       throw new Error(`Could not find the main bundle: ${serverBundlePath}`);
     }
 
-    const numProcesses = Math.min(os.cpus().length - 1, routes.length);
     const groupedRoutes = groupArray(routes, numProcesses);
     context.logger.info(`\nPrerendering ${routes.length} route(s) to ${outputPath}`);
 
@@ -164,7 +164,14 @@ export async function execute(
     return { success, error } as BuilderOutput;
   }
 
-  return _renderUniversal(routes, context, browserResult, serverResult);
+  // If numProcesses is not defined, default to all cpus but one.
+  // However, we should never use more cpus than the number of routes given.
+  const numProcesses = Math.min(
+    options.numProcesses || os.cpus().length - 1,
+    routes.length
+  );
+
+  return _renderUniversal(routes, numProcesses, context, browserResult, serverResult);
 }
 
 export default createBuilder(execute);
