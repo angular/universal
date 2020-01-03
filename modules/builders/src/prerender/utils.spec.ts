@@ -6,15 +6,15 @@
  * found in the LICENSE file at https://angular.io/license
  */
 
-import "jasmine";
+import * as Architect from '@angular-devkit/architect';
+import { NullLogger } from '@angular-devkit/core/src/logger';
 import * as fs from 'fs';
 import * as guessParser from 'guess-parser';
-import { getRoutes } from './utils';
+import { RoutingModule } from 'guess-parser/dist/common/interfaces';
+import 'jasmine';
+
 import { PrerenderBuilderOptions } from './models';
-import * as Architect from '@angular-devkit/architect';
-import { Target } from '@angular-devkit/architect';
-import { NullLogger } from '@angular-devkit/core/src/logger';
-import { RoutingModule } from "guess-parser/dist/common/interfaces";
+import { getRoutes } from './utils';
 
 
 describe('Prerender Builder Utils', () => {
@@ -35,13 +35,18 @@ describe('Prerender Builder Utils', () => {
 
     beforeEach(() => {
       spyOn(fs, 'readFileSync').and.returnValue(ROUTES_FILE_CONTENT);
-      spyOn(Architect, 'targetFromTargetString').and.returnValue({} as Target);
-      parseAngularRoutesSpy = spyOn(guessParser, 'parseAngularRoutes').and.returnValue(GUESSED_ROUTES as RoutingModule[]);
+      spyOn(Architect, 'targetFromTargetString').and.returnValue({} as Architect.Target);
+      parseAngularRoutesSpy = spyOn(guessParser, 'parseAngularRoutes')
+        .and.returnValue(GUESSED_ROUTES as RoutingModule[]);
       loggerErrorSpy = spyOn(CONTEXT.logger, 'error');
     });
 
     it('Should return the union of the routes from routes, routesFile, and the extracted routes without any parameterized routes', async () => {
-      const options = { routes: ROUTES, routesFile: ROUTES_FILE, guessRoutes: true } as unknown as PrerenderBuilderOptions;
+      const options = {
+        routes: ROUTES,
+        routesFile: ROUTES_FILE,
+        guessRoutes: true,
+      } as unknown as PrerenderBuilderOptions;
       const routes = await getRoutes(options, CONTEXT);
       expect(routes).toContain('/route1');
       expect(routes).toContain('/route2');

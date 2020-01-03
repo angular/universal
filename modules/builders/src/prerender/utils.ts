@@ -42,7 +42,7 @@ export async function getRoutes(
             .map(routeObj => routeObj.path)
             .filter(route => !route.includes('*') && !route.includes(':'))
         );
-      } catch(e) {
+      } catch (e) {
         context.logger.error('Unable to extract routes from application.', e);
       }
     }

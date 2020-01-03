@@ -14,7 +14,8 @@ import * as path from 'path';
 import { PrerenderBuilderOptions, PrerenderBuilderOutput } from './models';
 import { getRoutes } from './utils';
 
-export { PrerenderBuilderOptions, PrerenderBuilderOutput } from './models';
+export type PrerenderBuilderOptions = PrerenderBuilderOptions;
+export type PrerenderBuilderOutput = PrerenderBuilderOutput;
 
 type BuildBuilderOutput = BuilderOutput & {
   baseOutputPath: string;
