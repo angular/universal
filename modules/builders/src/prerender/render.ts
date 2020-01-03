@@ -9,11 +9,12 @@
 import * as fs from 'fs';
 import * as path from 'path';
 
-const args = process.argv.slice(2);
-const indexHtml = args[0];
-const serverBundlePath = args[1];
-const browserOutputPath = args[2];
-const routes = args.slice(3);
+const [
+  indexHtml,
+  serverBundlePath,
+  browserOutputPath,
+  ...routes
+] = process.argv.slice(2);
 
 /**
  * Handles importing the server bundle.

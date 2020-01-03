@@ -7,19 +7,13 @@
  */
 
 import { BuilderContext, BuilderOutput, createBuilder, targetFromTargetString } from '@angular-devkit/architect';
-import { json } from '@angular-devkit/core';
 import { fork } from 'child_process';
-
 import * as fs from 'fs';
-import * as os from 'os';
 import * as path from 'path';
 
-import { Schema } from './schema';
-import { getRoutes, groupArray } from './utils';
-
-export type PrerenderBuilderOptions = Schema & json.JsonObject;
-
-export type PrerenderBuilderOutput = BuilderOutput;
+import { PrerenderBuilderOptions, PrerenderBuilderOutput } from './models';
+export { PrerenderBuilderOptions, PrerenderBuilderOutput } from './models';
+import { getRoutes, shardArray } from './utils';
 
 type BuildBuilderOutput = BuilderOutput & {
   baseOutputPath: string;
@@ -70,39 +64,35 @@ async function _scheduleBuilds(
 }
 
 async function _parallelRenderRoutes(
-  groupedRoutes: string[][],
+  shardedRoutes: string[][],
   context: BuilderContext,
   indexHtml: string,
   outputPath: string,
   serverBundlePath: string,
-  ) {
+  ): Promise<void> {
   const workerFile = path.join(__dirname, 'render.js');
-  const childProcesses = Array.from({ length: groupedRoutes.length }, (_, i) => {
-    const routes = groupedRoutes[i];
-
-    return new Promise((resolve, reject) => {
-      const child = fork(workerFile, [
+  const childProcesses = shardedRoutes.map(routes =>
+    new Promise((resolve, reject) => {
+      fork(workerFile, [
         indexHtml,
         serverBundlePath,
         outputPath,
         ...routes,
-      ]);
+      ])
+        .on('message', data => {
+          if (data.success) {
+            context.logger.info(`CREATE ${data.outputIndexPath} (${data.bytes} bytes)`);
+          } else {
+            context.logger.error(`Error: ${data.error.message}`);
+            context.logger.error(`Unable to render ${data.outputIndexPath}`);
+          }
+        })
+        .on('exit', resolve)
+        .on('error', reject);
+    })
+  );
 
-      child.on('message', data => {
-        if (data.success) {
-          context.logger.info(`CREATE ${data.outputIndexPath} (${data.bytes} bytes)`);
-        } else {
-          context.logger.error(`Error: ${data.error.message}`);
-          context.logger.error(`Unable to render ${data.outputIndexPath}`);
-        }
-      });
-
-      child.on('exit', () => resolve(child));
-      child.on('error', reject);
-    });
-  });
-
-  return childProcesses;
+  await Promise.all(childProcesses);
 }
 
 /**
@@ -111,10 +101,10 @@ async function _parallelRenderRoutes(
  */
 async function _renderUniversal(
   routes: string[],
-  numProcesses: number,
   context: BuilderContext,
   browserResult: BuildBuilderOutput,
   serverResult: BuildBuilderOutput,
+  numProcesses?: number,
 ): Promise<BuildBuilderOutput> {
   // We need to render the routes for each locale from the browser output.
   for (const outputPath of browserResult.outputPaths) {
@@ -128,17 +118,15 @@ async function _renderUniversal(
       throw new Error(`Could not find the main bundle: ${serverBundlePath}`);
     }
 
-    const groupedRoutes = groupArray(routes, numProcesses);
+    const shardedRoutes = shardArray(routes, numProcesses);
     context.logger.info(`\nPrerendering ${routes.length} route(s) to ${outputPath}`);
 
-    await Promise.all(
-      await _parallelRenderRoutes(
-        groupedRoutes,
-        context,
-        indexHtml,
-        outputPath,
-        serverBundlePath,
-      )
+    await _parallelRenderRoutes(
+      shardedRoutes,
+      context,
+      indexHtml,
+      outputPath,
+      serverBundlePath,
     );
   }
 
@@ -164,14 +152,7 @@ export async function execute(
     return { success, error } as BuilderOutput;
   }
 
-  // If numProcesses is not defined, default to all cpus but one.
-  // However, we should never use more cpus than the number of routes given.
-  const numProcesses = Math.min(
-    options.numProcesses || os.cpus().length - 1,
-    routes.length
-  );
-
-  return _renderUniversal(routes, numProcesses, context, browserResult, serverResult);
+  return _renderUniversal(routes, context, browserResult, serverResult, options.numProcesses);
 }
 
 export default createBuilder(execute);

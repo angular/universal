@@ -7,6 +7,7 @@
  */
 
 import * as fs from 'fs';
+import * as os from 'os';
 import * as path from 'path';
 
 /**
@@ -30,16 +31,17 @@ export function getRoutes(
 }
 
 /**
- * Evenly groups items in an array.
- * e.g. groupArray([1, 2, 3, 4], 2) => [[1, 2], [3, 4]]
+ * Evenly shards items in an array.
+ * e.g. shardArray([1, 2, 3, 4], 2) => [[1, 2], [3, 4]]
  */
-export function groupArray(array: any[], numGroups: number) {
-  const groupedArray = [];
-  for (let i = 0; i < numGroups; i++) {
-    groupedArray.push(
-      array.filter((_, index) => index % numGroups === i)
+export function shardArray<T>(items: T[], numProcesses: number = os.cpus().length - 1): T[][] {
+  const shardedArray = [];
+  const numShards = Math.min(numProcesses, items.length);
+  for (let i = 0; i < numShards; i++) {
+    shardedArray.push(
+      items.filter((_, index) => index % numShards === i)
     );
   }
 
-  return groupedArray;
+  return shardedArray;
 }
