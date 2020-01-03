@@ -16,6 +16,10 @@ export interface Schema {
    */
   guessRoutes?: boolean;
   /**
+   * The number of cpus to use. Defaults to all but one.
+   */
+  numProcesses?: number;
+  /**
    * The routes to render.
    */
   routes?: string[];

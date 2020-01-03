@@ -8,7 +8,11 @@
 
 import { BuilderContext, targetFromTargetString } from '@angular-devkit/architect';
 import * as fs from 'fs';
+<<<<<<< HEAD
 import { parseAngularRoutes } from 'guess-parser';
+=======
+import * as os from 'os';
+>>>>>>> 36db45a9a6adb9fab323e30305da5f78acd9d9fd
 import * as path from 'path';
 
 import { PrerenderBuilderOptions } from './models';
@@ -49,4 +53,20 @@ export async function getRoutes(
   }
 
   return [...new Set(routes)];
+}
+
+/**
+ * Evenly shards items in an array.
+ * e.g. shardArray([1, 2, 3, 4], 2) => [[1, 2], [3, 4]]
+ */
+export function shardArray<T>(items: T[], numProcesses: number = os.cpus().length - 1): T[][] {
+  const shardedArray = [];
+  const numShards = Math.min(numProcesses, items.length);
+  for (let i = 0; i < numShards; i++) {
+    shardedArray.push(
+      items.filter((_, index) => index % numShards === i)
+    );
+  }
+
+  return shardedArray;
 }
