@@ -68,7 +68,7 @@ async function _scheduleBuilds(
 }
 
 /**
- * Renders each route in options.routes and writes them to
+ * Renders each route and writes them to
  * <route>/index.html for each output path in the browser result.
  */
 async function _renderUniversal(

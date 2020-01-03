@@ -11,7 +11,8 @@ import { parseAngularRoutes } from 'guess-parser';
 import * as path from 'path';
 
 /**
- * Returns the concatenation of options.routes and the contents of options.routesFile.
+ * Returns the union of routes, the contents of routesFile if given,
+ * and the static routes extracted if shouldGuessRoutes is set to true.
  */
 export function getRoutes(
   workspaceRoot: string,
