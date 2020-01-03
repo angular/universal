@@ -38,7 +38,7 @@ describe('Prerender Builder', () => {
   });
 
   it('fails with error when no routes are provided', async () => {
-    const run = await architect.scheduleTarget(target, { routes: [] });
+    const run = await architect.scheduleTarget(target, { routes: [], guessRoutes: false });
     await expectAsync(run.result).toBeRejectedWith(
       jasmine.objectContaining({ message: jasmine.stringMatching(/No routes found/)})
     );
