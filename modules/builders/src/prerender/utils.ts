@@ -8,11 +8,8 @@
 
 import { BuilderContext, targetFromTargetString } from '@angular-devkit/architect';
 import * as fs from 'fs';
-<<<<<<< HEAD
 import { parseAngularRoutes } from 'guess-parser';
-=======
 import * as os from 'os';
->>>>>>> 36db45a9a6adb9fab323e30305da5f78acd9d9fd
 import * as path from 'path';
 
 import { PrerenderBuilderOptions } from './models';
