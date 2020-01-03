@@ -7,13 +7,18 @@
  */
 
 import { BuilderContext, BuilderOutput, createBuilder, targetFromTargetString } from '@angular-devkit/architect';
+import { json } from '@angular-devkit/core';
 import { fork } from 'child_process';
+
 import * as fs from 'fs';
 import * as path from 'path';
 
-import { PrerenderBuilderOptions, PrerenderBuilderOutput } from './models';
-export { PrerenderBuilderOptions, PrerenderBuilderOutput } from './models';
+import { Schema } from './schema';
 import { getRoutes, shardArray } from './utils';
+
+export type PrerenderBuilderOptions = Schema & json.JsonObject;
+
+export type PrerenderBuilderOutput = BuilderOutput;
 
 type BuildBuilderOutput = BuilderOutput & {
   baseOutputPath: string;
