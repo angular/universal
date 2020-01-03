@@ -7,17 +7,14 @@
  */
 
 import { BuilderContext, BuilderOutput, createBuilder, targetFromTargetString } from '@angular-devkit/architect';
-import { json } from '@angular-devkit/core';
 import { Buffer } from 'buffer';
 import * as fs from 'fs';
 import * as path from 'path';
 
-import { Schema } from './schema';
+import { PrerenderBuilderOptions, PrerenderBuilderOutput } from './models';
 import { getRoutes } from './utils';
 
-export type PrerenderBuilderOptions = Schema & json.JsonObject;
-
-export type PrerenderBuilderOutput = BuilderOutput;
+export { PrerenderBuilderOptions, PrerenderBuilderOutput } from './models';
 
 type BuildBuilderOutput = BuilderOutput & {
   baseOutputPath: string;
@@ -172,12 +169,7 @@ export async function execute(
   options: PrerenderBuilderOptions,
   context: BuilderContext
 ): Promise<PrerenderBuilderOutput> {
-  const routes = getRoutes(
-    context.workspaceRoot,
-    options.routesFile,
-    options.routes,
-    options.guessRoutes
-  );
+  const routes = await getRoutes(options, context);
   if (!routes.length) {
     throw new Error('No routes found.');
   }

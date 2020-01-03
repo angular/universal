@@ -30,7 +30,7 @@
     "guessRoutes": {
       "type": "boolean",
       "description": "Whether or not the builder should extract routes and guess which paths to render.",
-      "default": false
+      "default": true
     }
   },
   "required": [
