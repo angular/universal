@@ -7,6 +7,7 @@
  */
 
 import * as fs from 'fs';
+import { parseAngularRoutes } from 'guess-parser';
 import * as path from 'path';
 
 /**
@@ -16,8 +17,10 @@ export function getRoutes(
   workspaceRoot: string,
   routesFile?: string,
   routes: string[] = [],
+  shouldGuessRoutes?: boolean,
 ): string[] {
   let routesFileResult: string[] = [];
+  let extractedRoutes: string[] = [];
   if (routesFile) {
     const routesFilePath = path.resolve(workspaceRoot, routesFile);
 
@@ -26,5 +29,11 @@ export function getRoutes(
       .filter(v => !!v);
   }
 
-  return [...new Set([...routesFileResult, ...routes])];
+  if (shouldGuessRoutes) {
+    extractedRoutes = parseAngularRoutes(path.join(workspaceRoot, 'tsconfig.json'))
+      .map(routeObj => routeObj.path)
+      .filter(route => !route.includes('*') && !route.includes(':'));
+  }
+
+  return [...new Set([...routesFileResult, ...routes, ...extractedRoutes])];
 }

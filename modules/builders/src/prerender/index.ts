@@ -172,10 +172,16 @@ export async function execute(
   options: PrerenderBuilderOptions,
   context: BuilderContext
 ): Promise<PrerenderBuilderOutput> {
-  const routes = getRoutes(context.workspaceRoot, options.routesFile, options.routes);
+  const routes = getRoutes(
+    context.workspaceRoot,
+    options.routesFile,
+    options.routes,
+    options.guessRoutes
+  );
   if (!routes.length) {
     throw new Error('No routes found.');
   }
+
   const result = await _scheduleBuilds(options, context);
   const { success, error, browserResult, serverResult } = result;
   if (!success || !browserResult || !serverResult) {

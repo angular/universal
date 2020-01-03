@@ -7,6 +7,7 @@
  */
 
 import * as fs from 'fs';
+import * as guessParser from 'guess-parser';
 import { getRoutes } from './utils';
 
 describe('Prerender Builder Utils', () => {
@@ -15,22 +16,24 @@ describe('Prerender Builder Utils', () => {
     const ROUTES_FILE = './routes.txt';
     const ROUTES_FILE_CONTENT = ['/route1', '/route1', '/route2', '/route3'].join('\n');
     const ROUTES = ['/route3', '/route3', '/route4'];
+    const GUESSED_ROUTES = [{ path: '/route4' }, { path: '/route5' }, { path: '/**' }, { path: '/user/:id' }];
 
     beforeEach(() => {
       spyOn(fs, 'readFileSync').and.returnValue(ROUTES_FILE_CONTENT);
+      spyOn(guessParser, 'parseAngularRoutes').and.returnValue(GUESSED_ROUTES);
     });
 
-    it('Should return the deduped union of options.routes and options.routesFile - routes and routesFile defined', () => {
-      const routes = getRoutes(WORKSPACE_ROOT, ROUTES_FILE, ROUTES);
-      expect(routes).toEqual(['/route1', '/route2', '/route3', '/route4']);
+    it('Should return the union of the routes from routes, routesFile, and the extracted routes without any parameterized routes', () => {
+      const routes = getRoutes(WORKSPACE_ROOT, ROUTES_FILE, ROUTES, true);
+      expect(routes).toEqual(['/route1', '/route2', '/route3', '/route4', '/route5']);
     });
 
-    it('Should return the deduped union of options.routes and options.routesFile - only routes defined', () => {
+    it('Should return only the given routes', () => {
       const routes = getRoutes(WORKSPACE_ROOT, undefined, ROUTES);
       expect(routes).toEqual(['/route3', '/route4']);
     });
 
-    it('Should return the deduped union of options.routes and options.routesFile - only routes file defined', () => {
+    it('Should return the routes from the routesFile', () => {
       const routes = getRoutes(WORKSPACE_ROOT, ROUTES_FILE, undefined);
       expect(routes).toEqual(['/route1', '/route2', '/route3']);
     });
