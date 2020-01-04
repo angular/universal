@@ -61,7 +61,7 @@
     "@hapi/hapi": "^18.4.0",
     "@schematics/angular": "^9.0.0-rc.7",
     "@types/browser-sync": "^2.26.1",
-    "@types/express": "4.17.1",
+    "@types/express": "4.17.2",
     "@types/fs-extra": "^8.0.0",
     "@types/hapi__hapi": "^18.2.5",
     "@types/hapi__inert": "^5.2.0",
