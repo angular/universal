@@ -988,12 +988,26 @@
   dependencies:
     "@hapi/hoek" "8.x.x"
 
+"@hapi/b64@5.x.x":
+  version "5.0.0"
+  resolved "https://registry.yarnpkg.com/@hapi/b64/-/b64-5.0.0.tgz#b8210cbd72f4774985e78569b77e97498d24277d"
+  integrity sha512-ngu0tSEmrezoiIaNGG6rRvKOUkUuDdf4XTPnONHGYfSGRmDqPZX5oJL6HAdKTo1UQHECbdB4OzhWrfgVppjHUw==
+  dependencies:
+    "@hapi/hoek" "9.x.x"
+
 "@hapi/boom@7.x.x":
   version "7.4.11"
   resolved "https://registry.yarnpkg.com/@hapi/boom/-/boom-7.4.11.tgz#37af8417eb9416aef3367aa60fa04a1a9f1fc262"
   integrity sha512-VSU/Cnj1DXouukYxxkes4nNJonCnlogHvIff1v1RVoN4xzkKhMXX+GRmb3NyH1iar10I9WFPDv2JPwfH3GaV0A==
   dependencies:
     "@hapi/hoek" "8.x.x"
+
+"@hapi/boom@9.x.x", "@hapi/boom@^9.0.0":
+  version "9.0.0"
+  resolved "https://registry.yarnpkg.com/@hapi/boom/-/boom-9.0.0.tgz#28f9e77ecf2dea1fe3a8982b9d8827aa5137e33a"
+  integrity sha512-D+Or4yahLq3L7D1Jf0fR1+Lgr+HPK1lej8tc6hS/fBLmK66XdpvTyKv8YUR5ls1GeQy+KGtbpKAs+ZxyzNtUyA==
+  dependencies:
+    "@hapi/hoek" "9.x.x"
 
 "@hapi/bounce@1.x.x":
   version "1.3.2"
@@ -1007,6 +1021,11 @@
   version "1.3.2"
   resolved "https://registry.yarnpkg.com/@hapi/bourne/-/bourne-1.3.2.tgz#0a7095adea067243ce3283e1b56b8a8f453b242a"
   integrity sha512-1dVNHT76Uu5N3eJNTYcvxee+jzX4Z9lfciqRRHCU27ihbUcYi+iSc2iml5Ke1LXe1SyJCLA0+14Jh4tXJgOppA==
+
+"@hapi/bourne@2.x.x":
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/@hapi/bourne/-/bourne-2.0.0.tgz#5bb2193eb685c0007540ca61d166d4e1edaf918d"
+  integrity sha512-WEezM1FWztfbzqIUbsDzFRVMxSoLy3HugVcux6KDDtTqzPsLE8NDRHfXvev66aH1i2oOKKar3/XDjbvh/OUBdg==
 
 "@hapi/call@5.x.x":
   version "5.1.2"
@@ -1047,6 +1066,13 @@
   integrity sha512-XoqgKsHK0l/VpqPs+tr6j6vE+VQ3+2bkF2stvttmc7xAOf1oSAwHcJ0tlp/6MxMysktt1IEY0Csy3khKaP9/uQ==
   dependencies:
     "@hapi/boom" "7.x.x"
+
+"@hapi/cryptiles@5.x.x":
+  version "5.0.0"
+  resolved "https://registry.yarnpkg.com/@hapi/cryptiles/-/cryptiles-5.0.0.tgz#364ca3336594c7f261707a527c4d36da4a8eb86e"
+  integrity sha512-Yq43ti9N51Z7jbm0Q7YVCcofA+4Gh5wsBX/jZ++Z+FM8GYfBQ1WmI9ufZSL+BVX8vRxzDkdQ2fKoG6cxOQlnVQ==
+  dependencies:
+    "@hapi/boom" "9.x.x"
 
 "@hapi/file@1.x.x":
   version "1.0.0"
@@ -1096,6 +1122,11 @@
   resolved "https://registry.yarnpkg.com/@hapi/hoek/-/hoek-8.5.0.tgz#2f9ce301c8898e1c3248b0a8564696b24d1a9a5a"
   integrity sha512-7XYT10CZfPsH7j9F1Jmg1+d0ezOux2oM2GfArAzLwWe4mE2Dr3hVjsAL6+TFY49RRJlCdJDMw3nJsLFroTc8Kw==
 
+"@hapi/hoek@9.x.x":
+  version "9.0.2"
+  resolved "https://registry.yarnpkg.com/@hapi/hoek/-/hoek-9.0.2.tgz#57597083f763eafbfdc902d16ec868aa787b24d2"
+  integrity sha512-LyibKv2QnD9BPI5g2L+g85yiIPv3ajYpENGFgy4u0xCLPhXWG1Zdx29neSB8sgX0/wz6k5TMjHzTwJ6+DaBYOA==
+
 "@hapi/iron@5.x.x":
   version "5.1.4"
   resolved "https://registry.yarnpkg.com/@hapi/iron/-/iron-5.1.4.tgz#7406f36847f798f52b92d1d97f855e27973832b7"
@@ -1106,6 +1137,17 @@
     "@hapi/bourne" "1.x.x"
     "@hapi/cryptiles" "4.x.x"
     "@hapi/hoek" "8.x.x"
+
+"@hapi/iron@^6.0.0":
+  version "6.0.0"
+  resolved "https://registry.yarnpkg.com/@hapi/iron/-/iron-6.0.0.tgz#ca3f9136cda655bdd6028de0045da0de3d14436f"
+  integrity sha512-zvGvWDufiTGpTJPG1Y/McN8UqWBu0k/xs/7l++HVU535NLHXsHhy54cfEMdW7EjwKfbBfM9Xy25FmTiobb7Hvw==
+  dependencies:
+    "@hapi/b64" "5.x.x"
+    "@hapi/boom" "9.x.x"
+    "@hapi/bourne" "2.x.x"
+    "@hapi/cryptiles" "5.x.x"
+    "@hapi/hoek" "9.x.x"
 
 "@hapi/joi@15.x.x":
   version "15.1.1"
@@ -1474,7 +1516,7 @@
   resolved "https://registry.yarnpkg.com/@types/hapi__catbox/-/hapi__catbox-10.2.2.tgz#b13fbdd6006c8793eb80919158593bc2bf8307c4"
   integrity sha512-AWK70LgRsRWL1TNw+aT0IlS56E0pobvFdr/en0K8XazyK4Ey6T/jXhQqv/iQ6FJAAU+somMzgmt9fWq2TaaOkA==
 
-"@types/hapi__hapi@*", "@types/hapi__hapi@^18.2.5":
+"@types/hapi__hapi@*":
   version "18.2.6"
   resolved "https://registry.yarnpkg.com/@types/hapi__hapi/-/hapi__hapi-18.2.6.tgz#61c1b210c55dee4636df594e7a0868ad48c8042a"
   integrity sha512-sXFlSg9btu/LdHqK/N/kuQXVqZhSvibXbtZc0KfEcelRXKthdU5ZSu5qItDIov7SYnyK2faMe7dbZaC/VpC33w==
@@ -1482,6 +1524,20 @@
     "@types/hapi__boom" "*"
     "@types/hapi__catbox" "*"
     "@types/hapi__iron" "*"
+    "@types/hapi__joi" "*"
+    "@types/hapi__mimos" "*"
+    "@types/hapi__podium" "*"
+    "@types/hapi__shot" "*"
+    "@types/node" "*"
+
+"@types/hapi__hapi@^19.0.0":
+  version "19.0.0"
+  resolved "https://registry.yarnpkg.com/@types/hapi__hapi/-/hapi__hapi-19.0.0.tgz#99192d21dde97c6822c1a6ea3c779f1f47313e3b"
+  integrity sha512-F36qfgrB5743UwoODMzeTLcixTsEqetVL+pvCWh9M+fUPEOWQUMKVEnURec3+Ptw2DKj2Uaaa82SZHUSYgiIWQ==
+  dependencies:
+    "@hapi/boom" "^9.0.0"
+    "@hapi/iron" "^6.0.0"
+    "@types/hapi__catbox" "*"
     "@types/hapi__joi" "*"
     "@types/hapi__mimos" "*"
     "@types/hapi__podium" "*"
