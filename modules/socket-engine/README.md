@@ -2,21 +2,63 @@
 
 Framework and Platform agnostic Angular Universal rendering.
 
-## Usage Server
+## Setup the Socket Server
+
+To get started setting up a socket server, you should first follow the steps descriped [Angular Universal Guide](https://angular.io/guide/universal), which guides you through the setup of a node express web server.
+
+After following the guide your app should now have a structure, similar to this:
+
+- app
+|-- src
+|-- |-- app
+    |-- |-- app.module.ts
+        |-- **app.server.module.ts**
+        |-- ..
+    |-- main.ts
+    |-- **main.server.ts**
+|-- **server.ts**
+|-- tsconfig.app.json
+|-- tsconfig.json
+|-- **tsconfig.server.json**
+
+To switch from the node express server implementation to the socket engine implementation you first need to install two additional dependencies. 
 
 `npm install @nguniversal/socket-engine @nguniversal/common --save`
+
+Now replace the **server.ts** node express implementation, with the following code:
 
 ```js
 const socketEngine = require('@nguniversal/socket-engine');
 
 // * NOTE :: leave this as require() since this file is built Dynamically from webpack
-const {AppServerModuleNgFactory, LAZY_MODULE_MAP} = require('./dist/server/main');
+const {AppServerModule} = require('./src/main.server');
 
-socketEngine.startSocketEngine(AppServerModuleNgFactory);
+if (AppServerModule === undefined) {
+  throw new Error('Unable to load the AppServerModule. Please make sure, you have setup the "main.server.ts" entry point correctly.');
+}
+
+const port: number = parseInt(process.env.NODEPORT, 10) || 9090;
+console.log('Starting the socket-server on port: ' + port);
+socketEngine.startSocketEngine(AppServerModule, [], 'localhost', port);
 ```
-This will the socket engine which internally hosts a TCP Socket server.  
-The default port is `9090` and host of `localhost`
-You may want to leave this as a plain `.js` file since it is so simple and to make deploying it easier, but it can be easily transpiled from Typescript.  
+This will start the socket engine which internally hosts a TCP Socket server.  
+The default port is `9090` and host of `localhost`.
+
+## Compile your app
+
+After everything is setup, it's time to compile the app. You can simply run
+
+`npm run build:ssr && npm run serve:ssr`
+
+`npm run build:ssr` is a shortcut for running `ng build --prod && ng run app:server:production`, which first compiles the normal browser app and then compiles the server app, based on that output.
+
+`npm run serve:ssr` is a shortcut for running `node dist/app/server/main.js`. 
+
+## Notes for Localization (i18n)
+
+If you're using the [--localize](https://angular.io/guide/i18n) option while building your app, you might not be able to use the `npm run serve:ssr` shortcut, since the compiler generates one main.js bundle for each language you compile (the compiled server app might be located in `node dist/app/server/de-DE/main.js` for example).
+
+Furthermore, you need to be aware that you need enable localization for the compilation of the browser app AND the server app. You can do that by using the `--localize` flag or by setting `"localize": true"` in the in your `angular.json` file (within the `options` namespace).
 
 ## Usage Client
 
