@@ -4,42 +4,43 @@ Framework and Platform agnostic Angular Universal rendering.
 
 ## Setup the Socket Server
 
-To get started setting up a socket server, you should first follow the steps descriped [Angular Universal Guide](https://angular.io/guide/universal), which guides you through the setup of a node express web server.
+To get started with setting up a socket server, you should first follow the steps descriped in the [Angular Universal Guide](https://angular.io/guide/universal), which guides you through the setup of a node express web server.
 
-After following the guide your app should now have a structure, similar to this:
+After following these steps, your app should now have a structure similar to this:
 
+```
 - app
 |-- src
 |-- |-- app
     |-- |-- app.module.ts
-        |-- **app.server.module.ts**
+        |-- app.server.module.ts
         |-- ..
     |-- main.ts
-    |-- **main.server.ts**
-|-- **server.ts**
+    |-- main.server.ts
+    |-- ..
+|-- server.ts
 |-- tsconfig.app.json
 |-- tsconfig.json
-|-- **tsconfig.server.json**
+|-- tsconfig.server.json
+|-- ..
+```
 
-To switch from the node express server implementation to the socket engine implementation you first need to install two additional dependencies. 
+To switch from the node express server implementation to the socket engine implementation you first need to make sure that the two dependencies, the socket engine requires, are installed. 
 
 `npm install @nguniversal/socket-engine @nguniversal/common --save`
 
 Now replace the **server.ts** node express implementation, with the following code:
 
-```js
-const socketEngine = require('@nguniversal/socket-engine');
+```typescript
+// You proboably won't need zone.js for the server compilation, as long as you compile for production
+// import 'zone.js/dist/zone-node';
+import { startSocketEngine } from '@nguniversal/socket-engine';
+import { AppServerModule } from './src/main.server';
 
-// * NOTE :: leave this as require() since this file is built Dynamically from webpack
-const {AppServerModule} = require('./src/main.server');
+const port: number = parseInt(process.env.PORT, 10) || 9090;
 
-if (AppServerModule === undefined) {
-  throw new Error('Unable to load the AppServerModule. Please make sure, you have setup the "main.server.ts" entry point correctly.');
-}
-
-const port: number = parseInt(process.env.NODEPORT, 10) || 9090;
 console.log('Starting the socket-server on port: ' + port);
-socketEngine.startSocketEngine(AppServerModule, [], 'localhost', port);
+startSocketEngine(AppServerModule, [], 'localhost', port);
 ```
 This will start the socket engine which internally hosts a TCP Socket server.  
 The default port is `9090` and host of `localhost`.
@@ -58,7 +59,7 @@ After everything is setup, it's time to compile the app. You can simply run
 
 If you're using the [--localize](https://angular.io/guide/i18n) option while building your app, you might not be able to use the `npm run serve:ssr` shortcut, since the compiler generates one main.js bundle for each language you compile (the compiled server app might be located in `node dist/app/server/de-DE/main.js` for example).
 
-Furthermore, you need to be aware that you need enable localization for the compilation of the browser app AND the server app. You can do that by using the `--localize` flag or by setting `"localize": true"` in the in your `angular.json` file (within the `options` namespace).
+Furthermore, you need to be aware that you need to enable localization for the compilation of the browser app AND the server app. You can do that by using the `--localize` flag or by setting `"localize": true"` in the in your `angular.json` file (within the `options` namespace).
 
 ## Usage Client
 
