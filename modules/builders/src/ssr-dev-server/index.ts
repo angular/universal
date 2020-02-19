@@ -14,7 +14,7 @@ import {
 } from '@angular-devkit/architect';
 import { json, logging, tags } from '@angular-devkit/core';
 import * as browserSync from 'browser-sync';
-import * as proxy from 'http-proxy-middleware';
+import { createProxyMiddleware } from 'http-proxy-middleware';
 import { join } from 'path';
 import {
   EMPTY,
@@ -266,7 +266,7 @@ async function initBrowserSync(
     // ex: http://testinghost.com/ssr -> http://localhost:4200 which will result in a 404.
     if (hasPathname) {
       bsOptions.middleware = [
-        proxy(defaultSocketIoPath, {
+        createProxyMiddleware(defaultSocketIoPath, {
           target: url.format({
             protocol: 'http',
             hostname: host,
@@ -275,7 +275,7 @@ async function initBrowserSync(
           }),
           ws: true,
           logLevel: 'silent',
-        }),
+        }) as any,
       ];
     }
   }
