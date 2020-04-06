@@ -24,6 +24,7 @@ ts_library(
     tsconfig = ":bazel-tsconfig-build.json",
     deps = [
         "@npm//@angular-devkit/architect",
+        "@npm//@angular-devkit/build-angular",
         "@npm//@angular-devkit/core",
         "@npm//@types/browser-sync",
         "@npm//browser-sync",

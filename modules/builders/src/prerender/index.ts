@@ -7,6 +7,8 @@
  */
 
 import { BuilderContext, BuilderOutput, createBuilder, targetFromTargetString } from '@angular-devkit/architect';
+import { Schema as BrowserBuilderSchema } from '@angular-devkit/build-angular/src/browser/schema';
+import { getIndexOutputFile } from '@angular-devkit/build-angular/src/utils/webpack-browser-config';
 import { fork } from 'child_process';
 import * as fs from 'fs';
 import * as path from 'path';
@@ -20,9 +22,12 @@ type BuildBuilderOutput = BuilderOutput & {
   outputPath: string;
 };
 
-type ScheduleBuildsOutput = BuilderOutput & {
+type ScheduleBuildsOutput = {
+  success: boolean;
+  error: string;
   serverResult?: BuildBuilderOutput;
   browserResult?: BuildBuilderOutput;
+  browserOptions?: BrowserBuilderSchema;
 };
 
 /**
@@ -50,11 +55,13 @@ async function _scheduleBuilds(
       serverTargetRun.result as unknown as BuildBuilderOutput,
     ]);
 
+    const browserOptions =
+      await context.getTargetOptions(browserTarget) as unknown as BrowserBuilderSchema;
     const success =
       browserResult.success && serverResult.success && browserResult.baseOutputPath !== undefined;
     const error = browserResult.error || serverResult.error as string;
 
-    return { success, error, browserResult, serverResult };
+    return { success, error, browserResult, serverResult, browserOptions };
   } catch (e) {
     return { success: false, error: e.message };
   } finally {
@@ -67,6 +74,7 @@ async function _parallelRenderRoutes(
   context: BuilderContext,
   indexHtml: string,
   outputPath: string,
+  indexFile: string,
   serverBundlePath: string,
   ): Promise<void> {
   const workerFile = path.join(__dirname, 'render.js');
@@ -74,6 +82,7 @@ async function _parallelRenderRoutes(
     new Promise((resolve, reject) => {
       fork(workerFile, [
         indexHtml,
+        indexFile,
         serverBundlePath,
         outputPath,
         ...routes,
@@ -103,12 +112,17 @@ async function _renderUniversal(
   context: BuilderContext,
   browserResult: BuildBuilderOutput,
   serverResult: BuildBuilderOutput,
+  browserOptions?: BrowserBuilderSchema,
   numProcesses?: number,
 ): Promise<BuildBuilderOutput> {
+  // Users can specify a different base html file e.g. "src/home.html"
+  const indexFile = browserOptions
+    ? getIndexOutputFile(browserOptions)
+    : 'index.html';
   // We need to render the routes for each locale from the browser output.
   for (const outputPath of browserResult.outputPaths) {
-    const browserIndexOutputPath = path.join(outputPath, 'index.html');
-    const indexHtml = fs.readFileSync(browserIndexOutputPath, 'utf8');
+    const browserIndexInputPath = path.join(outputPath, indexFile);
+    const indexHtml = fs.readFileSync(browserIndexInputPath, 'utf8');
 
     const { baseOutputPath = '' } = serverResult;
     const localeDirectory = path.relative(browserResult.baseOutputPath, outputPath);
@@ -125,6 +139,7 @@ async function _renderUniversal(
       context,
       indexHtml,
       outputPath,
+      indexFile,
       serverBundlePath,
     );
   }
@@ -147,12 +162,19 @@ export async function execute(
   }
 
   const result = await _scheduleBuilds(options, context);
-  const { success, error, browserResult, serverResult } = result;
+  const { success, error, browserResult, serverResult, browserOptions } = result;
   if (!success || !browserResult || !serverResult) {
     return { success, error } as BuilderOutput;
   }
 
-  return _renderUniversal(routes, context, browserResult, serverResult, options.numProcesses);
+  return _renderUniversal(
+    routes,
+    context,
+    browserResult,
+    serverResult,
+    browserOptions,
+    options.numProcesses,
+  );
 }
 
 export default createBuilder(execute);
