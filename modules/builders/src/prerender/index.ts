@@ -8,13 +8,12 @@
 
 import { BuilderContext, BuilderOutput, createBuilder, targetFromTargetString } from '@angular-devkit/architect';
 import { Schema as BrowserBuilderSchema } from '@angular-devkit/build-angular/src/browser/schema';
-import { getIndexOutputFile } from '@angular-devkit/build-angular/src/utils/webpack-browser-config';
 import { fork } from 'child_process';
 import * as fs from 'fs';
 import * as path from 'path';
 
 import { PrerenderBuilderOptions, PrerenderBuilderOutput } from './models';
-import { getRoutes, shardArray } from './utils';
+import { getIndexOutputFile, getRoutes, shardArray } from './utils';
 
 type BuildBuilderOutput = BuilderOutput & {
   baseOutputPath: string;
@@ -112,13 +111,11 @@ async function _renderUniversal(
   context: BuilderContext,
   browserResult: BuildBuilderOutput,
   serverResult: BuildBuilderOutput,
-  browserOptions?: BrowserBuilderSchema,
+  browserOptions: BrowserBuilderSchema,
   numProcesses?: number,
 ): Promise<BuildBuilderOutput> {
   // Users can specify a different base html file e.g. "src/home.html"
-  const indexFile = browserOptions
-    ? getIndexOutputFile(browserOptions)
-    : 'index.html';
+  const indexFile = getIndexOutputFile(browserOptions);
   // We need to render the routes for each locale from the browser output.
   for (const outputPath of browserResult.outputPaths) {
     const browserIndexInputPath = path.join(outputPath, indexFile);
@@ -163,7 +160,7 @@ export async function execute(
 
   const result = await _scheduleBuilds(options, context);
   const { success, error, browserResult, serverResult, browserOptions } = result;
-  if (!success || !browserResult || !serverResult) {
+  if (!success || !browserResult || !serverResult || !browserOptions) {
     return { success, error } as BuilderOutput;
   }
 
