@@ -7,7 +7,7 @@
  */
 
 import { BuilderContext, BuilderOutput, createBuilder, targetFromTargetString } from '@angular-devkit/architect';
-import { Schema as BrowserBuilderSchema } from '@angular-devkit/build-angular/src/browser/schema';
+import { BrowserBuilderOptions } from '@angular-devkit/build-angular';
 import { fork } from 'child_process';
 import * as fs from 'fs';
 import * as path from 'path';
@@ -21,12 +21,9 @@ type BuildBuilderOutput = BuilderOutput & {
   outputPath: string;
 };
 
-type ScheduleBuildsOutput = {
-  success: boolean;
-  error: string;
+type ScheduleBuildsOutput = BuilderOutput & {
   serverResult?: BuildBuilderOutput;
   browserResult?: BuildBuilderOutput;
-  browserOptions?: BrowserBuilderSchema;
 };
 
 /**
@@ -54,13 +51,11 @@ async function _scheduleBuilds(
       serverTargetRun.result as unknown as BuildBuilderOutput,
     ]);
 
-    const browserOptions =
-      await context.getTargetOptions(browserTarget) as unknown as BrowserBuilderSchema;
     const success =
       browserResult.success && serverResult.success && browserResult.baseOutputPath !== undefined;
     const error = browserResult.error || serverResult.error as string;
 
-    return { success, error, browserResult, serverResult, browserOptions };
+    return { success, error, browserResult, serverResult };
   } catch (e) {
     return { success: false, error: e.message };
   } finally {
@@ -111,7 +106,7 @@ async function _renderUniversal(
   context: BuilderContext,
   browserResult: BuildBuilderOutput,
   serverResult: BuildBuilderOutput,
-  browserOptions: BrowserBuilderSchema,
+  browserOptions: BrowserBuilderOptions,
   numProcesses?: number,
 ): Promise<BuildBuilderOutput> {
   // Users can specify a different base html file e.g. "src/home.html"
@@ -159,10 +154,14 @@ export async function execute(
   }
 
   const result = await _scheduleBuilds(options, context);
-  const { success, error, browserResult, serverResult, browserOptions } = result;
-  if (!success || !browserResult || !serverResult || !browserOptions) {
+  const { success, error, browserResult, serverResult } = result;
+  if (!success || !browserResult || !serverResult) {
     return { success, error } as BuilderOutput;
   }
+
+  const browserTarget = targetFromTargetString(options.browserTarget);
+  const browserOptions =
+      await context.getTargetOptions(browserTarget) as unknown as BrowserBuilderOptions;
 
   return _renderUniversal(
     routes,

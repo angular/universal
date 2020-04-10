@@ -7,7 +7,7 @@
  */
 
 import * as Architect from '@angular-devkit/architect';
-import { Schema as BrowserBuilderSchema } from '@angular-devkit/build-angular/src/browser/schema';
+import { BrowserBuilderOptions } from '@angular-devkit/build-angular';
 import { logging } from '@angular-devkit/core';
 import * as fs from 'fs';
 import * as guessParser from 'guess-parser';
@@ -124,13 +124,13 @@ describe('Prerender Builder Utils', () => {
 
   describe('#getIndexOutputFile', () => {
     it('Should return only the file name when index is a string', () => {
-      const options = { index: 'src/home.html' } as BrowserBuilderSchema;
+      const options = { index: 'src/home.html' } as BrowserBuilderOptions;
       expect(getIndexOutputFile(options)).toBe('home.html');
     });
 
     it('Should return full file path when index is an object', () => {
       const options =
-        { index: { input: 'src/index.html', output: 'src/home.html' } } as BrowserBuilderSchema;
+        { index: { input: 'src/index.html', output: 'src/home.html' } } as BrowserBuilderOptions;
       expect(getIndexOutputFile(options)).toBe('src/home.html');
     });
   });
