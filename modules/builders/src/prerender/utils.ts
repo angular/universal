@@ -45,10 +45,12 @@ export async function getRoutes(
             .filter(route => !route.includes('*') && !route.includes(':'))
         );
       } catch (e) {
-        context.logger.error('Unable to extract routes from application.', e);
+        context.logger.error('Unable to guess the routes from application.', e);
       }
     }
   }
+  
+  context.logger.info(`Found routes: ${routes.join(', ')}`);
 
   return [...new Set(routes)];
 }
