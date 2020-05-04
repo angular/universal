@@ -49,7 +49,7 @@ export async function getRoutes(
       }
     }
   }
-  
+
   context.logger.info(`Found routes: ${routes.join(', ')}`);
 
   return [...new Set(routes)];
