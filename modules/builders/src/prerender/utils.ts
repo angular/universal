@@ -12,6 +12,7 @@ import * as fs from 'fs';
 import { parseAngularRoutes } from 'guess-parser';
 import * as os from 'os';
 import * as path from 'path';
+import { Options } from 'html-minifier';
 
 import { PrerenderBuilderOptions } from './models';
 
@@ -30,19 +31,19 @@ export async function getRoutes(
     routes = routes.concat(
       fs.readFileSync(routesFilePath, 'utf8')
         .split(/\r?\n/)
-        .filter(v => !!v)
+        .filter(v => !!v),
     );
   }
 
   if (options.guessRoutes) {
     const browserTarget = targetFromTargetString(options.browserTarget);
-    const { tsConfig } = await context.getTargetOptions(browserTarget);
+    const {tsConfig} = await context.getTargetOptions(browserTarget);
     if (typeof tsConfig === 'string') {
       try {
         routes = routes.concat(
           parseAngularRoutes(path.join(context.workspaceRoot, tsConfig))
             .map(routeObj => routeObj.path)
-            .filter(route => !route.includes('*') && !route.includes(':'))
+            .filter(route => !route.includes('*') && !route.includes(':')),
         );
       } catch (e) {
         context.logger.error('Unable to extract routes from application.', e);
@@ -54,6 +55,27 @@ export async function getRoutes(
 }
 
 /**
+ * Returns the options for html-minifier
+ */
+export async function getMinifyOptions(
+  options: PrerenderBuilderOptions,
+  context: BuilderContext,
+): Options {
+  let minifyOptions: Options;
+
+  if (options.minifyOptionsFile) {
+    const routesFilePath = path.resolve(context.workspaceRoot, options.minifyOptionsFile);
+    try {
+      minifyOptions = require(routesFilePath);
+    } catch(e){
+      context.logger.error('Unable to load html-minifier options from file', e);
+    }
+  }
+
+  return minifyOptions;
+}
+
+/**
  * Evenly shards items in an array.
  * e.g. shardArray([1, 2, 3, 4], 2) => [[1, 2], [3, 4]]
  */
@@ -62,7 +84,7 @@ export function shardArray<T>(items: T[], maxNoOfShards = (os.cpus().length - 1)
   const numShards = Math.min(maxNoOfShards, items.length);
   for (let i = 0; i < numShards; i++) {
     shardedArray.push(
-      items.filter((_, index) => index % numShards === i)
+      items.filter((_, index) => index % numShards === i),
     );
   }
 

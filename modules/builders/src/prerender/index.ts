@@ -9,11 +9,12 @@
 import { BuilderContext, BuilderOutput, createBuilder, targetFromTargetString } from '@angular-devkit/architect';
 import { BrowserBuilderOptions } from '@angular-devkit/build-angular';
 import { fork } from 'child_process';
+import { Options } from 'html-minifier';
 import * as fs from 'fs';
 import * as path from 'path';
 
 import { PrerenderBuilderOptions, PrerenderBuilderOutput } from './models';
-import { getIndexOutputFile, getRoutes, shardArray } from './utils';
+import { getIndexOutputFile, getMinifyOptions, getRoutes, shardArray } from './utils';
 
 type BuildBuilderOutput = BuilderOutput & {
   baseOutputPath: string;
@@ -70,6 +71,7 @@ async function _parallelRenderRoutes(
   outputPath: string,
   indexFile: string,
   serverBundlePath: string,
+  minifyOptions: string
   ): Promise<void> {
   const workerFile = path.join(__dirname, 'render.js');
   const childProcesses = shardedRoutes.map(routes =>
@@ -79,6 +81,7 @@ async function _parallelRenderRoutes(
         indexFile,
         serverBundlePath,
         outputPath,
+        minifyOptions,
         ...routes,
       ])
         .on('message', data => {
@@ -107,7 +110,8 @@ async function _renderUniversal(
   browserResult: BuildBuilderOutput,
   serverResult: BuildBuilderOutput,
   browserOptions: BrowserBuilderOptions,
-  numProcesses?: number,
+  minifyOptions: Options,
+  numProcesses?: number
 ): Promise<BuildBuilderOutput> {
   // Users can specify a different base html file e.g. "src/home.html"
   const indexFile = getIndexOutputFile(browserOptions);
@@ -133,6 +137,7 @@ async function _renderUniversal(
       outputPath,
       indexFile,
       serverBundlePath,
+      JSON.stringify(minifyOptions)
     );
   }
 
@@ -149,6 +154,7 @@ export async function execute(
   context: BuilderContext
 ): Promise<PrerenderBuilderOutput> {
   const routes = await getRoutes(options, context);
+  const minifyOptions = getMinifyOptions(options, context);
   if (!routes.length) {
     throw new Error(`Could not find any routes to prerender.`);
   }
@@ -169,6 +175,7 @@ export async function execute(
     browserResult,
     serverResult,
     browserOptions,
+    minifyOptions,
     options.numProcesses,
   );
 }

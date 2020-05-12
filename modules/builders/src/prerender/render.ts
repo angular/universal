@@ -8,12 +8,14 @@
 
 import * as fs from 'fs';
 import * as path from 'path';
+import { minify, Options } from 'html-minifier';
 
 const [
   indexHtml,
   indexFile,
   serverBundlePath,
   browserOutputPath,
+  minifyOptionsJson,
   ...routes
 ] = process.argv.slice(2);
 
@@ -50,17 +52,28 @@ async function getServerBundle(bundlePath: string) {
  * Renders each route in routes and writes them to <outputPath>/<route>/index.html.
  */
 (async () => {
-  const { renderModuleFn, AppServerModuleDef } = await getServerBundle(serverBundlePath);
+  const {renderModuleFn, AppServerModuleDef} = await getServerBundle(serverBundlePath);
   const browserIndexOutputPath = path.join(browserOutputPath, indexFile);
   for (const route of routes) {
     const renderOpts = {
       document: indexHtml + '<!-- This page was prerendered with Angular Universal -->',
       url: route,
     };
-    const html = await renderModuleFn(AppServerModuleDef, renderOpts);
+    let html = await renderModuleFn(AppServerModuleDef, renderOpts);
 
     const outputFolderPath = path.join(browserOutputPath, route);
     const outputIndexPath = path.join(outputFolderPath, 'index.html');
+
+    try {
+      const minifyOptions: Options = JSON.parse(minifyOptionsJson);
+      if (minifyOptions) {
+        html = minify(html, minifyOptions);
+      }
+    } catch (e) {
+      if (process.send) {
+        process.send({success: false, error: e.message, outputIndexPath});
+      }
+    }
 
     // This case happens when we are prerendering "/".
     if (browserIndexOutputPath === outputIndexPath) {
@@ -69,15 +82,15 @@ async function getServerBundle(bundlePath: string) {
     }
 
     try {
-      fs.mkdirSync(outputFolderPath, { recursive: true });
+      fs.mkdirSync(outputFolderPath, {recursive: true});
       fs.writeFileSync(outputIndexPath, html);
       const bytes = Buffer.byteLength(html).toFixed(0);
       if (process.send) {
-        process.send({ success: true, outputIndexPath, bytes });
+        process.send({success: true, outputIndexPath, bytes});
       }
     } catch (e) {
       if (process.send) {
-        process.send({ success: false, error: e.message, outputIndexPath });
+        process.send({success: false, error: e.message, outputIndexPath});
       }
     }
   }

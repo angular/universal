@@ -18,6 +18,10 @@ export interface Schema {
   /**
    * The number of cpus to use. Defaults to all but one.
    */
+  htmlMinifyOptionsFile?: string;
+  /**
+   * The number of cpus to use. Defaults to all but one.
+   */
   numProcesses?: number;
   /**
    * The routes to render.

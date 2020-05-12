@@ -17,6 +17,10 @@
       "type": "string",
       "description": "The path to a file containing routes separated by newlines."
     },
+    "htmlMinifyOptionsFile": {
+      "type": "string",
+      "description": "The path to a javascript file containing options for `html-minifier`"
+    },
     "routes": {
       "type": "array",
       "description": "The routes to render.",
