@@ -36,6 +36,10 @@ RXJS_VERSION = "^6.5.3"
 HAPI_VERSION = "^18.4.0"
 EXPRESS_VERSION = "^4.15.2"
 EXPRESS_TYPES_VERSION = "^4.17.0"
+KOA_VERSION = "^2.12.0"
+KOA_TYPES_VERSION = "^2.11.3"
+KOA_STATIC_VERSION = "^5.0.0"
+KOA_STATIC_TYPES_VERSION = "^4.0.0"
 DEVKIT_CORE_VERSION = "^10.0.0-rc.0"
 DEVKIT_ARCHITECT_VERSION = "^0.1000.0-rc.0"
 TSLIB_VERSION = "^2.0.0"
@@ -46,6 +50,7 @@ NGUNIVERSAL_SCOPED_PACKAGES = ["@nguniversal/%s" % p for p in [
     "common",
     "express-engine",
     "hapi-engine",
+    "koa-engine",
 ]]
 
 PKG_GROUP_REPLACEMENTS = {
@@ -55,6 +60,10 @@ PKG_GROUP_REPLACEMENTS = {
     "EXPRESS_VERSION": EXPRESS_VERSION,
     "EXPRESS_TYPES_VERSION": EXPRESS_TYPES_VERSION,
     "HAPI_VERSION": HAPI_VERSION,
+    "KOA_VERSION": KOA_VERSION,
+    "KOA_TYPES_VERSION": KOA_TYPES_VERSION,
+    "KOA_STATIC_VERSION": KOA_STATIC_VERSION,
+    "KOA_STATIC_TYPES_VERSION": KOA_STATIC_TYPES_VERSION,
     "NG_VERSION": NG_VERSION,
     "RXJS_VERSION": RXJS_VERSION,
     "DEVKIT_CORE_VERSION": DEVKIT_CORE_VERSION,
@@ -75,9 +84,11 @@ GLOBALS = {
     "@nguniversal/aspnetcore-engine/tokens": "nguniversal.aspnetcoreEngine.tokens",
     "@nguniversal/express-engine/tokens": "nguniversal.expressEngine.tokens",
     "@nguniversal/hapi-engine/tokens": "nguniversal.hapiEngine.tokens",
+    "@nguniversal/koa-engine/tokens": "nguniversal.koaEngine.tokens",
     "express": "express",
     "fs": "fs",
     "@hapi/hapi": "hapi.hapi",
+    "koa": "koa",
     "rxjs": "rxjs",
     "rxjs/operators": "rxjs.operators",
     "tslib": "tslib",
