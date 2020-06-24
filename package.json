@@ -63,7 +63,7 @@
     "@bazel/ibazel": "^0.13.0",
     "@bazel/jasmine": "~1.7.0",
     "@bazel/typescript": "~1.7.0",
-    "@hapi/hapi": "^18.4.0",
+    "@hapi/hapi": "^19.0.0",
     "@schematics/angular": "^10.0.0",
     "@types/browser-sync": "^2.26.1",
     "@types/express": "4.17.6",
