@@ -32,7 +32,7 @@
     "concurrently": "5.3.0",
     "protractor": "file:../../node_modules/protractor",
     "raw-loader": "^0.5.1",
-    "webpack": "^2.2.1"
+    "webpack": "^5.0.0"
   },
   "scripts": {
     "postinstall": "webdriver-manager update --gecko false --standalone false $CHROMEDRIVER_VERSION_ARG",
