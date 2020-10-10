@@ -49,7 +49,8 @@ export class CommonEngine {
         provide: INITIAL_CONFIG,
         useValue: {
           document: doc,
-          url: opts.url
+          url: opts.url,
+          useAbsoluteUrl: true,
         }
       }
     ];
