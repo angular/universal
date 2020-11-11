@@ -77,6 +77,8 @@
     "browser-sync": "^2.26.7",
     "domino": "^2.1.2",
     "express": "^4.15.2",
+    "fastify": "^3.8.0",
+    "fastify-static": "^3.3.0",
     "guess-parser": "^0.4.12",
     "http-proxy-middleware": "^1.0.0",
     "jasmine": "^3.6.0",

@@ -34,6 +34,7 @@ def ts_library(tsconfig = None, deps = [], testonly = False, **kwargs):
 NG_VERSION = "^11.0.0-rc.3"
 RXJS_VERSION = "^6.5.5"
 HAPI_VERSION = "^18.4.0"
+FASTIFY_VERSION = "^3.8.0"
 EXPRESS_VERSION = "^4.15.2"
 EXPRESS_TYPES_VERSION = "^4.17.0"
 DEVKIT_CORE_VERSION = "^11.0.0-rc.3"
@@ -46,6 +47,7 @@ NGUNIVERSAL_SCOPED_PACKAGES = ["@nguniversal/%s" % p for p in [
     "common",
     "express-engine",
     "hapi-engine",
+    "fastify-engine",
 ]]
 
 PKG_GROUP_REPLACEMENTS = {
@@ -55,6 +57,7 @@ PKG_GROUP_REPLACEMENTS = {
     "EXPRESS_VERSION": EXPRESS_VERSION,
     "EXPRESS_TYPES_VERSION": EXPRESS_TYPES_VERSION,
     "HAPI_VERSION": HAPI_VERSION,
+    "FASTIFY_VERSION": FASTIFY_VERSION,
     "NG_VERSION": NG_VERSION,
     "RXJS_VERSION": RXJS_VERSION,
     "DEVKIT_CORE_VERSION": DEVKIT_CORE_VERSION,
@@ -77,9 +80,11 @@ GLOBALS = {
     "@nguniversal/aspnetcore-engine/tokens": "nguniversal.aspnetcoreEngine.tokens",
     "@nguniversal/express-engine/tokens": "nguniversal.expressEngine.tokens",
     "@nguniversal/hapi-engine/tokens": "nguniversal.hapiEngine.tokens",
+    "@nguniversal/fastify-engine/tokens": "nguniversal.fastifyEngine.tokens",
     "express": "express",
     "fs": "fs",
     "@hapi/hapi": "hapi.hapi",
+    "fastify": "fastify",
     "rxjs": "rxjs",
     "rxjs/operators": "rxjs.operators",
 }

@@ -1,0 +1,15 @@
+load("//tools:defaults.bzl", "ng_module")
+
+package(default_visibility = ["//visibility:public"])
+
+ng_module(
+    name = "tokens",
+    srcs = glob([
+        "*.ts",
+    ]),
+    module_name = "@nguniversal/fastify-engine/tokens",
+    deps = [
+        "@npm//@angular/core",
+        "@npm//fastify",
+    ],
+)

@@ -1,0 +1,38 @@
+{
+  "name": "@nguniversal/fastify-engine",
+  "version": "0.0.0-PLACEHOLDER",
+  "description": "Fastify Engine for running Server Angular Apps",
+  "license": "MIT",
+  "keywords": [
+    "fastify",
+    "ssr",
+    "universal"
+  ],
+  "engines": {
+    "node": ">=10.13.0"
+  },
+  "peerDependencies": {
+    "@angular/common": "NG_VERSION",
+    "@angular/core": "NG_VERSION",
+    "@angular/platform-server": "NG_VERSION",
+    "fastify": "FASTIFY_VERSION"
+  },
+  "dependencies": {
+    "@nguniversal/common": "0.0.0-PLACEHOLDER",
+    "tslib": "TSLIB_VERSION"
+  },
+  "schematics": "./schematics/collection.json",
+  "ng-update": {
+    "migrations": "./schematics/migrations/migration-collection.json",
+    "packageGroup": "NG_UPDATE_PACKAGE_GROUP",
+    "packageGroupName": "@nguniversal/fastify-engine"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/angular/universal"
+  },
+  "bugs": {
+    "url": "https://github.com/angular/universal/issues"
+  },
+  "homepage": "https://github.com/angular/universal"
+}

@@ -1,0 +1,67 @@
+load("//tools:defaults.bzl", "jasmine_node_test", "ng_module", "ng_package", "ng_test_library")
+
+package(default_visibility = ["//visibility:public"])
+
+ng_module(
+    name = "fastify-engine",
+    srcs = glob([
+        "*.ts",
+        "src/**/*.ts",
+    ]),
+    module_name = "@nguniversal/fastify-engine",
+    deps = [
+        "//modules/common/engine",
+        "//modules/fastify-engine/tokens",
+        "@npm//@angular/platform-server",
+    ],
+)
+
+ng_package(
+    name = "npm_package",
+    srcs = [
+        ":package.json",
+    ],
+    entry_point = ":index.ts",
+    nested_packages = ["//modules/fastify-engine/schematics:npm_package"],
+    readme_md = ":README.md",
+    tags = ["release"],
+    deps = [
+        ":fastify-engine",
+        "//modules/fastify-engine/tokens",
+    ],
+)
+
+# NgModule used only for tests.
+ng_module(
+    name = "testing",
+    srcs = glob([
+        "testing/**/*.ts",
+    ]),
+    module_name = "@nguniversal/fastify-engine/testing",
+    deps = [
+        "@npm//@angular/platform-browser",
+        "@npm//@angular/platform-server",
+    ],
+)
+
+ng_test_library(
+    name = "unit_test_lib",
+    srcs = glob([
+        "spec/**/*.spec.ts",
+    ]),
+    deps = [
+        ":fastify-engine",
+        ":testing",
+        "@npm//@angular/platform-browser",
+        "@npm//@angular/platform-server",
+        "@npm//domino",
+        "@npm//fastify",
+        "@npm//xhr2",
+        "@npm//zone.js",
+    ],
+)
+
+jasmine_node_test(
+    name = "unit_test",
+    srcs = [":unit_test_lib"],
+)

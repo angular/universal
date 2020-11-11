@@ -37,6 +37,7 @@ The packages from this repo are published as scoped packages under [@nguniversal
 - [@nguniversal/aspnetcore-engine](/modules/aspnetcore-engine/README.md)
 - [@nguniversal/hapi-engine](/modules/hapi-engine/README.md)
 - [@nguniversal/socket-engine](/modules/socket-engine)
+- [@nguniversal/fastify-engine](/modules/fastify-engine)
 
 # Universal "Gotchas"
 Moved to [/docs/gotchas.md](/docs/gotchas.md)

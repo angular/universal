@@ -12,8 +12,8 @@ try {
   process.exit(0);
 }
 
-const {set, cd, sed, echo, ls} = require('shelljs');
-const {readFileSync} = require('fs');
+const {set, cd, sed, echo, ls, cat} = require('shelljs');
+const {readFileSync, writeFileSync} = require('fs');
 const path = require('path');
 const log = console.log;
 
@@ -37,6 +37,8 @@ sed('-i', '(\'response\' in xhr)', '(\'response\' in (xhr as any))',
     'node_modules/rxjs/src/observable/dom/AjaxObservable.ts');
 */
 
+const insertPrefixHeader = '/*added by tools/postinstall_patches.js*/';
+
 // Workaround https://github.com/bazelbuild/rules_nodejs/issues/1033
 // TypeScript doesn't understand typings without "declare module" unless
 // they are actually resolved by the @types default mechanism
@@ -45,10 +47,17 @@ ls('node_modules/@types').filter(f => f.startsWith('hapi__')).forEach(pkg => {
   const modName = '@' + pkg.replace('__', '/');
   const typingsFile = `node_modules/@types/${pkg}/index.d.ts`;
   // Only add the patch if it is not already there.
-  if (readFileSync(typingsFile, 'utf8').indexOf('/*added by tools/postinstall_patches.js*/') ===
-    -1) {
-    const insertPrefix = `/*added by tools/postinstall_patches.js*/ declare module "${modName}" { `;
+  if (readFileSync(typingsFile, 'utf8').indexOf(insertPrefixHeader) === -1) {
+    const insertPrefix = `${insertPrefixHeader} declare module "${modName}" { `;
     sed('-i', `(// Type definitions for ${modName})`, insertPrefix + '$1', typingsFile);
     echo('}').toEnd(typingsFile);
   }
 });
+
+log(`\n# patch: fastify adding declare module wrapper`);
+const fastifyTypingsFile = 'node_modules/fastify/fastify.d.ts';
+// Only add the patch if it is not already there.
+if (readFileSync(fastifyTypingsFile, 'utf8').indexOf(insertPrefixHeader) === -1) {
+  const fastifyTypingsFileContent = cat(fastifyTypingsFile).stdout;
+  writeFileSync(fastifyTypingsFile, `${insertPrefixHeader} declare module "fastify" { ${fastifyTypingsFileContent} }`);
+}
