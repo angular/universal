@@ -23,15 +23,29 @@ export async function app() {
 
   const indexHtml = existsSync(join(distFolder, 'index.original.html')) ? 'index.original.html' : 'index.html';
   const document = readFileSync(join(distFolder, indexHtml), 'utf-8');
+  const pageExists = new Map<string, boolean>();
 
   server.route({
     method: 'GET',
     path: '/{path*}',
-    handler: (req: Request) => ngHapiEngine({
-      bootstrap: AppServerModuleNgFactory,
-      document,
-      req,
-    })
+    handler: (req: Request, res: ResponseToolkit) => {
+      const htmlPath = join(distFolder, req.path, 'index.html');
+      // Check if the page is already prerendered.
+      // To avoid extra disk I/O operation in the future remember if the file exists
+      if (!pageExists.has(req.path)) {
+        pageExists.set(req.path, existsSync(htmlPath));
+      }
+      if (pageExists.get(req.path)) {
+        return res.file(htmlPath);
+      }
+      // Server-side rendering
+
+      return ngHapiEngine({
+        bootstrap: AppServerModuleNgFactory,
+        document,
+        req,
+      });
+    }
   });
 
   await server.register(inert);

@@ -29,8 +29,21 @@ export function app(): express.Express {
     maxAge: '1y'
   }));
 
-  // All regular routes use the Universal engine
+  const pageExists = new Map<string, boolean>();
+  // All regular routes use the prerendered pages or the Universal engine
   server.get('*', (req, res) => {
+    const htmlPath = join(distFolder, req.path, 'index.html');
+    // Check if the page is already prerendered.
+    // To avoid extra disk I/O operation in the future remember if the file exists
+    if (!pageExists.has(req.path)) {
+      pageExists.set(req.path, existsSync(htmlPath));
+    }
+    if (pageExists.get(req.path)) {
+      res.sendFile(htmlPath);
+
+      return;
+    }
+    // Server-side rendering
     res.render(indexHtml, { req, providers: [{ provide: APP_BASE_HREF, useValue: req.baseUrl }] });
   });
 
