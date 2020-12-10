@@ -6,7 +6,7 @@
   "separateMajorMinor": false,
   "prHourlyLimit": 2,
   "labels": [
-    "PR target: master-only"
+    "PR target: minor"
   ],
   "timezone": "America/Tijuana",
   "lockFileMaintenance": {
