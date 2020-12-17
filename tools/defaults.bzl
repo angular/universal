@@ -31,13 +31,14 @@ def ts_library(tsconfig = None, deps = [], testonly = False, **kwargs):
         **kwargs
     )
 
-NG_VERSION = "^11.0.0"
+NG_VERSION = "^11.1.0-next.2"
 RXJS_VERSION = "^6.5.5"
 HAPI_VERSION = "^18.4.0"
 EXPRESS_VERSION = "^4.15.2"
 EXPRESS_TYPES_VERSION = "^4.17.0"
-DEVKIT_CORE_VERSION = "^11.0.0"
-DEVKIT_ARCHITECT_VERSION = "^0.1100.0"
+DEVKIT_CORE_VERSION = "^11.1.0-next.2"
+DEVKIT_ARCHITECT_VERSION = "^0.1101.0-next.2"
+DEVKIT_BUILD_ANGULAR_VERSION = "^0.1101.0-next.2"
 TSLIB_VERSION = "^2.0.0"
 SELFSIGNED_VERSION = "^1.10.8"
 
@@ -60,6 +61,7 @@ PKG_GROUP_REPLACEMENTS = {
     "RXJS_VERSION": RXJS_VERSION,
     "DEVKIT_CORE_VERSION": DEVKIT_CORE_VERSION,
     "DEVKIT_ARCHITECT_VERSION": DEVKIT_ARCHITECT_VERSION,
+    "DEVKIT_BUILD_ANGULAR_VERSION": DEVKIT_BUILD_ANGULAR_VERSION,
     "TSLIB_VERSION": TSLIB_VERSION,
 }
 
@@ -78,6 +80,7 @@ GLOBALS = {
     "@nguniversal/aspnetcore-engine/tokens": "nguniversal.aspnetcoreEngine.tokens",
     "@nguniversal/express-engine/tokens": "nguniversal.expressEngine.tokens",
     "@nguniversal/hapi-engine/tokens": "nguniversal.hapiEngine.tokens",
+    "critters": "critters",
     "express": "express",
     "fs": "fs",
     "@hapi/hapi": "hapi.hapi",

@@ -21,14 +21,18 @@
   "main": "src/index.js",
   "typings": "src/index.d.ts",
   "builders": "builders.json",
+  "peerDependencies": {
+    "@angular-devkit/build-angular": "DEVKIT_BUILD_ANGULAR_VERSION"
+  },
   "dependencies": {
     "@angular-devkit/architect": "DEVKIT_ARCHITECT_VERSION",
     "@angular-devkit/core": "DEVKIT_CORE_VERSION",
+    "@nguniversal/common": "0.0.0-PLACEHOLDER",
     "browser-sync": "^2.26.7",
     "guess-parser": "^0.4.12",
     "http-proxy-middleware": "^1.0.0",
     "ora": "^5.1.0",
     "rxjs": "RXJS_VERSION",
-    "tree-kill": "^1.2.1"
+    "tree-kill": "^1.2.2"
   }
 }
