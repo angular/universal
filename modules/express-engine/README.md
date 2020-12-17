@@ -60,6 +60,23 @@ app.engine('html', ngExpressEngine({
 }));
 ```
 
+## SSL
+
+SSL is enabeled by default. We provide a simple `addSSL` function inside of the `server-tools` folder. 
+In the `server.ts` is a `serverSettings` object where you can add the fully qualified paths to the certificates you want to use. When those are not provided, we will create a self-signed certificate. Self-signed certificates are only meant to be used for development. Because of that those will cause a warning in the browser.
+
+
+> ## Tip!
+> You can get get free certificates from [letsencrypt.org](https://letsencrypt.org/)
+> You can 
+
+> ## Pro-tip!
+> Use lets-encrypt [certbot](https://certbot.eff.org/) tool to get a free 90 day's certificate. To do this, intstall the tool on your OS. After that you can use the following cmd-line command to generate certs:  
+> `sudo certbot certonly --manual -d example.com -d www.example.com -d localhost`  
+> this will give you all the instructions you need. 
+
+
+
 ## Advanced Usage
 
 ### Request based Bootstrap
