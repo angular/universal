@@ -34,11 +34,12 @@ export interface TransferHttpResponse {
 }
 
 function getHeadersMap(headers: HttpHeaders) {
-  const headersMap: Record<string, string[] | null> = {};
+  const headersMap: { [name: string]: string[] | null } = {};
   for (const key of headers.keys()) {
-    headersMap[key] = headers.getAll(key);
+    if (headers.getAll(key) !== undefined) {
+      headersMap[key] = headers.getAll(key);
+    }
   }
-
   return headersMap;
 }
 
@@ -54,9 +55,8 @@ export class TransferHttpCacheInterceptor implements HttpInterceptor {
 
   private makeCacheKey(method: string, url: string, params: HttpParams): StateKey<string> {
     // make the params encoded same as a url so it's easy to identify
-    const encodedParams = params.keys().sort().map(k => `${k}=${params.getAll(k)}`).join('&');
-    const key = (method === 'GET' ? 'G.' : 'H.') + url + '?' + encodedParams;
-
+    const encodedParams = params.keys().sort().map(k => `${k}=${params.get(k)}`).join('&');
+    const key = method[0] + url + '?' + encodedParams;
     return makeStateKey<TransferHttpResponse>(key);
   }
 
@@ -73,22 +73,24 @@ export class TransferHttpCacheInterceptor implements HttpInterceptor {
   }
 
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
+    const url = req.url.indexOf('://') !== -1 ? req.url : 'http://localhost:4200' + req.url;
+    const storeKey = this.makeCacheKey(req.method, url, req.params);
+
     // Stop using the cache if there is a mutating call.
-    if (req.method !== 'GET' && req.method !== 'HEAD') {
+    if (!this.isAllowedRequestMethod(req)) {
       this.isCacheActive = false;
-      this.invalidateCacheEntry(req.url);
+      this.invalidateCacheEntry(storeKey);
     }
 
-    if (!this.isCacheActive) {
+    if (!this.isCacheActive && !this.transferState.hasKey(storeKey) || !this.isPostRequestAllowed(req, storeKey)) {
       // Cache is no longer active. Pass the request through.
       return next.handle(req);
     }
 
-    const storeKey = this.makeCacheKey(req.method, req.url, req.params);
-
     if (this.transferState.hasKey(storeKey)) {
       // Request found in cache. Respond using it.
       const response = this.transferState.get(storeKey, {} as TransferHttpResponse);
+      this.invalidateCacheEntry(storeKey);
 
       return observableOf(new HttpResponse<any>({
         body: response.body,
@@ -116,6 +118,17 @@ export class TransferHttpCacheInterceptor implements HttpInterceptor {
           })
         );
     }
+  }
+
+  private isAllowedRequestMethod(req: HttpRequest<any>): boolean {
+    return req.method === 'GET' || req.method === 'HEAD' || req.method === 'POST';
+  }
+
+  private isPostRequestAllowed(req: HttpRequest<any>): boolean {
+    if (req.method !== 'POST') {
+      return true;
+    }
+    return false;
   }
 }
 
