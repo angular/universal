@@ -140,8 +140,6 @@ async function _renderUniversal(
           return route;
         }
       });
-      console.log(':::::::::::', localeDirectory);
-      console.log(':::::::::::', localizedRoutes);
     } else {
       localizedRoutes = routes;
     }
