@@ -118,18 +118,32 @@ async function _renderUniversal(
     }
 
     let localizedRoutes;
-    if(localeDirectory.length>1){
-      localizedRoutes=routes.filter(route=>{
-        for (const outputPath of browserResult.outputPaths) {
-          const localeDirectory = path.relative(browserResult.baseOutputPath, outputPath);
-          if(route.startsWith(localeDirectory,1)){
-            return true;
+    if (localeDirectory.length > 1) {
+      localizedRoutes = routes.filter(route => {
+        if (route.startsWith('/' + localeDirectory)) {
+          return true;
+        } else {
+          let found = false;
+          for (const outputPath of browserResult.outputPaths) {
+            const localeDirectory = path.relative(browserResult.baseOutputPath, outputPath);
+            if (route.startsWith('/' + localeDirectory)) {
+              found = true;
+            }
           }
+          return !found;
         }
-        return false;
       });
-    } else{
-      localizedRoutes=routes;
+      localizedRoutes = localizedRoutes.map(route => {
+        if (route.startsWith('/' + localeDirectory)) {
+          return route.substring(localeDirectory.length + 1)
+        } else {
+          return route;
+        }
+      });
+      console.log(':::::::::::', localeDirectory);
+      console.log(':::::::::::', localizedRoutes);
+    } else {
+      localizedRoutes = routes;
     }
 
     const spinner = ora(`Prerendering ${localizedRoutes.length} route(s) to ${outputPath}...`).start();
