@@ -117,11 +117,26 @@ async function _renderUniversal(
       throw new Error(`Could not find the main bundle: ${serverBundlePath}`);
     }
 
-    const spinner = ora(`Prerendering ${routes.length} route(s) to ${outputPath}...`).start();
+    let localizedRoutes;
+    if(localeDirectory.length>1){
+      localizedRoutes=routes.filter(route=>{
+        for (const outputPath of browserResult.outputPaths) {
+          const localeDirectory = path.relative(browserResult.baseOutputPath, outputPath);
+          if(route.startsWith(localeDirectory,1)){
+            return true;
+          }
+        }
+        return false;
+      });
+    } else{
+      localizedRoutes=routes;
+    }
+
+    const spinner = ora(`Prerendering ${localizedRoutes.length} route(s) to ${outputPath}...`).start();
 
     try {
       const workerFile = path.join(__dirname, 'render.js');
-      const childProcesses = shardArray(routes, numProcesses)
+      const childProcesses = shardArray(localizedRoutes, numProcesses)
         .map(routesShard =>
           new Promise((resolve, reject) => {
             fork(workerFile, [
