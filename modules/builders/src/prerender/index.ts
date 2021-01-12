@@ -118,7 +118,7 @@ async function _renderUniversal(
     }
 
     let localizedRoutes;
-    if (localeDirectory.length > 1) {
+    if (localeDirectory.length > 0) {
       localizedRoutes = routes.filter(route => {
         if (route.startsWith('/' + localeDirectory)) {
           return true;
