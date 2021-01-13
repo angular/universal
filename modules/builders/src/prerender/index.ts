@@ -124,18 +124,19 @@ async function _renderUniversal(
           return true;
         } else {
           let found = false;
-          for (const outputPath of browserResult.outputPaths) {
-            const localeDirectory = path.relative(browserResult.baseOutputPath, outputPath);
-            if (route.startsWith('/' + localeDirectory)) {
+          for (const locOutputPath of browserResult.outputPaths) {
+            const locLocaleDirectory = path.relative(browserResult.baseOutputPath, locOutputPath);
+            if (route.startsWith('/' + locLocaleDirectory)) {
               found = true;
             }
           }
+
           return !found;
         }
       });
       localizedRoutes = localizedRoutes.map(route => {
         if (route.startsWith('/' + localeDirectory)) {
-          return route.substring(localeDirectory.length + 1)
+          return route.substring(localeDirectory.length + 1);
         } else {
           return route;
         }
