@@ -39,7 +39,7 @@
   "resolutions": {
     "@types/hapi__boom": "7.4.1",
     "@types/hapi__iron": "5.1.0",
-    "@types/node": "12.12.37"
+    "@types/node": "14.14.25"
   },
   "devDependencies": {
     "@angular-devkit/architect": "^0.1101.0",
@@ -73,7 +73,7 @@
     "@types/hapi__hapi": "^20.0.0",
     "@types/hapi__inert": "^5.2.0",
     "@types/jasmine": "^3.4.4",
-    "@types/node": "12.12.37",
+    "@types/node": "14.14.25",
     "@types/shelljs": "^0.8.6",
     "browser-sync": "^2.26.7",
     "critters": "0.0.6",
