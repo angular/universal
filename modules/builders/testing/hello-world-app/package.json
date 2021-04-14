@@ -37,7 +37,7 @@
     "@nguniversal/builders": "^9.0.0-next.8",
     "@types/express": "^4.17.0",
     "@types/node": "^12.11.1",
-    "@types/jasmine": "~3.5.0",
+    "@types/jasmine": "~3.6.0",
     "@types/jasminewd2": "~2.0.3",
     "codelyzer": "^5.1.2",
     "jasmine-core": "~3.5.0",
