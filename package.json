@@ -42,7 +42,7 @@
     "@types/node": "12.12.37"
   },
   "devDependencies": {
-    "@angular-devkit/architect": "0.1200.0-next.8",
+    "@angular-devkit/architect": "0.1200.0-next.9",
     "@angular-devkit/build-angular": "0.1200.0-next.8",
     "@angular-devkit/core": "12.0.0-next.8",
     "@angular-devkit/schematics": "12.0.0-next.8",
