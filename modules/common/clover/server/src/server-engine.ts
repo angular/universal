@@ -111,7 +111,7 @@ export class Engine {
       }
 
       const content = dom.serialize();
-      if (!options.inlineCriticalCss) {
+      if (!inlineCriticalCss) {
         return content;
       }
 
