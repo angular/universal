@@ -119,8 +119,7 @@ export class CommonEngine {
     }
 
     const { content, errors, warnings } = await this.inlineCriticalCssProcessor.process(html, {
-      outputPath:
-        opts.publicPath ?? (opts.documentFilePath ? dirname(opts.documentFilePath) : undefined),
+      outputPath: opts.publicPath ?? (opts.documentFilePath ? dirname(opts.documentFilePath) : ''),
     });
 
     // tslint:disable-next-line: no-console
