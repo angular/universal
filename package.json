@@ -82,7 +82,7 @@
     "jest-worker": "27.1.0",
     "jsdom": "17.0.0",
     "minimatch": "^3.0.4",
-    "node-fetch": "^2.6.1",
+    "node-fetch": "^3.0.0",
     "ora": "^5.1.0",
     "prettier": "^2.2.1",
     "protractor": "7.0.0",
