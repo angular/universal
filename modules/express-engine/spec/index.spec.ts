@@ -13,7 +13,7 @@ import {
 describe('test runner', () => {
   it('should render a basic template', (done) => {
     ngExpressEngine({ bootstrap: MockServerModuleNgFactory })(
-      (null as any) as string,
+      null as any as string,
       {
         req: { get: () => 'localhost' } as any,
         // TODO this shouldn't be required
@@ -32,7 +32,7 @@ describe('test runner', () => {
 
   it('Should throw when no module is passed', () => {
     ngExpressEngine({ bootstrap: null as any })(
-      (null as any) as string,
+      null as any as string,
       {
         req: {} as any,
         bootstrap: null as any,
@@ -46,7 +46,7 @@ describe('test runner', () => {
 
   it('should be able to inject REQUEST token', (done) => {
     ngExpressEngine({ bootstrap: RequestServerModuleNgFactory })(
-      (null as any) as string,
+      null as any as string,
       {
         req: {
           get: () => 'localhost',
@@ -69,7 +69,7 @@ describe('test runner', () => {
   it('should be able to inject RESPONSE token', (done) => {
     const someStatusCode = 400;
     ngExpressEngine({ bootstrap: ResponseServerModuleNgFactory })(
-      (null as any) as string,
+      null as any as string,
       {
         req: {
           get: () => 'localhost',
@@ -97,7 +97,7 @@ describe('test runner', () => {
       bootstrap: TokenServerModuleNgFactory,
       providers: [{ provide: SOME_TOKEN, useValue: someValue }],
     })(
-      (null as any) as string,
+      null as any as string,
       {
         req: {
           get: () => 'localhost',

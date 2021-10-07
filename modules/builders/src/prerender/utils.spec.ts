@@ -28,10 +28,10 @@ describe('Prerender Builder Utils', () => {
     ];
 
     const TSCONFIG_PATH = 'tsconfig.app.json';
-    const CONTEXT = ({
+    const CONTEXT = {
       workspaceRoot: '/path/to/angular/json',
       logger: new logging.NullLogger(),
-    } as unknown) as BuilderContext;
+    } as unknown as BuilderContext;
 
     let parseAngularRoutesSpy: jasmine.Spy;
     let loggerErrorSpy: jasmine.Spy;
