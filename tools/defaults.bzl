@@ -84,6 +84,14 @@ GLOBALS = {
     "@hapi/hapi": "hapi.hapi",
     "rxjs": "rxjs",
     "rxjs/operators": "rxjs.operators",
+    # The below are deps of critters which we do bundle because it's shipped in ES2015
+    # and we cannot extend otherwise due to UMDs are in ES5
+    "css-select": "cssSselect",
+    "chalk": "chalk",
+    "parse5": "parse5",
+    "parse5-htmlparser2-tree-adapter": "parse5",
+    "postcss": "postcss",
+    "pretty-bytes": "prettyBytes",
 }
 
 def ng_module(name, tsconfig = None, testonly = False, deps = [], bundle_dts = True, **kwargs):

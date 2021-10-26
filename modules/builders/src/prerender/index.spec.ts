@@ -199,7 +199,7 @@ describe('Prerender Builder', () => {
       host.scopedSync().read(join(outputPathBrowser, 'foo/index.html'))
     );
 
-    expect(content).toMatch(/<style>p{color:red;}<\/style><link rel="stylesheet" href="styles\.\w+\.css" media="print" onload="this.media='all'">/);
+    expect(content).toMatch(/<style>p{color:red}<\/style><link rel="stylesheet" href="styles\.\w+\.css" media="print" onload="this.media='all'">/);
     await run.stop();
   });
 });

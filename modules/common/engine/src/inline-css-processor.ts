@@ -48,7 +48,7 @@ class CrittersExtended extends Critters {
     } as any);
   }
 
-  protected async readFile(path: string): Promise<string> {
+  public async readFile(path: string): Promise<string> {
     let resourceContent = this.resourceCache.get(path);
     if (resourceContent === undefined) {
       resourceContent = await readFile(path, 'utf-8');
