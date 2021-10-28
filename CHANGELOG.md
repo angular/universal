@@ -1,3 +1,34 @@
+<a name="13.0.0-rc.2"></a>
+
+# 13.0.0-rc.2 (2021-10-13)
+
+### @nguniversal/common
+| Commit | Type | Description |
+| -- | -- | -- |
+| [2cdcd3e3](https://github.com/angular/universal/commit/2cdcd3e3c1c93c0212b479e02ff601453b85e308) | fix | update `critters` to version `0.0.12` |
+### @nguniversal/builders
+| Commit | Type | Description |
+| -- | -- | -- |
+| [ab494715](https://github.com/angular/universal/commit/ab49471582976e63d3a3a7d325b3f2fc6fe06ac9) | fix | correctly handle multiple proxies |
+### @nguniversal/express-engine
+| Commit | Type | Description |
+| -- | -- | -- |
+| [60b1c071](https://github.com/angular/universal/commit/60b1c0711f8bf6fc56305d710981e1f11d82e034) | fix | update schematic to be `noPropertyAccessFromIndexSignature` compliant |
+## Special Thanks
+Alan Agius and Doug Parker
+
+<a name="13.0.0-rc.1"></a>
+
+# 13.0.0-rc.1 (2021-10-13)
+
+- Update critters to version 0.0.11
+
+## Special Thanks
+Alan Agius and Doug Parker
+## Special Thanks
+Alan Agius and Doug Parker
+
+
 <a name="13.0.0-rc.0"></a>
 
 # 13.0.0-rc.0 (2021-10-14)
