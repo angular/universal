@@ -46,6 +46,6 @@ export interface Schema {
   /** Proxy configuration file */
   proxyConfig?: string;
 
-  /** Proxy configuration file */
+  /** Waiting time before reload the page (in Milliseconds) */
   waitBeforeReload?: number;
 }
