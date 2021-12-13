@@ -59,6 +59,10 @@
     "proxyConfig": {
       "type": "string",
       "description": "Proxy configuration file."
+    },
+    "waitBeforeReload": {
+      "type": "number",
+      "description": "Waiting time before reload the page (in Milliseconds)"
     }
   },
   "additionalProperties": false,

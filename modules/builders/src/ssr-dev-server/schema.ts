@@ -45,4 +45,7 @@ export interface Schema {
 
   /** Proxy configuration file */
   proxyConfig?: string;
+
+  /** Proxy configuration file */
+  waitBeforeReload?: number;
 }

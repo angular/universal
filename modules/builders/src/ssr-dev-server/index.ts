@@ -125,7 +125,13 @@ export function execute(
       }
 
       if (bsInstance.active) {
-        bsInstance.reload();
+        // Optional waiting time for reloading - less stress for slower Dev Devices
+        const { waitBeforeReload } = options;
+        if (!waitBeforeReload) {
+          bsInstance.reload();
+        } else {
+          setTimeout(bsInstance.reload, waitBeforeReload);
+        }
 
         return of(builderOutput);
       } else {
