@@ -56,7 +56,11 @@ export class TransferHttpCacheInterceptor implements HttpInterceptor {
     );
   }
 
-  private makeCacheKey(method: string, url: string, params: HttpParams): StateKey<string> {
+  private makeCacheKey(
+    method: string,
+    url: string,
+    params: HttpParams,
+  ): StateKey<TransferHttpResponse> {
     // make the params encoded same as a url so it's easy to identify
     const encodedParams = params
       .keys()
@@ -65,7 +69,7 @@ export class TransferHttpCacheInterceptor implements HttpInterceptor {
       .join('&');
     const key = (method === 'GET' ? 'G.' : 'H.') + url + '?' + encodedParams;
 
-    return makeStateKey<TransferHttpResponse>(key);
+    return makeStateKey(key);
   }
 
   constructor(appRef: ApplicationRef, private transferState: TransferState) {
@@ -97,7 +101,7 @@ export class TransferHttpCacheInterceptor implements HttpInterceptor {
 
     if (this.transferState.hasKey(storeKey)) {
       // Request found in cache. Respond using it.
-      const response = this.transferState.get<TransferHttpResponse>(storeKey, {});
+      const response = this.transferState.get(storeKey, {});
 
       return observableOf(
         new HttpResponse<any>({
