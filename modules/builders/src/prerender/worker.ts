@@ -50,7 +50,7 @@ export async function render({
   let indexHtml = await fs.promises.readFile(browserIndexInputPath, 'utf8');
   indexHtml = indexHtml.replace(
     '</html>',
-    '<!-- This page was prerendered with Angular Universal -->\n</html>',
+    '<!-- This page was prerendered with Angular Universal (SSG) -->\n</html>',
   );
   if (inlineCriticalCss) {
     // Workaround for https://github.com/GoogleChromeLabs/critters/issues/64

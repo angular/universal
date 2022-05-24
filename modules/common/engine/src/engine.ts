@@ -101,7 +101,11 @@ export class CommonEngine {
     }
 
     const moduleOrFactory = this.module || opts.bootstrap;
-    const html = await renderModule(moduleOrFactory, { extraProviders });
+    const html = (await renderModule(moduleOrFactory, { extraProviders })).replace(
+      '</html>',
+      '<!-- This page was rendered with Angular Universal (SSR) -->\n</html>',
+    );
+
     if (!inlineCriticalCss) {
       return html;
     }
