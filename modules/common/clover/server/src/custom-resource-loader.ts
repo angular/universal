@@ -12,13 +12,17 @@ import { normalize } from 'path';
 
 export class CustomResourceLoader extends ResourceLoader {
   constructor(
-    readonly headers: Record<string, string | undefined | string[]> | undefined,
-    private readonly publicPath: string,
-    private readonly baseUrl: string,
     private readonly fileCache: Map<string, Buffer>,
+    private readonly baseUrl: string,
+    private readonly publicPath: string,
+    readonly headers: Record<string, string | undefined | string[]> | undefined,
+    readonly proxy: string | undefined,
+    readonly strictSSL: boolean | undefined,
   ) {
     super({
       userAgent: headers?.['user-agent'] as string | undefined,
+      proxy: proxy,
+      strictSSL: strictSSL,
     });
   }
 

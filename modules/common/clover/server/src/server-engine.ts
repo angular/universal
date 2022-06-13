@@ -19,11 +19,13 @@ import { InlineCriticalCssProcessor } from './inline-css-processor';
 import { augmentWindowWithStubs } from './stubs';
 
 export interface RenderOptions {
-  headers?: Record<string, string | undefined | string[]>;
+  publicPath: string;
   url: string;
+  headers?: Record<string, string | undefined | string[]>;
   inlineCriticalCss?: boolean;
   htmlFilename?: string;
-  publicPath: string;
+  proxy?: string;
+  strictSSL?: boolean;
 }
 
 export class Engine {
@@ -51,10 +53,12 @@ export class Engine {
     const inlineCriticalCss = options.inlineCriticalCss !== false;
 
     const customResourceLoader = new CustomResourceLoader(
-      options.headers,
-      options.publicPath,
-      origin,
       this.resourceLoaderCache,
+      origin,
+      options.publicPath,
+      options.headers,
+      options.proxy,
+      options.strictSSL,
     );
 
     let dom: JSDOM | undefined;
