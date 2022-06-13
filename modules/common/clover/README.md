@@ -116,10 +116,10 @@ node server.js
 
 ### Available render options:
 
-  - `publicPath`: The public path of the application.
-  - `url`: The URL of the application.
-  - `headers`: The headers of the request.
-  - `inlineCriticalCss`: Whether to inline critical CSS.
-  - `htmlFilename`: The filename of the HTML file.
-  - `proxy`: The proxy server to use.
-  - `strictSSL`: Whether to use strict SSL.
+- `publicPath`: The public path of the application.
+- `url`: The URL of the application.
+- `headers`: The headers of the request.
+- `inlineCriticalCss`: Whether to inline critical CSS.
+- `htmlFilename`: The filename of the HTML file.
+- `proxy`: The proxy server to use.
+- `strictSSL`: Whether to use strict SSL.
