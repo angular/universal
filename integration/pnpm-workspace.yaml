@@ -1,0 +1,8 @@
+packages:
+  - 'clover'
+  - 'common-engine'
+  - 'express-engine-ivy'
+  - 'express-engine-ivy-hybrid'
+  - '../modules/common'
+  - '../modules/builders'
+  - '../modules/express-engine'

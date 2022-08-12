@@ -1,9 +1,21 @@
-load("//tools:defaults.bzl", "jasmine_node_test", "ng_module", "ng_package", "ng_test_library")
+load("//tools:defaults.bzl", "PACKAGE_JSON_REPLACEMENTS", "jasmine_node_test", "ng_module", "ng_package", "ng_test_library")
+load("@aspect_rules_js//js/private:expand_template.bzl", "expand_template")
+load("@aspect_rules_js//npm:defs.bzl", "npm_package")
+load("@aspect_bazel_lib//lib:write_source_files.bzl", "write_source_files")
 
 package(default_visibility = ["//visibility:public"])
 
-ng_module(
+npm_package(
     name = "express-engine",
+    srcs = [":npm_package"],
+    replace_prefixes = {
+        "npm_package": ""
+    },
+    visibility = ["//visibility:public"]
+)
+
+ng_module(
+    name = "ng_module",
     package_name = "@nguniversal/express-engine",
     srcs = glob([
         "*.ts",
@@ -19,6 +31,24 @@ ng_module(
     ],
 )
 
+expand_template(
+    name = "package_json",
+    out = "package.json.out",
+    stamp = 1,
+    stamp_substitutions = {
+        "0.0.0-PLACEHOLDER": "{{BUILD_SCM_VERSION}}",
+    },
+    substitutions = PACKAGE_JSON_REPLACEMENTS,
+    template = "package.json.tmpl",
+)
+
+write_source_files(
+    name = "write_package_json",
+    files = {
+        "package.json": ":package_json",
+    },
+)
+
 ng_package(
     name = "npm_package",
     package_name = "@nguniversal/express-engine",
@@ -29,7 +59,7 @@ ng_package(
     readme_md = ":README.md",
     tags = ["release"],
     deps = [
-        ":express-engine",
+        ":ng_modules",
         "//modules/express-engine/tokens",
     ],
 )
@@ -41,7 +71,7 @@ ng_test_library(
     ]),
     entry_point = ":spec/index.spec.ts",
     deps = [
-        ":express-engine",
+        ":ng_module",
         "//modules/express-engine/tokens",
         "@npm//@angular/compiler",
         "@npm//@angular/platform-browser",

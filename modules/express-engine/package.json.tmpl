@@ -1,6 +1,6 @@
 {
   "name": "@nguniversal/express-engine",
-  "version": "14.2.0-next.0",
+  "version": "0.0.0-PLACEHOLDER",
   "description": "Express Engine for running Server Angular Apps",
   "license": "MIT",
   "keywords": [
@@ -12,23 +12,18 @@
     "node": "^14.15.0 || >=16.10.0"
   },
   "peerDependencies": {
-    "@angular/common": "^14.1.0-next",
-    "@angular/core": "^14.1.0-next",
-    "@angular/platform-server": "^14.1.0-next",
-    "express": "^4.15.2"
+    "@angular/common": "NG_VERSION",
+    "@angular/core": "NG_VERSION",
+    "@angular/platform-server": "NG_VERSION",
+    "express": "EXPRESS_VERSION"
   },
   "dependencies": {
-    "@nguniversal/common": "workspace:14.2.0-next.0",
-    "tslib": "^2.3.0"
+    "@nguniversal/common": "workspace:0.0.0-PLACEHOLDER",
+    "tslib": "TSLIB_VERSION"
   },
   "schematics": "./schematics/collection.json",
   "ng-update": {
-    "packageGroup": [
-      "@nguniversal/aspnetcore-engine",
-      "@nguniversal/builders",
-      "@nguniversal/common",
-      "@nguniversal/express-engine"
-    ],
+    "packageGroup": "NG_UPDATE_PACKAGE_GROUP",
     "packageGroupName": "@nguniversal/express-engine"
   },
   "repository": {

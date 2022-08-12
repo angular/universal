@@ -1,0 +1,18 @@
+load("@npm_integration//:defs.bzl", "npm_link_all_packages")
+
+npm_link_all_packages()
+
+sh_test(
+    name = "test",
+    srcs = ["test.sh"],
+    args = ["$(NODE_PATH)"],
+    data = glob(["**"], exclude = ["BUILD.bazel"]) + [
+        ":node_modules",
+        # This eager toolchain fetching should be cleaed up in the future
+        "@nodejs_darwin_amd64//:node_files",
+        "@nodejs_linux_amd64//:node_files",
+        "@nodejs_linux_arm64//:node_files",
+    ],
+    toolchains = ["@nodejs_toolchains//:resolved_toolchain"],
+    tags = ["local"],
+)

@@ -1,4 +1,11 @@
 .git
 dist
-node_modules
-integration
+node_modules/
+integration/clover/node_modules/
+integration/common-engine/node_modules/
+integration/express-engine-ivy/node_modules/
+integration/express-engine-ivy-hybrid/node_modules/
+integration/node_modules/
+modules/builders/node_modules/
+modules/common/node_modules/
+modules/express-engine/node_modules/

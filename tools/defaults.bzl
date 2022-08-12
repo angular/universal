@@ -62,7 +62,7 @@ NGUNIVERSAL_SCOPED_PACKAGES = ["@nguniversal/%s" % p for p in [
     "express-engine",
 ]]
 
-PKG_GROUP_REPLACEMENTS = {
+PACKAGE_JSON_REPLACEMENTS = {
     "\"NG_UPDATE_PACKAGE_GROUP\"": """[
       %s
     ]""" % ",\n      ".join(["\"%s\"" % s for s in NGUNIVERSAL_SCOPED_PACKAGES]),
@@ -75,6 +75,11 @@ PKG_GROUP_REPLACEMENTS = {
     "DEVKIT_BUILD_ANGULAR_VERSION": DEVKIT_BUILD_ANGULAR_VERSION,
     "TSLIB_VERSION": TSLIB_VERSION,
 }
+
+PKG_GROUP_REPLACEMENTS = dict({
+    # Clear out the workspace: link used for integration testing
+    "\"workspace:": "\"",
+}, **PACKAGE_JSON_REPLACEMENTS)
 
 def ng_module(name, package_name, module_name = None, tsconfig = None, testonly = False, deps = [], **kwargs):
     deps = deps + ["@npm//tslib", "@npm//@types/node"]

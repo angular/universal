@@ -1,6 +1,6 @@
 {
   "name": "@nguniversal/common",
-  "version": "14.2.0-next.0",
+  "version": "0.0.0-PLACEHOLDER",
   "description": "Angular Universal common utilities",
   "license": "MIT",
   "keywords": [
@@ -17,20 +17,15 @@
   "dependencies": {
     "critters": "0.0.16",
     "jsdom": "20.0.0",
-    "tslib": "^2.3.0"
+    "tslib": "TSLIB_VERSION"
   },
   "peerDependencies": {
-    "@angular/common": "^14.1.0-next",
-    "@angular/core": "^14.1.0-next"
+    "@angular/common": "NG_VERSION",
+    "@angular/core": "NG_VERSION"
   },
   "schematics": "./schematics/collection.json",
   "ng-update": {
-    "packageGroup": [
-      "@nguniversal/aspnetcore-engine",
-      "@nguniversal/builders",
-      "@nguniversal/common",
-      "@nguniversal/express-engine"
-    ],
+    "packageGroup": "NG_UPDATE_PACKAGE_GROUP",
     "packageGroupName": "@nguniversal/common"
   },
   "repository": {
