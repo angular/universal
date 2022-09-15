@@ -90,7 +90,7 @@
     "piscina": "~3.2.0",
     "prettier": "^2.2.1",
     "protractor": "7.0.0",
-    "puppeteer": "15.4.1",
+    "puppeteer": "17.1.3",
     "rollup": "~2.78.0",
     "rollup-plugin-sourcemaps": "^0.6.0",
     "rxjs": "^6.5.3",
