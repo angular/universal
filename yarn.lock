@@ -2165,7 +2165,7 @@
   dependencies:
     "@types/node" "*"
 
-"@types/browser-sync@^2.26.1", "@types/browser-sync@^2.26.3":
+"@types/browser-sync@^2.26.3":
   version "2.26.3"
   resolved "https://registry.yarnpkg.com/@types/browser-sync/-/browser-sync-2.26.3.tgz#d8a2c316144b55d5cb11328b7cb63dc1778de524"
   integrity sha512-HIiI438D8q/DXFhdc2JELRMPtuHmR+0q+QNwP/mQoItHvPi7LK+bkZC7amKrSpnB2t4ct8BRd32LtOfd6TMNIw==
@@ -3237,7 +3237,7 @@ browser-sync-ui@^2.27.10:
     socket.io-client "^4.4.1"
     stream-throttle "^0.1.3"
 
-browser-sync@^2.26.7, browser-sync@^2.27.7:
+browser-sync@^2.27.10, browser-sync@^2.27.7:
   version "2.27.10"
   resolved "https://registry.yarnpkg.com/browser-sync/-/browser-sync-2.27.10.tgz#3568d4f66afb0f68fee4a10902ecbbe8b2f680dd"
   integrity sha512-xKm+6KJmJu6RuMWWbFkKwOCSqQOxYe3nOrFkKI5Tr/ZzjPxyU3pFShKK3tWnazBo/3lYQzN7fzjixG8fwJh1Xw==
