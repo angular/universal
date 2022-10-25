@@ -60,7 +60,7 @@
     "@bazel/ibazel": "0.16.2",
     "@bazel/jasmine": "5.7.0",
     "@rollup/plugin-commonjs": "^23.0.0",
-    "@rollup/plugin-node-resolve": "^13.0.5",
+    "@rollup/plugin-node-resolve": "^15.0.0",
     "@schematics/angular": "15.0.0-rc.0",
     "@types/browser-sync": "^2.26.1",
     "@types/express": "~4.17.6",
