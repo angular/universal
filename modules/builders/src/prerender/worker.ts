@@ -41,6 +41,10 @@ export async function render({
   const outputFolderPath = path.join(outputPath, route);
   const outputIndexPath = path.join(outputFolderPath, 'index.html');
 
+  const { ɵInlineCriticalCssProcessor: InlineCriticalCssProcessor } = await loadEsmModule<
+    typeof import('@nguniversal/common/tools')
+  >('@nguniversal/common/tools');
+
   const { renderModule, AppServerModule } = await import(serverBundlePath);
 
   const indexBaseName = fs.existsSync(path.join(outputPath, 'index.original.html'))
@@ -66,10 +70,6 @@ export async function render({
   });
 
   if (inlineCriticalCss) {
-    const { ɵInlineCriticalCssProcessor: InlineCriticalCssProcessor } = await loadEsmModule<
-      typeof import('@nguniversal/common/tools')
-    >('@nguniversal/common/tools');
-
     const inlineCriticalCssProcessor = new InlineCriticalCssProcessor({
       deployUrl: deployUrl,
       minify: minifyCss,
