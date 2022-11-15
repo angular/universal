@@ -19,12 +19,9 @@ import * as fs from 'fs';
 import ora from 'ora';
 import * as path from 'path';
 import Piscina from 'piscina';
-import { promisify } from 'util';
 import { PrerenderBuilderOptions, PrerenderBuilderOutput } from './models';
 import { getIndexOutputFile, getRoutes } from './utils';
 import { RenderOptions, RenderResult } from './worker';
-
-export const readFile = promisify(fs.readFile);
 
 type BuildBuilderOutput = BuilderOutput & {
   baseOutputPath: string;
@@ -103,11 +100,13 @@ async function _renderUniversal(
     browserOptions.optimization,
   );
 
+  const zonePackage = require.resolve('zone.js', { paths: [context.workspaceRoot] });
+
   const { baseOutputPath = '' } = serverResult;
   const worker = new Piscina({
     filename: path.join(__dirname, 'worker.js'),
-    name: 'render',
     maxThreads: numProcesses,
+    workerData: { zonePackage },
   });
 
   try {
@@ -134,7 +133,7 @@ async function _renderUniversal(
               serverBundlePath,
             };
 
-            return worker.run(options, { name: 'render' });
+            return worker.run(options);
           }),
         )) as RenderResult[];
         let numErrors = 0;
