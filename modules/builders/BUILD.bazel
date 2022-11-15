@@ -25,9 +25,12 @@ ts_library(
     deps = [
         "//modules/common/clover/server",
         "//modules/common/engine",
+        "//modules/common/tools",
         "@npm//@angular-devkit/architect",
         "@npm//@angular-devkit/build-angular",
         "@npm//@angular-devkit/core",
+        "@npm//@angular/core",
+        "@npm//@angular/platform-server",
         "@npm//@types/browser-sync",
         "@npm//@types/express",
         "@npm//guess-parser",
@@ -44,6 +47,9 @@ pkg_npm(
     package_name = "@nguniversal/builders",
     srcs = [":builders_assets"],
     tags = ["release"],
+    visibility = [
+        "//integration:__subpackages__",
+    ],
     deps = [":builders"],
 )
 
