@@ -1,3 +1,13 @@
+<a name="15.2.0-next.0"></a>
+
+# 15.2.0-next.0 (2023-01-12)
+
+## Special Thanks
+
+Alan Agius
+
+<!-- CHANGELOG SPLIT MARKER -->
+
 <a name="15.1.0"></a>
 
 # 15.1.0 (2023-01-12)
