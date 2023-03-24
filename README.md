@@ -20,9 +20,9 @@
 
 # Introduction
 
-The Angular Universal project is a community driven project to expand on the core APIs from Angular (platform-server) to enable developers to do server side rendering of Angular applications in a variety of scenarios.
+The Angular Universal project is a community driven project to expand on the core APIs from Angular (platform-server) to enable developers to do server-side rendering of Angular applications in a variety of scenarios.
 
-This repository will host the various tools like engines to integrate with various backends(NodeJS, ASP.NET etc.) and also extra modules and examples to help you started with server side rendering.
+This repository will host the various tools like engines to integrate with various backends(NodeJS, ASP.NET etc.) and also extra modules and examples to help you get started with server-side rendering.
 
 The Universal project is driven by community contributions. Please check [our contributing guidelines](https://github.com/angular/universal/blob/main/CONTRIBUTING.md) and send us your Pull Requests!
 
