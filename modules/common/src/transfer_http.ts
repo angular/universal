@@ -23,9 +23,9 @@ import { defaultIfEmpty, first, tap } from 'rxjs/operators';
 
 type ResponseType = HttpRequest<unknown>['responseType'];
 
-export interface TransferHttpResponse {
-  body?: any | null;
-  headers?: Record<string, string[]>;
+interface TransferHttpResponse {
+  body: any;
+  headers: Record<string, string[]>;
   status?: number;
   statusText?: string;
   url?: string;
@@ -90,10 +90,10 @@ export class TransferHttpCacheInterceptor implements HttpInterceptor {
 
     if (this.transferState.hasKey(storeKey)) {
       // Request found in cache. Respond using it.
-      const response = this.transferState.get(storeKey, {});
-      let body: ArrayBuffer | Blob | string | undefined = response.body;
+      const response = this.transferState.get(storeKey, null);
+      let body: ArrayBuffer | Blob | string | undefined = response?.body;
 
-      switch (response.responseType) {
+      switch (response?.responseType) {
         case 'arraybuffer':
           body = new TextEncoder().encode(response.body).buffer;
           break;
@@ -105,10 +105,10 @@ export class TransferHttpCacheInterceptor implements HttpInterceptor {
       return observableOf(
         new HttpResponse<any>({
           body,
-          headers: new HttpHeaders(response.headers),
-          status: response.status,
-          statusText: response.statusText,
-          url: response.url,
+          headers: new HttpHeaders(response?.headers),
+          status: response?.status,
+          statusText: response?.statusText,
+          url: response?.url,
         }),
       );
     } else {
