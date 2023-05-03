@@ -1,50 +1,6 @@
-<a name="16.0.0-rc.2"></a>
+<a name="16.0.0"></a>
 
-# 16.0.0-rc.2 (2023-04-28)
-
-Updates dependencies.
-
-<!-- CHANGELOG SPLIT MARKER -->
-
-<a name="16.0.0-rc.1"></a>
-
-# 16.0.0-rc.1 (2023-04-20)
-
-### @nguniversal/express-engine
-
-| Commit                                                                                           | Type | Description                                                |
-| ------------------------------------------------------------------------------------------------ | ---- | ---------------------------------------------------------- |
-| [500f5e54](https://github.com/angular/universal/commit/500f5e5415142372a3933af3988f9826c1879688) | fix  | export default bootstrap in server template for standalone |
-
-<!-- CHANGELOG SPLIT MARKER -->
-
-<a name="16.0.0-rc.0"></a>
-
-# 16.0.0-rc.0 (2023-04-13)
-
-### @nguniversal/common
-
-| Commit                                                                                           | Type | Description                                            |
-| ------------------------------------------------------------------------------------------------ | ---- | ------------------------------------------------------ |
-| [71c2cef8](https://github.com/angular/universal/commit/71c2cef8dd8f424e5939e50d90face621d11ac5b) | fix  | update TransferHttpResponse requiring body and headers |
-
-### @nguniversal/builders
-
-| Commit                                                                                           | Type | Description                          |
-| ------------------------------------------------------------------------------------------------ | ---- | ------------------------------------ |
-| [fdb08953](https://github.com/angular/universal/commit/fdb089534f1f163bf9cd9479135bb1537a4f43f4) | fix  | add support to serve service workers |
-
-### @nguniversal/express-engine
-
-| Commit                                                                                           | Type | Description                            |
-| ------------------------------------------------------------------------------------------------ | ---- | -------------------------------------- |
-| [66021f10](https://github.com/angular/universal/commit/66021f102f8ee5260d3f13efe5e229c6c42aebc1) | fix  | update import for template server file |
-
-<!-- CHANGELOG SPLIT MARKER -->
-
-<a name="16.0.0-next.0"></a>
-
-# 16.0.0-next.0 (2023-04-05)
+# 16.0.0 (2023-05-03)
 
 ## Breaking Changes
 
@@ -56,10 +12,12 @@ Updates dependencies.
 
 ### @nguniversal/express-engine
 
-| Commit                                                                                           | Type | Description                              |
-| ------------------------------------------------------------------------------------------------ | ---- | ---------------------------------------- |
-| [3af1451a](https://github.com/angular/universal/commit/3af1451abac574f5e57c5f8b45192532bec2b23a) | feat | add standalone support to `ng add`       |
-| [1e2b9385](https://github.com/angular/universal/commit/1e2b9385bb294d36a126319c0b8d1b81e2cc8ed3) | feat | support rendering standalone application |
+| Commit                                                                                           | Type | Description                                                |
+| ------------------------------------------------------------------------------------------------ | ---- | ---------------------------------------------------------- |
+| [3af1451a](https://github.com/angular/universal/commit/3af1451abac574f5e57c5f8b45192532bec2b23a) | feat | add standalone support to `ng add`                         |
+| [1e2b9385](https://github.com/angular/universal/commit/1e2b9385bb294d36a126319c0b8d1b81e2cc8ed3) | feat | support rendering standalone application                   |
+| [500f5e54](https://github.com/angular/universal/commit/500f5e5415142372a3933af3988f9826c1879688) | fix  | export default bootstrap in server template for standalone |
+| [66021f10](https://github.com/angular/universal/commit/66021f102f8ee5260d3f13efe5e229c6c42aebc1) | fix  | update import for template server file                     |
 
 ### @nguniversal/builders
 
@@ -69,15 +27,12 @@ Updates dependencies.
 
 ### @nguniversal/common
 
-| Commit                                                                                           | Type     | Description                              |
-| ------------------------------------------------------------------------------------------------ | -------- | ---------------------------------------- |
-| [9fbdb23c](https://github.com/angular/universal/commit/9fbdb23c528baffa4cb1cda737382b4cab590269) | feat     | add CSP support for inline styles        |
-| [010546e5](https://github.com/angular/universal/commit/010546e56873eb25febff91a4b8e3cff25959598) | feat     | support rendering standalone application |
-| [ae96fbc4](https://github.com/angular/universal/commit/ae96fbc43434c98f2289e17216b0760f627b9459) | refactor | remove Node.js v14 support               |
-
-## Special Thanks
-
-Alan Agius
+| Commit                                                                                           | Type     | Description                                            |
+| ------------------------------------------------------------------------------------------------ | -------- | ------------------------------------------------------ |
+| [9fbdb23c](https://github.com/angular/universal/commit/9fbdb23c528baffa4cb1cda737382b4cab590269) | feat     | add CSP support for inline styles                      |
+| [010546e5](https://github.com/angular/universal/commit/010546e56873eb25febff91a4b8e3cff25959598) | feat     | support rendering standalone application               |
+| [71c2cef8](https://github.com/angular/universal/commit/71c2cef8dd8f424e5939e50d90face621d11ac5b) | fix      | update TransferHttpResponse requiring body and headers |
+| [ae96fbc4](https://github.com/angular/universal/commit/ae96fbc43434c98f2289e17216b0760f627b9459) | refactor | remove Node.js v14 support                             |
 
 <!-- CHANGELOG SPLIT MARKER -->
 
