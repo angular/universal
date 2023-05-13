@@ -84,7 +84,7 @@
     "guess-parser": "^0.4.12",
     "http-proxy-middleware": "^2.0.0",
     "jasmine": "^4.0.0",
-    "jasmine-core": "^4.0.0",
+    "jasmine-core": "^5.0.0",
     "jsdom": "22.0.0",
     "node-fetch": "^2.6.1",
     "ora": "^5.1.0",
