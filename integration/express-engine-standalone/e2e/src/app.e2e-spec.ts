@@ -63,8 +63,9 @@ describe('Hello world E2E Tests', () => {
     await browser.driver.get(browser.baseUrl);
 
     // Test the contents from the server.
-    const styleTag = browser.driver.findElement(by.css('link[rel="stylesheet"]'));
-    expect(styleTag.getAttribute('media')).toMatch('all');
+    const linkTag = browser.driver.findElement(by.css('link[rel="stylesheet"]'));
+    expect(linkTag.getAttribute('media')).toMatch('all');
+    expect(linkTag.getAttribute('onload')).toMatch(`this.media='all'`);
 
     // Make sure there were no client side errors.
     verifyNoBrowserErrors();
