@@ -1,3 +1,11 @@
+<a name="16.1.1"></a>
+
+# 16.1.1 (2023-06-28)
+
+build: update dependency critters to v0.0.19
+
+<!-- CHANGELOG SPLIT MARKER -->
+
 <a name="16.1.0"></a>
 
 # 16.1.0 (2023-06-13)
