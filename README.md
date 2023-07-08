@@ -65,7 +65,7 @@ We believe that using the word "universal" is correct when referring to a JavaSc
 - [Angular Universal - Server-side Rendering Deep Dive](https://trilon.io/blog/angular-universal-server-side-rendering-deep-dive)
 - [Angular Universal v9 - what's new?](https://trilon.io/blog/angular-universal-v9-whats-new)
 - [Angular for the rest of us](https://medium.com/google-developer-experts/angular-universal-for-the-rest-of-us-922ca8bac84)
-- [Angular outside the browser](http://slides.com/wassimchegham/angular2-universal#/)
+- [Angular outside the browser](https://slides.com/wassimchegham/angular2-universal#/)
 
 # License
 
