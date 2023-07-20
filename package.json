@@ -76,7 +76,7 @@
     "cross-env": "^7.0.3",
     "domino": "^2.1.2",
     "esbuild": "^0.18.0",
-    "eslint": "8.44.0",
+    "eslint": "8.45.0",
     "eslint-config-prettier": "8.8.0",
     "eslint-plugin-header": "3.1.1",
     "eslint-plugin-import": "2.27.5",
