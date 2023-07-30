@@ -232,12 +232,12 @@ changes to be accepted, the CLA must be signed. It's a quick process, we promise
 
 [coc]: https://github.com/angular/code-of-conduct/blob/main/CODE_OF_CONDUCT.md
 [commit-message-format]: https://docs.google.com/document/d/1QrDFcIiPjSLDn3EL15IJygNPiHORgU1_OOAqWjiDU5Y/edit#
-[corporate-cla]: http://code.google.com/legal/corporate-cla-v1.0.html
+[corporate-cla]: https://code.google.com/legal/corporate-cla-v1.0.html
 [dev-doc]: https://github.com/angular/angular/blob/main/DEVELOPER.md
 [github]: https://github.com/angular/universal
 [gitter]: https://gitter.im/angular/universal
-[individual-cla]: http://code.google.com/legal/individual-cla-v1.0.html
-[js-style-guide]: http://google-styleguide.googlecode.com/svn/trunk/javascriptguide.xml
-[jsfiddle]: http://jsfiddle.net/
-[plunker]: http://plnkr.co/edit
-[runnable]: http://runnable.com/
+[individual-cla]: https://code.google.com/legal/individual-cla-v1.0.html
+[js-style-guide]: https://google-styleguide.googlecode.com/svn/trunk/javascriptguide.xml
+[jsfiddle]: https://jsfiddle.net/
+[plunker]: https://plnkr.co/edit
+[runnable]: https://runnable.com/
