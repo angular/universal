@@ -1,3 +1,13 @@
+<a name="16.1.2"></a>
+
+# 16.1.2 (2023-08-04)
+
+| Commit                                                                                           | Type     | Description            |
+| ------------------------------------------------------------------------------------------------ | -------- | ---------------------- |
+| [192326a8](https://github.com/angular/universal/commit/ccc2f52f9be47b5fb2cddd4d3f57b9a18eb1b0ca) | refactor | build: update critters |
+
+<!-- CHANGELOG SPLIT MARKER -->
+
 <a name="16.1.1"></a>
 
 # 16.1.1 (2023-06-28)
