@@ -14,7 +14,7 @@
 
 | Commit                                                                                           | Type     | Description            |
 | ------------------------------------------------------------------------------------------------ | -------- | ---------------------- |
-| [192326a8](https://github.com/angular/universal/commit/ccc2f52f9be47b5fb2cddd4d3f57b9a18eb1b0ca) | refactor | build: update critters |
+| [2b0f8c2b](https://github.com/angular/universal/commit/2b0f8c2bf692c58a823ac5731af5107ee4f808cd) | refactor | build: update critters |
 
 <!-- CHANGELOG SPLIT MARKER -->
 
