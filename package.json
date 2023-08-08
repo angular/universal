@@ -87,7 +87,7 @@
     "jasmine-core": "^4.0.0",
     "jsdom": "22.1.0",
     "node-fetch": "^2.6.1",
-    "ora": "^5.1.0",
+    "ora": "^7.0.0",
     "patch-package": "^7.0.0",
     "piscina": "~4.1.0",
     "prettier": "^2.2.1",
