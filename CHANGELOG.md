@@ -1,3 +1,15 @@
+<a name="16.1.3"></a>
+
+# 16.1.3 (2023-08-09)
+
+### @nguniversal/common
+
+| Commit                                                                                           | Type | Description                                          |
+| ------------------------------------------------------------------------------------------------ | ---- | ---------------------------------------------------- |
+| [d4be69b8](https://github.com/angular/universal/commit/d4be69b85c7904d828dc9c42c6b1df4cd663594c) | fix  | check for server context when doing hybrid rendering |
+
+<!-- CHANGELOG SPLIT MARKER -->
+
 <a name="16.1.2"></a>
 
 # 16.1.2 (2023-08-04)
