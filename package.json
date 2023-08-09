@@ -90,7 +90,7 @@
     "ora": "^5.1.0",
     "patch-package": "^7.0.0",
     "piscina": "~4.1.0",
-    "prettier": "^2.2.1",
+    "prettier": "^3.0.0",
     "protractor": "7.0.0",
     "rollup": "~3.27.0",
     "rollup-plugin-sourcemaps": "^0.6.0",
