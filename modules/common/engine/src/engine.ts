@@ -18,6 +18,8 @@ import * as fs from 'fs';
 import { dirname, resolve } from 'path';
 import { URL } from 'url';
 
+const SSG_MARKER_REGEXP = /ng-server-context=["']\w*\|?ssg\|?\w*["']/;
+
 export interface RenderOptions {
   bootstrap?: Type<{}> | (() => Promise<ApplicationRef>);
   providers?: StaticProvider[];
@@ -44,7 +46,7 @@ export interface RenderOptions {
 export class CommonEngine {
   private readonly templateCache = new Map<string, string>();
   private readonly inlineCriticalCssProcessor: InlineCriticalCssProcessor;
-  private readonly pageExists = new Map<string, boolean>();
+  private readonly pageIsSSG = new Map<string, boolean>();
 
   constructor(
     private bootstrap?: Type<{}> | (() => Promise<ApplicationRef>),
@@ -70,13 +72,20 @@ export class CommonEngine {
 
       if (pagePath !== resolve(opts.documentFilePath)) {
         // View path doesn't match with prerender path.
-        let pageExists = this.pageExists.get(pagePath);
-        if (pageExists === undefined) {
-          pageExists = await exists(pagePath);
-          this.pageExists.set(pagePath, pageExists);
-        }
+        const pageIsSSG = this.pageIsSSG.get(pagePath);
+        if (pageIsSSG === undefined) {
+          if (await exists(pagePath)) {
+            const content = await fs.promises.readFile(pagePath, 'utf-8');
+            const isSSG = SSG_MARKER_REGEXP.test(content);
+            this.pageIsSSG.set(pagePath, isSSG);
 
-        if (pageExists) {
+            if (isSSG) {
+              return content;
+            }
+          } else {
+            this.pageIsSSG.set(pagePath, false);
+          }
+        } else if (pageIsSSG) {
           // Serve pre-rendered page.
           return fs.promises.readFile(pagePath, 'utf-8');
         }
