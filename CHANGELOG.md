@@ -1,3 +1,13 @@
+<a name="16.2.0"></a>
+
+# 16.2.0 (2023-08-11)
+
+| Commit                                                                                           | Type     | Description            |
+| ------------------------------------------------------------------------------------------------ | -------- | ---------------------- |
+| [2b0f8c2b](https://github.com/angular/universal/commit/2b0f8c2bf692c58a823ac5731af5107ee4f808cd) | refactor | build: update critters |
+
+<!-- CHANGELOG SPLIT MARKER -->
+
 <a name="16.1.3"></a>
 
 # 16.1.3 (2023-08-09)
@@ -7,16 +17,6 @@
 | Commit                                                                                           | Type | Description                                          |
 | ------------------------------------------------------------------------------------------------ | ---- | ---------------------------------------------------- |
 | [d4be69b8](https://github.com/angular/universal/commit/d4be69b85c7904d828dc9c42c6b1df4cd663594c) | fix  | check for server context when doing hybrid rendering |
-
-<!-- CHANGELOG SPLIT MARKER -->
-
-<a name="16.2.0-rc.0"></a>
-
-# 16.2.0-rc.0 (2023-08-04)
-
-| Commit                                                                                           | Type     | Description            |
-| ------------------------------------------------------------------------------------------------ | -------- | ---------------------- |
-| [2b0f8c2b](https://github.com/angular/universal/commit/2b0f8c2bf692c58a823ac5731af5107ee4f808cd) | refactor | build: update critters |
 
 <!-- CHANGELOG SPLIT MARKER -->
 
