@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Bugs and feature requests
+    url: https://github.com/angular/angular-cli/issues/new
+    about: Report an issue in Angular Universal in the Angular CLI repository.
+  - name: Support request
+    url: https://github.com/angular/angular-cli/blob/main/CONTRIBUTING.md#question
+    about: Questions and requests for support.
